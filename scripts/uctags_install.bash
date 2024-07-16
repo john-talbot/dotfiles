@@ -5,10 +5,10 @@ set -e
 TEMP_DIR="$HOME/uctag_temp"
 
 mkdir -p $TEMP_DIR && cd $TEMP_DIR
-git clone -q https://github.com/universal-ctags/ctags.git
+git clone https://github.com/universal-ctags/ctags.git >> $LOGFILE 2>&1
 cd ctags
-./autogen.sh >> $LOGFILE
-./configure --prefix=$HOME/.local >> $LOGFILE
-make -j$(nproc) >> $LOGFILE
-make install >> $LOGFILE
+./autogen.sh >> $LOGFILE 2>&1
+./configure --prefix=$HOME/.local >> $LOGFILE 2>&1
+make -j$(nproc) >> $LOGFILE 2>&1
+make install >> $LOGFILE 2>&1
 rm -rf $TEMP_DIR
