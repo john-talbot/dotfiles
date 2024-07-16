@@ -1,0 +1,15 @@
+# Git
+\.git
+\.gitmodules
+\.gitignore
+
+# MacOS
+\.DS_Store
+
+# Temporary Files
+.*\.bak$
+.*\.swp$
+.*~$
+
+# Bootstrapping
+scripts

@@ -1,0 +1,100 @@
+" MIT License
+"
+" Copyright (c) [2024] [John Andrew Talbot]
+"
+" Permission is hereby granted, free of charge, to any person obtaining a copy
+" of this software and associated documentation files (the 'Software'), to deal
+" in the Software without restriction, including without limitation the rights
+" to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+" copies of the Software, and to permit persons to whom the Software is
+" furnished to do so, subject to the following conditions:
+"
+" The above copyright notice and this permission notice shall be included in all
+" copies or substantial portions of the Software.
+"
+" THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+" IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+" FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+" AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+" LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+" SOFTWARE.
+
+
+"################################################################################
+" SOURCE DEFAULTS AS RECOMMENDED
+"################################################################################
+source $VIMRUNTIME/defaults.vim
+
+
+"################################################################################
+" MINPAC PACKAGE MANAGER
+"################################################################################
+" Function to initialize minpac. Usage: 'call PackInit()'
+function! PackInit() abort
+    packadd minpac
+    call minpac#init()
+    source $HOME/.vim/packages.vim
+endfunction
+
+" Convenience commands
+command! PackUpdate source $MYVIMRC | call PackInit() | call minpac#update()
+command! PackClean  source $MYVIMRC | call PackInit() | call minpac#clean()
+command! PackStatus packadd minpac | call minpac#status()
+
+" From $VIMRUNTIME/vimrc_example.vim
+" The matchit plugin makes the % command work better, but it is not backwards
+" compatible.
+" The ! means the package won't be loaded right away but when plugins are
+" loaded during initialization.
+if has('syntax') && has('eval')
+    packadd! matchit
+endif
+
+"################################################################################
+" APPEARANCE
+"################################################################################
+if !empty(glob(expand("$HOME/.vim/pack/minpac/start/vim-code-dark")))
+    colorscheme codedark
+endif
+
+" Fix font problems by removing glyphs from airline symbols
+" First check if symbol dictionary exists to avoid overwrite
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
+" Remove glyphs from column and line numbers
+let g:airline_symbols.colnr = ' Col: '
+let g:airline_symbols.linenr = ' Line: '
+let g:airline_symbols.maxlinenr = ' '
+
+
+"################################################################################
+" OPTIONS
+"################################################################################
+" Persistent undo and backup files
+set backup      " keep a backup file (restore to previous version)
+set undofile    " keep an undo file (undo changes after closing)
+
+" Default to using 4 spaces per tab
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+
+" Save last 2000 commands in history rather than 20
+set history=2000
+
+" Configure wildmenu to behave like zsh
+set wildmenu
+set wildmode=full
+
+" Enable filetype recognition and load relevant plugin
+filetype plugin indent on
+
+" Enable syntax highlighting
+syntax on
+
+" Show line numbers
+set number

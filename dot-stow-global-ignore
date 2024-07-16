@@ -1,0 +1,12 @@
+# Git
+\.git
+\.gitmodules
+\.gitignore
+
+# Temporary Files
+.*\.bak$
+.*\.swp$
+.*~$
+
+# MacOS
+\.DS_Store

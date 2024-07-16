@@ -1,0 +1,21 @@
+[submodule "dot-oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
+	path = dot-oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
+[submodule "dot-oh-my-zsh/custom/plugins/zsh-autosuggestions"]
+	path = dot-oh-my-zsh/custom/plugins/zsh-autosuggestions
+	url = https://github.com/zsh-users/zsh-autosuggestions.git
+[submodule "dot-oh-my-zsh/custom/themes/powerlevel10k"]
+	path = dot-oh-my-zsh/custom/themes/powerlevel10k
+	url = https://github.com/romkatv/powerlevel10k.git
+[submodule "dot-config/ranger/plugins/ranger_devicons"]
+	path = dot-config/ranger/plugins/ranger_devicons
+	url = https://github.com/alexanderjeurissen/ranger_devicons.git
+[submodule "dot-tmux/plugins/tpm"]
+	path = dot-tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm.git
+[submodule "dot-oh-my-zsh/custom/plugins/fzf-tab"]
+	path = dot-oh-my-zsh/custom/plugins/fzf-tab
+	url = https://github.com/Aloxaf/fzf-tab.git
+[submodule "dot-vim/pack/minpac/opt/minpac"]
+	path = dot-vim/pack/minpac/opt/minpac
+	url = https://github.com/k-takata/minpac.git
