@@ -98,3 +98,9 @@ syntax on
 
 " Show line numbers
 set number
+
+" Automatically open quickfix window after running a quickfix command
+augroup JTQuickFixGroup
+    autocmd!
+    autocmd QuickFixCmdPost [^l]* nested cwindow
+augroup END

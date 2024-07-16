@@ -7,8 +7,9 @@
 # Fonts files
 dot-fonts/.uuid
 
-# Vim Plugins
+# Vim Plugins and temp files
 dot-vim/pack/*
+dot-vim/.netrwhist
 
 # Sensitive config files
 dot-config/1Password/*
