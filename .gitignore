@@ -18,3 +18,5 @@ dot-config/op/*
 *.swp
 *~
 
+# Installation logs
+scripts/install.log
