@@ -9,10 +9,7 @@ call minpac#add('tpope/vim-unimpaired')
 call minpac#add('tpope/vim-fugitive')
 call minpac#add('junegunn/fzf', {'dir': "$HOME/.local/bin"})
 call minpac#add('junegunn/fzf.vim')
-
-
-" CMake Build Environment
-call minpac#add('cdelledonne/vim-cmake', {'type': 'opt'})
+call minpac#add('nvim-treesitter/nvim-treesitter', {'do': 'TSUpdate'})
 
 
 " Colorschemes

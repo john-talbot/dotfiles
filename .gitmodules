@@ -19,3 +19,6 @@
 [submodule "dot-vim/pack/minpac/opt/minpac"]
 	path = dot-vim/pack/minpac/opt/minpac
 	url = https://github.com/k-takata/minpac.git
+[submodule "dot-config/nvim/pack/minpac/opt/minpac"]
+	path = dot-config/nvim/pack/minpac/opt/minpac
+	url = https://github.com/k-takata/minpac.git

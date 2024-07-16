@@ -51,6 +51,7 @@ fc-cache -f -v >> $LOGFILE
 # This command will run vim silently, installing all packages and then quitting
 echo "Installing vim packages" | tee -a $LOGFILE
 vim -E -s -u NONE -N -c "source $HOME/.vim/install_packages.vim"
+nvim --headless -c "source $HOME/.config/nvim/install_packages.vim"
 
 # ALL DONE!
 echo -e "\n\nBootstrapping complete!" | tee -a $LOGFILE
