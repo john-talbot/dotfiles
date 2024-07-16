@@ -56,7 +56,6 @@ zstyle ':omz:update' frequency 7
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-    1password
     brew
     docker
     docker-compose
@@ -150,7 +149,3 @@ if [ -n "$TMUX" ]; then
 else
   function refresh_env { }
 fi
-
-
-
-source "$HOME/.config/op/plugins.sh"
