@@ -11,6 +11,10 @@ call minpac#add('junegunn/fzf', {'dir': "$HOME/.local/bin"})
 call minpac#add('junegunn/fzf.vim')
 call minpac#add('nvim-treesitter/nvim-treesitter', {'do': 'TSUpdate'})
 
+" Language server support
+" call minpac#add('neovim/nvim-lspconfig')
+" call minpac#add('williamboman/mason.nvim')
+" call minpac#add('williamboman/mason-lspconfig.nvim')
 
 " Colorschemes
 call minpac#add('vim-airline/vim-airline')
