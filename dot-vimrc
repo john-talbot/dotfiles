@@ -24,7 +24,7 @@
 "################################################################################
 " SOURCE DEFAULTS AS RECOMMENDED
 "################################################################################
-source $VIMRUNTIME/defaults.vim
+" source $VIMRUNTIME/defaults.vim
 
 
 "################################################################################
@@ -51,12 +51,16 @@ if has('syntax') && has('eval')
     packadd! matchit
 endif
 
+
 "################################################################################
 " APPEARANCE
 "################################################################################
 if !empty(glob(expand("$HOME/.vim/pack/minpac/start/vim-code-dark")))
     colorscheme codedark
 endif
+
+" Load desired airline extensions
+let g:airline_extensions = ['branch', 'virtualenv']
 
 " Remove encoding section of airline
 let g:airline_section_y = ''
@@ -108,6 +112,10 @@ set hlsearch
 
 " Disable mouse
 set mouse=
+
+" Split new windows below and to the right
+set splitbelow
+set splitright
 
 " Set grep to ripgrep by default
 set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case

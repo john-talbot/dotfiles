@@ -87,6 +87,10 @@ bindkey '^[' autosuggest-accept
 zstyle ':completion:*:*:docker:*' option-stacking yes
 zstyle ':completion:*:*:docker-*:*' option-stacking yes
 
+# Set default editor
+export EDITOR=nvim
+export VISUAL=nvim
+
 
 ################################################################################
 # ALIASES
@@ -123,6 +127,10 @@ alias tmuxa="tmux attach -d -t"
 
 # Python
 alias pip="python -m pip"
+
+# Neovim
+alias vim=nvim
+alias vi=nvim
 
 
 ################################################################################
