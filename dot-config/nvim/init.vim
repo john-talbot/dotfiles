@@ -89,7 +89,7 @@ set wildmode=full
 filetype plugin indent on
 
 " Enable syntax highlighting
-syntax on
+" syntax on
 
 " Show line numbers
 set number
@@ -125,6 +125,10 @@ let g:black_format_on_save = 1
 "################################################################################
 " Keybind Ctrl-l to call nohlsearch as well as redraw screen
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
+
+" Terminal mode exit with normal Esc
+tnoremap <Esc> <C-\><C-n>
+tnoremap <C-v><Esc> <Esc>
 
 
 "################################################################################
