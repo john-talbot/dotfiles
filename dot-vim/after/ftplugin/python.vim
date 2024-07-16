@@ -3,6 +3,11 @@ if !exists('current_compiler')
     compiler flake8
 endif
 
+" Set default color column to 88
+if !exists('colorcolumn')
+    set colorcolumn=88
+endif
+
 
 " Global variable to enable formatting for the session
 if !exists('g:enable_black')
