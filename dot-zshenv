@@ -1,0 +1,19 @@
+OS="$(uname)"
+
+########################################################################################
+# RANGER
+########################################################################################
+# Do not source default config so that user config will be used
+export RANGER_LOAD_DEFAULT_RC=false
+
+
+########################################################################################
+# 1Password
+########################################################################################
+if [[ "${OS}" == "Darwin" ]]
+then
+    export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+elif [[ "${OS}" != "Linux" ]]; then
+    echo "Error: Unsupported operating system '${OS}'." >&2
+    exit 1
+fi

@@ -1,0 +1,20 @@
+# MacOS
+.DS_Store
+
+# Python
+**/__pycache__
+
+# Fonts files
+dot-fonts/.uuid
+
+# Vim Plugins
+dot-vim/**/*
+
+# Sensitive config files
+dot-config/1Password/*
+dot-config/op/*
+
+# Vim
+*.swp
+*~
+

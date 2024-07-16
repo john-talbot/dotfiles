@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+# Remove temporary tags file if script exits early
+trap 'rm -f "$$.tags"' EXIT
+
+# Pipe all git tracked files into ctags
+git ls-files | ctags --tag-relative -L - -f"$$.tags" --languages=-javascript,sql
+  
+# Move the temporary tags file to final one
+mv "$$.tags" "tags"
