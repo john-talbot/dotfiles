@@ -114,6 +114,17 @@ set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 
 
 "################################################################################
+" VARIABLES
+"################################################################################
+""" Black
+" Don't install black automatically with virtualenv
+let g:black_use_virtualenv = 0
+
+" Enable black formatting on save
+let g:black_format_on_save = 1
+
+
+"################################################################################
 " KEYBINDINGS
 "################################################################################
 " Keybind Ctrl-l to call nohlsearch as well as redraw screen

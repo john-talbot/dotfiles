@@ -24,6 +24,7 @@ tmux
 tree
 unclutter
 vim
+vim-gtk3
 virtualenv
 x11-apps
 xclip
