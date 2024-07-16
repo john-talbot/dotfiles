@@ -3,34 +3,37 @@ if !exists('current_compiler')
     compiler flake8
 endif
 
+
 " Set default color column to 88
 if !exists('colorcolumn')
     set colorcolumn=88
 endif
 
 
-" Global variable to enable formatting for the session
-if !exists('g:enable_black')
-    let g:enable_black = 1  " Default to true if not already set
-endif
-
+" Run black formatter on save
 augroup PythonAutoCommands
     autocmd!
-    autocmd BufWritePre <buffer> :call BlackFormat()
+    autocmd BufWritePre <buffer> call BlackIfEnabled()
 augroup END
 
 
-function! BlackFormat()
+" Global variable to enable formatting 
+if !exists('g:black_format_on_save')
+    let g:black_format_on_save = 1  " Default to true if not already set
+endif
+
+
+function! BlackIfEnabled()
     " Local variable to enable formatting for the buffer
-    if !exists('b:enable_black')
-        let b:enable_black = 1  " Default to true if not already set
+    if !exists('b:black_format_on_save')
+        let b:black_format_on_save = 1  " Default to true if not already set
     endif
 
     " Skip formatting if either variable is false
-    if !b:enable_black || !g:enable_black
+    if !b:black_format_on_save || !g:black_format_on_save
         return
     endif
 
     " Execute black command to format
-    silent! execute '%!black -q -'
+    execute 'Black'
 endfunction
