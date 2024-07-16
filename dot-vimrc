@@ -58,6 +58,9 @@ if !empty(glob(expand("$HOME/.vim/pack/minpac/start/vim-code-dark")))
     colorscheme codedark
 endif
 
+" Remove encoding section of airline
+let g:airline_section_y = ''
+
 " Fix font problems by removing glyphs from airline symbols
 " First check if symbol dictionary exists to avoid overwrite
 if !exists('g:airline_symbols')
@@ -99,6 +102,27 @@ syntax on
 " Show line numbers
 set number
 
+" Set incremental search and highlight search results
+set incsearch
+set hlsearch
+
+" Disable mouse
+set mouse=
+
+" Set grep to ripgrep by default
+set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+
+
+"################################################################################
+" KEYBINDINGS
+"################################################################################
+" Keybind Ctrl-l to call nohlsearch as well as redraw screen
+nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
+
+
+"################################################################################
+" COMMANDS
+"################################################################################
 " Automatically open quickfix window after running a quickfix command
 augroup JTQuickFixGroup
     autocmd!
