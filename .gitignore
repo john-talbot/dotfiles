@@ -8,7 +8,7 @@
 dot-fonts/.uuid
 
 # Vim Plugins and temp files
-dot-vim/pack/*
+dot-vim/pack/minpac
 dot-vim/.netrwhist
 
 # Sensitive config files
