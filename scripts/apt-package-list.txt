@@ -1,11 +1,12 @@
+automake
 arp-scan
 build-essential
 cmake
-cpanminus
 curl
 fontconfig
 gcc
 git
+locales
 ninja-build
 pkg-config
 python-is-python3
@@ -20,7 +21,6 @@ tmux
 tree
 unclutter
 vim
-vim-gtk3
 virtualenv
 x11-apps
 xclip
