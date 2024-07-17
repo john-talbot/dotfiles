@@ -80,9 +80,17 @@ let g:airline_symbols.maxlinenr = ' '
 "################################################################################
 " OPTIONS
 "################################################################################
-" Persistent undo and backup files
-set backup      " keep a backup file (restore to previous version)
-set undofile    " keep an undo file (undo changes after closing)
+" Enable swap files and set directory
+set directory^=~/.vim/swap//
+set swapfile
+
+" Enable backup files and set directory
+set backup
+set backupdir^=~/.vim/backup//
+
+" Enable persistent undo and set directory
+set undofile
+set undodir=~/.vim/undo//
 
 " Default to using 4 spaces per tab
 set tabstop=4

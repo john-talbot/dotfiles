@@ -68,9 +68,17 @@ let g:airline_symbols.maxlinenr = ' '
 "################################################################################
 " OPTIONS
 "################################################################################
-" Persistent undo and backup files
-set backup      " keep a backup file (restore to previous version)
-set undofile    " keep an undo file (undo changes after closing)
+" Enable swap files and set directory
+set directory^=~/.config/nvim/swap//
+set swapfile
+
+" Enable backup files and set directory
+set backup
+set backupdir^=~/.config/nvim/backup//
+
+" Enable persistent undo and set directory
+set undofile
+set undodir=~/.config/nvim/undo//
 
 " Default to using 4 spaces per tab
 set tabstop=4
@@ -104,6 +112,10 @@ set mouse=
 " Split new windows below and to the right
 set splitbelow
 set splitright
+
+" Set insert mode completion to use fuzzy matching and only insert after
+" selection
+set completeopt+=noinsert,fuzzy
 
 " Set grep to ripgrep by default
 set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
