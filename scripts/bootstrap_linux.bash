@@ -34,7 +34,7 @@ $SCRIPT_DIR/ohmyzsh_install.bash
 
 # Stow dotfiles
 echo "Deploying dotfiles" | tee -a $LOGFILE
-cd $DOTFILE_DIR && stow -R --target=${HOME} --dotfiles .
+cd $DOTFILE_DIR && $HOME/.local/bin/stow -R --target=${HOME} --dotfiles .
 
 echo "Installing FZF" | tee -a $LOGFILE
 if [[ ! -d "$HOME/.fzf" ]]
