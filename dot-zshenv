@@ -13,9 +13,21 @@ export RANGER_LOAD_DEFAULT_RC=false
 if [[ "${OS}" == "Darwin" ]]
 then
     export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+
 elif [[ "${OS}" == "Linux" ]]; then
+    # Add ~/.local/bin to the path if it isn't already there
+    if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+        export PATH="$HOME/.local/bin:$PATH"
+    fi
+
     # Manually installed neovim to get newer version
     export PATH="$PATH:/opt/nvim-linux64/bin"
+
+    # Set locale info
+    export LANG=en_US.UTF-8
+    export LANGUAGE=en_US:en
+    export LC_ALL=en_US.UTF-8
+
 else
     echo "Error: Unsupported operating system '${OS}'." >&2
     exit 1

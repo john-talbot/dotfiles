@@ -2,6 +2,8 @@
 
 set -e
 
+export DEBIAN_FRONTEND=noninteractive
+
 # Set timezone to Eastern Time if not already set
 if [[ -z "${TZ}" ]]
 then
@@ -12,15 +14,9 @@ echo "Timezone set to $TZ" | tee -a $LOGFILE
 echo "Installing packages from apt-packages-list.txt" | tee -a $LOGFILE
 if [ "$EUID" -ne 0 ]
 then
-	sudo ln -snf /usr/share/zoneinfo/$TZ /etc/localtime | sudo tee /etc/timezone
-	DEBIAN_FRONTEND=noninteractive sudo apt-get update >> $LOGFILE
-       	DEBIAN_FRONTEND=noninteractive sudo apt-get upgrade -y >> $LOGFILE
-	cat "$SCRIPT_DIR/apt-package-list.txt" | DEBIAN_FRONTEND=noninteractive sudo xargs apt-get install -y >> $LOGFILE
+    sudo -E $SCRIPT_DIR/install_apt_packages.bash
 else
-	ln -snf /usr/share/zoneinfo/$TZ /etc/localtime > /etc/timezone
-	DEBIAN_FRONTEND=noninteractive apt-get update >> $LOGFILE
-	DEBIAN_FRONTEND=noninteractive apt-get upgrade -y >> $LOGFILE
-	cat "$SCRIPT_DIR/apt-package-list.txt" | DEBIAN_FRONTEND=noninteractive xargs apt-get install -y >> $LOGFILE
+    $SCRIPT_DIR/install_apt_packages.bash
 fi
 
 echo "Installing latest version of GNU Stow" | tee -a $LOGFILE
@@ -28,6 +24,12 @@ $SCRIPT_DIR/stow_install.bash
 
 echo "Installing latest version of Universal Ctags" | tee -a $LOGFILE
 $SCRIPT_DIR/uctags_install.bash
+
+echo "Installing latest version of Neovim" | tee -a $LOGFILE
+$SCRIPT_DIR/neovim_install.bash
+
+echo "Installing treesitter" | tee -a $LOGFILE
+$SCRIPT_DIR/treesitter_install.bash
 
 # Install oh-my-zsh
 $SCRIPT_DIR/ohmyzsh_install.bash
