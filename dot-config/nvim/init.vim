@@ -89,6 +89,9 @@ set expandtab
 " Save last 2000 commands in history rather than 20
 set history=2000
 
+" Save maximum length of 100,000 lines in terminal emulator
+set scrollback=100000
+
 " Configure wildmenu to behave like zsh
 set wildmenu
 set wildmode=full
@@ -118,7 +121,7 @@ set splitright
 set completeopt+=noinsert,fuzzy
 
 " Set grep to ripgrep by default
-set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+set grepprg=rg\ --vimgrep\ --smart-case
 
 
 "################################################################################
