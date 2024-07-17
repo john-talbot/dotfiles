@@ -27,3 +27,6 @@ dot-config/op/*
 
 # Installation logs
 scripts/install.log
+
+# Tags
+tags
