@@ -24,4 +24,7 @@ elif [[ "${OS}" == "Darwin" ]]; then
     sudo tar -C /opt -xf nvim-macos-arm64.tar.gz >> $LOGFILE
 fi
 
+# Install python support
+python3 -m pip --user --update neovim
+
 rm -rf $TEMP_DIR
