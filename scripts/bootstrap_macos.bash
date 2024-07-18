@@ -27,6 +27,9 @@ cpanm YAML::Tiny
 # Install oh-my-zsh
 $SCRIPT_DIR/ohmyzsh_install.bash
 
+echo "Installing latest version of Neovim" | tee -a $LOGFILE
+$SCRIPT_DIR/neovim_install.bash
+
 # Stow dotfiles
 echo "Deploying dotfiles" | tee -a $LOGFILE
 cd $DOTFILE_DIR && stow -R --target=$HOME --dotfiles .
