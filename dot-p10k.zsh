@@ -12,6 +12,13 @@
 #
 #   for i in {0..255}; do print -Pn "%K{$i}  %k%F{$i}${(l:3::0:)i}%f " ${${(M)$((i%6)):#3}:+$'\n'}; done
 
+# Custom Neovim segment for powerlevel10k
+function prompt_my_neovim() {
+    if [[ -n "$NVIM" ]]; then
+        p10k segment -t "nvim" -f 46 -b 236
+    fi
+}
+
 # Temporarily change options.
 'builtin' 'local' '-a' 'p10k_config_opts'
 [[ ! -o 'aliases'         ]] || p10k_config_opts+=('aliases')
@@ -52,6 +59,7 @@
     direnv                  # direnv status (https://direnv.net/)
     asdf                    # asdf version manager (https://github.com/asdf-vm/asdf)
     virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
+    my_neovim
     anaconda                # conda environment (https://conda.io/)
     pyenv                   # python environment (https://github.com/pyenv/pyenv)
     goenv                   # go environment (https://github.com/syndbg/goenv)
