@@ -12,11 +12,14 @@ fi
 echo "Timezone set to $TZ" | tee -a $LOGFILE
 
 echo "Installing packages from apt-packages-list.txt" | tee -a $LOGFILE
+CURRENT_USER=$(whoami)
 if [ "$EUID" -ne 0 ]
 then
     sudo -E $SCRIPT_DIR/install_apt_packages.bash
+    sudo chsh -s /usr/bin/zsh $CURRENT_USER
 else
     $SCRIPT_DIR/install_apt_packages.bash
+    chsh -s /usr/bin/zsh $CURRENT_USER
 fi
 
 echo "Installing latest version of GNU Stow" | tee -a $LOGFILE
