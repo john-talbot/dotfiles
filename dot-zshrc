@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
 ################################################################################
 # INSTANT PROMPT
 ################################################################################
@@ -87,9 +88,19 @@ bindkey '^S' autosuggest-accept
 zstyle ':completion:*:*:docker:*' option-stacking yes
 zstyle ':completion:*:*:docker-*:*' option-stacking yes
 
-# Set default editor
+
+########################################################################################
+# ENVIRONMENT Variables
+########################################################################################
+### GENERAL
+# Set system defaults
 export EDITOR=nvim
 export VISUAL=nvim
+export SHELL=/usr/bin/zsh
+
+### RANGER
+# Do not source default ranger config to make sure user config is used
+export RANGER_LOAD_DEFAULT_RC=false
 
 
 ################################################################################
@@ -100,7 +111,7 @@ export VISUAL=nvim
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
-# GIT
+### GIT
 alias gpl="git pull origin"
 alias gplov="git pull overleaf"
 alias gps="git push origin"
@@ -116,19 +127,19 @@ alias gb="git branch"
 alias gheadc="git rev-parse HEAD | cut -c 1-7"
 alias ggraph="git log --graph --decorate --pretty=oneline --abbrev-commit"
 
-# Jupyter
+### JUPYTER
 alias jup="jupyter lab"
 
-# TMUX
+### TMUX
 alias tmuxk="tmux kill-session -t"
 alias tmuxK="tmux kill-server"
 alias tmuxl="tmux list-sessions"
 alias tmuxa="tmux attach -d -t"
 
-# Python
+### PYTHON
 alias pip="python -m pip"
 
-# Neovim
+### NEOVIM
 alias vim=nvim
 alias vi=nvim
 
@@ -136,19 +147,13 @@ alias vi=nvim
 ################################################################################
 # FUNCTIONS
 ################################################################################
-# Used in similar way as alias, but able to take arguments
-
-#########################
-# Git
-#########################
+### GIT
 # Function to draw nice graph diff between two branches
 function gt(){
     git log --oneline --graph --decorate --abbrev-commit "$1".."$2"
 }
 
-#########################
-# Tmux
-#########################
+### TMUX
 # Tmux environment variable refresh
 if [ -n "$TMUX" ]; then
   function refresh_env {
