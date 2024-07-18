@@ -13,6 +13,9 @@ export RANGER_LOAD_DEFAULT_RC=false
 if [[ "${OS}" == "Darwin" ]]
 then
     export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+    
+    # Manually installed neovim to get newer version
+    export PATH="$PATH:/opt/nvim-macos-arm64/bin"
 
 elif [[ "${OS}" == "Linux" ]]; then
     # Add ~/.local/bin to the path if it isn't already there
