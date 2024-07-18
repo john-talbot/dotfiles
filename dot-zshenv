@@ -1,14 +1,8 @@
 OS="$(uname)"
 
-########################################################################################
-# RANGER
-########################################################################################
-# Do not source default config so that user config will be used
-export RANGER_LOAD_DEFAULT_RC=false
-
 
 ########################################################################################
-# 1Password
+# MacOS / Linux Specific Config
 ########################################################################################
 if [[ "${OS}" == "Darwin" ]]
 then
@@ -18,10 +12,6 @@ then
     export PATH="$PATH:/opt/nvim-macos-arm64/bin"
 
 elif [[ "${OS}" == "Linux" ]]; then
-    # Add ~/.local/bin to the path if it isn't already there
-    if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-        export PATH="$HOME/.local/bin:$PATH"
-    fi
 
     # Manually installed neovim to get newer version
     export PATH="$PATH:/opt/nvim-linux64/bin"
@@ -35,3 +25,17 @@ else
     echo "Error: Unsupported operating system '${OS}'." >&2
     exit 1
 fi
+
+
+########################################################################################
+# PATH
+########################################################################################
+# Add ~/.local/bin to the path if it isn't already there
+if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+    export PATH="$HOME/.local/bin:$PATH"
+fi
+
+
+########################################################################################
+# ENVIRONMENT Variables
+########################################################################################
