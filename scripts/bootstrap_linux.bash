@@ -11,15 +11,26 @@ then
 fi
 echo "Timezone set to $TZ" | tee -a $LOGFILE
 
-echo "Installing packages from apt-packages-list.txt" | tee -a $LOGFILE
 CURRENT_USER=$(whoami)
 if [ "$EUID" -ne 0 ]
 then
+    echo "Installing packages from apt-packages-list.txt" | tee -a $LOGFILE
     sudo -E $SCRIPT_DIR/install_apt_packages.bash
+
+    echo "Changing default shell to zsh" | tee -a $LOGFILE
     sudo chsh -s /usr/bin/zsh $CURRENT_USER
+
+    echo "Installing latest version of Neovim" | tee -a $LOGFILE
+    sudo $SCRIPT_DIR/neovim_install.bash
 else
+    echo "Installing packages from apt-packages-list.txt" | tee -a $LOGFILE
     $SCRIPT_DIR/install_apt_packages.bash
+
+    echo "Changing default shell to zsh" | tee -a $LOGFILE
     chsh -s /usr/bin/zsh $CURRENT_USER
+
+    echo "Installing latest version of Neovim" | tee -a $LOGFILE
+    $SCRIPT_DIR/neovim_install.bash
 fi
 
 echo "Installing latest version of GNU Stow" | tee -a $LOGFILE
@@ -27,9 +38,6 @@ $SCRIPT_DIR/stow_install.bash
 
 echo "Installing latest version of Universal Ctags" | tee -a $LOGFILE
 $SCRIPT_DIR/uctags_install.bash
-
-echo "Installing latest version of Neovim" | tee -a $LOGFILE
-$SCRIPT_DIR/neovim_install.bash
 
 echo "Installing treesitter" | tee -a $LOGFILE
 $SCRIPT_DIR/treesitter_install.bash

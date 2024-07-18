@@ -14,17 +14,17 @@ if [[ "${OS}" == "Linux" ]]; then
     # back to `latest` once this version is stabilized
     # curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz >> $LOGFILE
     curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz >> $LOGFILE
-    sudo rm -rf /opt/nvim-linux64 >> $LOGFILE
-    sudo tar -C /opt -xf nvim-linux64.tar.gz >> $LOGFILE
+    rm -rf /opt/nvim-linux64 >> $LOGFILE
+    tar -C /opt -xf nvim-linux64.tar.gz >> $LOGFILE
 
 elif [[ "${OS}" == "Darwin" ]]; then
     curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-arm64.tar.gz >> $LOGFILE
     xattr -c ./nvim-macos-arm64.tar.gz >> $LOGFILE
-    sudo rm -rf /opt/nvim-macos-arm64 >> $LOGFILE
-    sudo tar -C /opt -xf nvim-macos-arm64.tar.gz >> $LOGFILE
+    rm -rf /opt/nvim-macos-arm64 >> $LOGFILE
+    tar -C /opt -xf nvim-macos-arm64.tar.gz >> $LOGFILE
 fi
 
 # Install python support
-python3 -m pip --user --update neovim
+python3 -m pip install --upgrade neovim
 
 rm -rf $TEMP_DIR
