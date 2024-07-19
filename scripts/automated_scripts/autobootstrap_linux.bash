@@ -15,46 +15,40 @@ CURRENT_USER=$(whoami)
 if [ "$EUID" -ne 0 ]
 then
     echo "Installing packages from apt-packages-list.txt" | tee -a $LOGFILE
-    sudo -E $SCRIPT_DIR/install_apt_packages.bash
+    sudo -E $SCRIPT_DIR/autoinstall_apt_packages.bash
 
     echo "Changing default shell to zsh" | tee -a $LOGFILE
     sudo chsh -s /usr/bin/zsh $CURRENT_USER
 
-    echo "Installing latest version of Neovim" | tee -a $LOGFILE
-    sudo $SCRIPT_DIR/neovim_install.bash
+    sudo $SCRIPT_DIR/autoinstall_neovim.bash
 else
     echo "Installing packages from apt-packages-list.txt" | tee -a $LOGFILE
-    $SCRIPT_DIR/install_apt_packages.bash
+    $SCRIPT_DIR/autoinstall_apt_packages.bash
 
     echo "Changing default shell to zsh" | tee -a $LOGFILE
     chsh -s /usr/bin/zsh $CURRENT_USER
 
-    echo "Installing latest version of Neovim" | tee -a $LOGFILE
-    $SCRIPT_DIR/neovim_install.bash
+    $SCRIPT_DIR/autoinstall_neovim.bash
 fi
 
-echo "Installing latest version of GNU Stow" | tee -a $LOGFILE
-$SCRIPT_DIR/stow_install.bash
+# Install latest GNU Stow
+$SCRIPT_DIR/autoinstall_stow.bash
 
-echo "Installing latest version of Universal Ctags" | tee -a $LOGFILE
-$SCRIPT_DIR/uctags_install.bash
+# Install latest universal ctags
+$SCRIPT_DIR/autoinstall_uctags.bash
 
-echo "Installing treesitter" | tee -a $LOGFILE
-$SCRIPT_DIR/treesitter_install.bash
+# Install latest treesitter
+$SCRIPT_DIR/autoinstall_treesitter.bash
 
 # Install oh-my-zsh
-$SCRIPT_DIR/ohmyzsh_install.bash
+$SCRIPT_DIR/autoinstall_ohmyzsh.bash
 
 # Stow dotfiles
 echo "Deploying dotfiles" | tee -a $LOGFILE
 cd $DOTFILE_DIR && $HOME/.local/bin/stow -R --target=${HOME} --dotfiles .
 
-echo "Installing FZF" | tee -a $LOGFILE
-if [[ ! -d "$HOME/.fzf" ]]
-then
-	git clone --depth 1 https://github.com/junegunn/fzf.git $HOME/.fzf >> $LOGFILE
-	$HOME/.fzf/install --bin --no-key-bindings --no-completion --no-update-rc >> $LOGFILE
-fi
+# Install fzf
+$SCRIPT_DIR/autoinstall_fzf.bash
 
 # Rebuild font cache
 echo "Rebuilding font cache" | tee -a $LOGFILE

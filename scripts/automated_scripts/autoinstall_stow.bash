@@ -4,6 +4,8 @@ set -e
 
 TEMP_DIR="$HOME/stow_temp"
 
+echo "Installing latest version of GNU Stow" | tee -a $LOGFILE
+
 # Download and unpack latest stow tarball
 # This will all happen in TEMP_DIR for easy cleanup
 mkdir -p $TEMP_DIR && cd $TEMP_DIR

@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "Installing latest version of Neovim" | tee -a $LOGFILE
 
 set -e
 
@@ -13,7 +14,7 @@ fi
 # Install packages from homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 echo "Installing homebrew packages..." | tee -a $LOGFILE
-brew bundle install --file "$SCRIPT_DIR/Brewfile" | tee -a $LOGFILE 2>&1
+brew bundle install --file "$AUTOSCRIPT_DIR/Brewfile" | tee -a $LOGFILE 2>&1
 
 # Disable Apple press and hold for Visual Studio Code
 defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
@@ -22,13 +23,16 @@ defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
 defaults write org.xquartz.X11 app_to_run /usr/bin/true
 
 # Fix package error in Latex Workshop for VSCode
-cpanm YAML::Tiny
+cpanm YAML::Tiny >> $LOGFILE
+
+# Setup python virtualenv
+$AUTOSCRIPT_DIR/autoconfig_virtualenv.bash
 
 # Install oh-my-zsh
-$SCRIPT_DIR/ohmyzsh_install.bash
+$AUTOSCRIPT_DIR/autoinstall_ohmyzsh.bash
 
-echo "Installing latest version of Neovim" | tee -a $LOGFILE
-$SCRIPT_DIR/neovim_install.bash
+# Install Neovim
+$AUTOSCRIPT_DIR/autoinstall_neovim.bash
 
 # Stow dotfiles
 echo "Deploying dotfiles" | tee -a $LOGFILE
@@ -38,7 +42,7 @@ cd $DOTFILE_DIR && stow -R --target=$HOME --dotfiles .
 # This command will run vim silently, installing all packages and then quitting
 echo "Installing vim packages" | tee -a $LOGFILE
 vim -E -s -u NONE -N -c "source $HOME/.vim/install_packages.vim"
-nvim --headless -c "source $HOME/.config/nvim/install_packages.vim"
+/opt/nvim-macos-arm64/bin/nvim --headless -c "source $HOME/.config/nvim/install_packages.vim"
 
 # ALL DONE!
 echo -e "\n\nBootstrapping complete!" | tee -a $LOGFILE
