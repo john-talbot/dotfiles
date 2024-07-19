@@ -96,8 +96,8 @@ zstyle ':completion:*:*:docker-*:*' option-stacking yes
 # Set system defaults
 export EDITOR=nvim
 export VISUAL=nvim
-export SHELL=/usr/bin/zsh
 export TERM=xterm-256color
+
 
 ### RANGER
 # Do not source default ranger config to make sure user config is used
@@ -138,11 +138,8 @@ alias tmuxl="tmux list-sessions"
 alias tmuxa="tmux attach -d -t"
 
 ### PYTHON
-alias pip="python -m pip"
-
-### NEOVIM
-alias vim=nvim
-alias vi=nvim
+alias python="python3"
+alias pip="python3 -m pip"
 
 
 ################################################################################
@@ -163,3 +160,25 @@ if [ -n "$TMUX" ]; then
 else
   function refresh_env { }
 fi
+
+
+########################################################################################
+# MacOS / Linux Specific Config
+########################################################################################
+OS="$(uname)"
+if [[ "${OS}" == "Darwin" ]]; then
+    export SHELL=/bin/zsh
+
+elif [[ "${OS}" == "Linux" ]]; then
+    export SHELL=/usr/bin/zsh
+
+else
+    echo "Error: Unsupported operating system '${OS}'." >&2
+    exit 1
+fi
+
+
+################################################################################
+# MACHINE Specific
+################################################################################
+source ~/.zshrc-per-machine

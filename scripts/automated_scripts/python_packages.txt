@@ -1,0 +1,10 @@
+black
+flake8
+matplotlib
+neovim
+numpy
+pep8-naming
+pip
+pytest
+scipy
+setuptools
