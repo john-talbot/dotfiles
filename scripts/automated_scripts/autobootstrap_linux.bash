@@ -15,40 +15,40 @@ CURRENT_USER=$(whoami)
 if [ "$EUID" -ne 0 ]
 then
     echo "Installing packages from apt-packages-list.txt" | tee -a $LOGFILE
-    sudo -E $SCRIPT_DIR/autoinstall_apt_packages.bash
+    sudo -E $AUTOSCRIPT_DIR/autoinstall_apt_packages.bash
 
     echo "Changing default shell to zsh" | tee -a $LOGFILE
     sudo chsh -s /usr/bin/zsh $CURRENT_USER
 
-    sudo $SCRIPT_DIR/autoinstall_neovim.bash
+    sudo $AUTOSCRIPT_DIR/autoinstall_neovim.bash
 else
     echo "Installing packages from apt-packages-list.txt" | tee -a $LOGFILE
-    $SCRIPT_DIR/autoinstall_apt_packages.bash
+    $AUTOSCRIPT_DIR/autoinstall_apt_packages.bash
 
     echo "Changing default shell to zsh" | tee -a $LOGFILE
     chsh -s /usr/bin/zsh $CURRENT_USER
 
-    $SCRIPT_DIR/autoinstall_neovim.bash
+    $AUTOSCRIPT_DIR/autoinstall_neovim.bash
 fi
 
 # Install latest GNU Stow
-$SCRIPT_DIR/autoinstall_stow.bash
+$AUTOSCRIPT_DIR/autoinstall_stow.bash
 
 # Install latest universal ctags
-$SCRIPT_DIR/autoinstall_uctags.bash
+$AUTOSCRIPT_DIR/autoinstall_uctags.bash
 
 # Install latest treesitter
-$SCRIPT_DIR/autoinstall_treesitter.bash
+$AUTOSCRIPT_DIR/autoinstall_treesitter.bash
 
 # Install oh-my-zsh
-$SCRIPT_DIR/autoinstall_ohmyzsh.bash
+$AUTOSCRIPT_DIR/autoinstall_ohmyzsh.bash
 
 # Stow dotfiles
 echo "Deploying dotfiles" | tee -a $LOGFILE
 cd $DOTFILE_DIR && $HOME/.local/bin/stow -R --target=${HOME} --dotfiles .
 
 # Install fzf
-$SCRIPT_DIR/autoinstall_fzf.bash
+$AUTOSCRIPT_DIR/autoinstall_fzf.bash
 
 # Rebuild font cache
 echo "Rebuilding font cache" | tee -a $LOGFILE
