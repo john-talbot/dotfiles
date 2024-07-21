@@ -25,6 +25,10 @@ dot-config/nvim/.netrwhist
 dot-config/1Password/*
 dot-config/op/*
 
+# Machine specific config
+dot-zshrc-per-machine
+dot-zshenv-per-machine
+
 # Installation logs
 scripts/install.log
 
