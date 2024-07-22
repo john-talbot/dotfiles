@@ -10,14 +10,8 @@ dot-fonts/.uuid
 # Vim plugins and temp files
 dot-vim/pack/minpac
 dot-vim/.netrwhist
-dot-vim/backup
-dot-vim/swap
-dot-vim/undo
 
 # Neovim plugins and temp files
-dot-config/nvim/backup
-dot-config/nvim/swap
-dot-config/nvim/undo
 dot-config/nvim/pack/minpac
 dot-config/nvim/.netrwhist
 
