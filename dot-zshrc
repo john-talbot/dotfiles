@@ -181,4 +181,6 @@ fi
 ################################################################################
 # MACHINE Specific
 ################################################################################
-source ~/.zshrc-per-machine
+if [[ -e $HOME/.zshrc-per-machine ]]; then
+    source $HOME/.zshrc-per-machine
+fi
