@@ -23,11 +23,10 @@ autocmd BufWritePre <buffer> call FormatPythonOnSave()
 
 " Run isort and black if enabled and installed
 function! FormatPythonOnSave()
-    let cursor_pos = getcurpos()
+    let save_window = winsaveview()
     call ISortIfEnabled()
     call BlackIfEnabled()
-    call setpos('.', cursor_pos)
-    redraw!
+    call winrestview(save_window)
 endfunction
 
 
