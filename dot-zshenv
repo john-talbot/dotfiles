@@ -41,4 +41,6 @@ fi
 ########################################################################################
 # MACHINE Specific
 ########################################################################################
-source ~/.zshenv-per-machine
+if [[ -e $HOME/.zshenv-per-machine ]]; then
+    source $HOME/.zshenv-per-machine
+fi
