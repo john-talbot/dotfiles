@@ -90,12 +90,28 @@ zstyle ':completion:*:*:docker-*:*' option-stacking yes
 
 
 ########################################################################################
+# SENSE Environment and Configuration
+########################################################################################
+# Check if nvim exists
+nvim_available=0
+if command -v nvim >/dev/null 2>&1; then
+    nvim_available=1
+fi
+
+
+########################################################################################
 # ENVIRONMENT Variables
 ########################################################################################
 ### GENERAL
 # Set system defaults
-export EDITOR=nvim
-export VISUAL=nvim
+if [[ $nvim_available -eq 1 ]]; then
+    export EDITOR=nvim
+    export VISUAL=nvim
+else
+    export EDITOR=vim
+    export VISUAL=vim
+fi
+
 export TERM=xterm-256color
 
 
@@ -140,6 +156,12 @@ alias tmuxa="tmux attach -d -t"
 ### PYTHON
 alias python="python3"
 alias pip="python3 -m pip"
+
+### Always open nvim if available
+if [[ $nvim_available -eq 1 ]]; then
+    alias vim="nvim"
+    alias vi="nvim"
+fi
 
 
 ################################################################################
