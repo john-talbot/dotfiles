@@ -157,6 +157,9 @@ nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 tnoremap <Esc> <C-\><C-n>
 tnoremap <C-v><Esc> <Esc>
 
+" Generate Ctags easily
+nnoremap <Leader>c :GenerateCTags<CR>
+
 
 "################################################################################
 " COMMANDS
