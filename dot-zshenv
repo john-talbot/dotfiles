@@ -5,6 +5,9 @@
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
     export PATH="$HOME/.local/bin:$PATH"
 fi
+    
+# Manually installed neovim to get newer version
+export PATH="$PATH:/opt/neovim"
 
 
 ########################################################################################
@@ -18,15 +21,8 @@ fi
 OS="$(uname)"
 if [[ "${OS}" == "Darwin" ]]; then
     export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
-    
-    # Manually installed neovim to get newer version
-    export PATH="$PATH:/opt/nvim-macos-arm64/bin"
 
 elif [[ "${OS}" == "Linux" ]]; then
-
-    # Manually installed neovim to get newer version
-    export PATH="$PATH:/opt/nvim-linux64/bin"
-
     # Set locale info
     export LANG=en_US.UTF-8
     export LANGUAGE=en_US:en
