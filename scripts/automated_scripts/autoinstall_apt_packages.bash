@@ -11,7 +11,6 @@ check_locale_gen() {
 
     if [[ -f $file ]]; then
         if grep -q "^#.*$locale" "$file"; then
-            echo "Uncommenting $locale in $file."
             sudo sed -i "s/^#.*$locale/$locale/" "$file"
         fi
     fi
