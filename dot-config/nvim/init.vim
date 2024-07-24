@@ -64,6 +64,18 @@ let g:airline_symbols.colnr = ' Col: '
 let g:airline_symbols.linenr = ' Line: '
 let g:airline_symbols.maxlinenr = ' '
 
+" Add vim-obsession to airline
+function! AirlineInit()
+    let g:airline_section_z = airline#section#create([
+        \ '%{ObsessionStatus(''$$ '', '''')}', 
+        \'windowswap', 
+        \ '%3p%% ', 
+        \ 'linenr', 
+        \ ':%3v '
+        \ ])
+endfunction
+autocmd User AirlineAfterInit call AirlineInit()
+
 
 "################################################################################
 " OPTIONS
