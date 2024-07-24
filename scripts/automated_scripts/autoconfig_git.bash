@@ -23,5 +23,6 @@ else
 fi
 
 git config --global init.templatedir '~/.git_template'
+git config --global pull.rebase false
 
 echo "Done!" #| tee -a $LOGFILE
