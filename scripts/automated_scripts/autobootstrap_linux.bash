@@ -51,8 +51,11 @@ echo "Done!" | tee -a $LOGFILE
 # Install fzf
 $AUTOSCRIPT_DIR/autoinstall_fzf.bash
 
-# Setup virtualenv
-$AUTOSCRIPT_DIR/autoconfig_virtualenv.bash
+# Setup virtualenv on raspberry pi
+# TODO: Figure out a way to exclude just docker builds
+if grep -q Raspberry /proc/cpuinfo; then
+    $AUTOSCRIPT_DIR/autoconfig_virtualenv.bash
+fi
 
 # Rebuild font cache
 echo -n "Rebuilding font cache... " | tee -a $LOGFILE

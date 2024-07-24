@@ -66,7 +66,6 @@ plugins=(
     macos
     poetry
     python 
-    ripgrep
     rust
     vscode
     fzf-tab
