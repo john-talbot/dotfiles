@@ -42,7 +42,7 @@ cd $DOTFILE_DIR && stow -R --target=$HOME --dotfiles .
 # This command will run vim silently, installing all packages and then quitting
 echo "Installing vim packages" | tee -a $LOGFILE
 vim -E -s -u NONE -N -c "source $HOME/.vim/install_packages.vim"
-/opt/nvim-macos-arm64/bin/nvim --headless -c "source $HOME/.config/nvim/install_packages.vim"
+/opt/neovim/bin/nvim --headless -c "source $HOME/.config/nvim/install_packages.vim"
 
 # ALL DONE!
 echo -e "\n\nBootstrapping complete!" | tee -a $LOGFILE
