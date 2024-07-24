@@ -7,6 +7,7 @@ call minpac#add('tpope/vim-surround')
 call minpac#add('tpope/vim-unimpaired')
 call minpac#add('tpope/vim-fugitive')
 call minpac#add('tpope/vim-commentary')
+call minpac#add('tpope/vim-obsession')
 call minpac#add('junegunn/fzf', {'dir': "$HOME/.local/bin"})
 call minpac#add('junegunn/fzf.vim')
 
