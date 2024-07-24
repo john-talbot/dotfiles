@@ -14,19 +14,19 @@ echo "Timezone set to $TZ" | tee -a $LOGFILE
 CURRENT_USER=$(whoami)
 if [ "$EUID" -ne 0 ]
 then
-    echo "Installing packages from apt-packages-list.txt" | tee -a $LOGFILE
     sudo -E $AUTOSCRIPT_DIR/autoinstall_apt_packages.bash
 
-    echo "Changing default shell to zsh" | tee -a $LOGFILE
+    echo -n "Changing default shell to zsh... " | tee -a $LOGFILE
     sudo chsh -s /usr/bin/zsh $CURRENT_USER
+    echo "Done!" | tee -a $LOGFILE
 
     sudo -E $AUTOSCRIPT_DIR/autoinstall_neovim.bash
 else
-    echo "Installing packages from apt-packages-list.txt" | tee -a $LOGFILE
     $AUTOSCRIPT_DIR/autoinstall_apt_packages.bash
 
-    echo "Changing default shell to zsh" | tee -a $LOGFILE
+    echo -n "Changing default shell to zsh... " | tee -a $LOGFILE
     chsh -s /usr/bin/zsh $CURRENT_USER
+    echo "Done!" | tee -a $LOGFILE
 
     $AUTOSCRIPT_DIR/autoinstall_neovim.bash
 fi
@@ -44,23 +44,24 @@ $AUTOSCRIPT_DIR/autoinstall_treesitter.bash
 $AUTOSCRIPT_DIR/autoinstall_ohmyzsh.bash
 
 # Stow dotfiles
-echo "Deploying dotfiles" | tee -a $LOGFILE
+echo -n "Deploying dotfiles... " | tee -a $LOGFILE
 cd $DOTFILE_DIR && $HOME/.local/bin/stow -R --target=${HOME} --dotfiles .
+echo "Done!" | tee -a $LOGFILE
 
 # Install fzf
 $AUTOSCRIPT_DIR/autoinstall_fzf.bash
 
+# Setup virtualenv
+$AUTOSCRIPT_DIR/autoconfig_virtualenv.bash
+
 # Rebuild font cache
-echo "Rebuilding font cache" | tee -a $LOGFILE
+echo -n "Rebuilding font cache... " | tee -a $LOGFILE
 fc-cache -f -v >> $LOGFILE
+echo "Done!" | tee -a $LOGFILE
 
 # Install all vim packages with minpac
 # This command will run vim silently, installing all packages and then quitting
-echo "Installing vim packages" | tee -a $LOGFILE
-vim -E -s -u NONE -N -c "source $HOME/.vim/install_packages.vim"
-
-/opt/neovim/bin/nvim --headless -c "source $HOME/.config/nvim/install_packages.vim"
-
-# ALL DONE!
-echo -e "\n\nBootstrapping complete!" | tee -a $LOGFILE
-echo -e "\n--> Restart terminal for all changes to take effect.\n\n" | tee -a $LOGFILE
+echo -n "Installing vim & neovim packages..." | tee -a $LOGFILE
+vim -E -s -u NONE -N -c "source $HOME/.vim/install_packages.vim" >> $LOGFILE 2>&1
+/opt/neovim/bin/nvim --headless -c "source $HOME/.config/nvim/install_packages.vim" >> $LOGFILE 2>&1
+echo "Done!" | tee -a $LOGFILE

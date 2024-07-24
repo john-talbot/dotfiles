@@ -4,7 +4,7 @@ set -e
 
 TEMP_DIR="$HOME/stow_temp"
 
-echo "Installing latest version of GNU Stow" | tee -a $LOGFILE
+echo -n "Installing latest version of GNU Stow... " | tee -a $LOGFILE
 
 # Download and unpack latest stow tarball
 # This will all happen in TEMP_DIR for easy cleanup
@@ -15,7 +15,9 @@ rm stow-latest.tar.gz
 
 # Build and install to .local
 cd stow-* 
-./configure --prefix=$HOME/.local >> $LOGFILE
-make >> $LOGFILE
-make install >> $LOGFILE
+./configure --prefix=$HOME/.local >> $LOGFILE 2>&1
+make -j$(nproc) >> $LOGFILE 2>&1
+make install >> $LOGFILE 2>&1
 rm -r $TEMP_DIR
+
+echo "Done!" | tee -a $LOGFILE

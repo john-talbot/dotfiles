@@ -6,5 +6,7 @@ numpy
 pep8-naming
 pip
 pytest
+rich
 scipy
 setuptools
+typing_extensions

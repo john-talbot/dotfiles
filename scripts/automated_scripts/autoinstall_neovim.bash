@@ -2,7 +2,7 @@
 
 set -e
 
-echo -n "Installing latest version of Neovim... " | tee -a $LOGFILE
+echo -n "Installing latest version of Neovim (This may take a while)... " | tee -a $LOGFILE
 
 TEMP_DIR="$HOME/neovim_temp"
 
@@ -28,9 +28,6 @@ elif [[ "${OS}" == "Linux" ]]; then
     curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz >> $LOGFILE
     tar -C /opt -xf nvim-linux64.tar.gz >> $LOGFILE
     mv /opt/nvim-linux64 /opt/neovim
-    
-    # Install python support
-    python3 -m pip install --upgrade neovim
 
 elif [[ "${OS}" == "Darwin" ]]; then
     sudo rm -rf /opt/neovim >> $LOGFILE
@@ -39,7 +36,6 @@ elif [[ "${OS}" == "Darwin" ]]; then
     sudo tar -C /opt -xf nvim-macos-arm64.tar.gz >> $LOGFILE
     sudo mv /opt/nvim-macos-arm64 /opt/neovim
     
-    # Assumes you'll be using a virtualenv in MacOS so no python package installation needed
 fi
 
 rm -rf $TEMP_DIR

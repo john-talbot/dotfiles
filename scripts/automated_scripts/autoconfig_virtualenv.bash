@@ -2,7 +2,7 @@
 
 set -e
 
-echo "Configuring base_venv" | tee -a $LOGFILE
+echo -n "Configuring python virtual environment base_env... " | tee -a $LOGFILE
 
 # Create base virtualenv
 virtualenv $HOME/base_venv >> $LOGFILE
@@ -15,3 +15,5 @@ cat $AUTOSCRIPT_DIR/python_packages.txt | xargs python3 -m pip install --upgrade
 
 # Deactivate virtualenv
 deactivate
+
+echo "Done!" | tee -a $LOGFILE
