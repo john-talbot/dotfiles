@@ -160,6 +160,18 @@ nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 " Generate Ctags easily
 nnoremap <Leader>c :GenerateCTags<CR>
 
+" Toggle folds with Spacebar
+nnoremap <Space> za
+
+" Fuzzy-Finder
+nnoremap <Leader>ff :Files
+nnoremap <Leader>fg :GFiles
+nnoremap <Leader>fb :Buffers
+nnoremap <Leader>ft :Tags
+nnoremap <Leader>fm :Marks
+nnoremap <Leader>fc :Commands
+nnoremap <Leader>fh :History:
+nnoremap <Leader>fs :History/
 
 "################################################################################
 " COMMANDS

@@ -135,6 +135,11 @@ set completeopt+=noinsert,fuzzy
 " Set grep to ripgrep by default
 set grepprg=rg\ --vimgrep\ --smart-case
 
+" Code folding settings
+set foldlevel=99 " Open buffer with all folds expanded
+set foldnestmax=3
+set foldminlines=5
+
 
 "################################################################################
 " VARIABLES
@@ -160,6 +165,18 @@ tnoremap <C-v><Esc> <Esc>
 " Generate Ctags easily
 nnoremap <Leader>c :GenerateCTags<CR>
 
+" Toggle folds with Spacebar
+nnoremap <Space> za
+
+" Fuzzy-Finder
+nnoremap <Leader>ff :Files
+nnoremap <Leader>fg :GFiles
+nnoremap <Leader>fb :Buffers
+nnoremap <Leader>ft :Tags
+nnoremap <Leader>fm :Marks
+nnoremap <Leader>fc :Commands
+nnoremap <Leader>fh :History:
+nnoremap <Leader>fs :History/
 
 "################################################################################
 " COMMANDS

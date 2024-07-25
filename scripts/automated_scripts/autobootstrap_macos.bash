@@ -33,6 +33,9 @@ $AUTOSCRIPT_DIR/autoconfig_virtualenv.bash
 # Install oh-my-zsh
 $AUTOSCRIPT_DIR/autoinstall_ohmyzsh.bash
 
+# Install node
+$AUTOSCRIPT_DIR/autoinstall_node.bash
+
 # Install Neovim
 $AUTOSCRIPT_DIR/autoinstall_neovim.bash
 

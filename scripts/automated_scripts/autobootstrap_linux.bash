@@ -40,6 +40,9 @@ $AUTOSCRIPT_DIR/autoinstall_uctags.bash
 # Install latest treesitter
 $AUTOSCRIPT_DIR/autoinstall_treesitter.bash
 
+# Install node
+$AUTOSCRIPT_DIR/autoinstall_node.bash
+
 # Install oh-my-zsh
 $AUTOSCRIPT_DIR/autoinstall_ohmyzsh.bash
 
