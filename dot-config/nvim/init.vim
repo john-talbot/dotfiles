@@ -140,21 +140,29 @@ set foldlevel=99 " Open buffer with all folds expanded
 set foldnestmax=3
 set foldminlines=5
 
+" Enable folding by treesitter
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+
 
 "################################################################################
-" VARIABLES
+" CONFIGURATION VARIABLES
 "################################################################################
-""" Black
+""" BLACK
 " Don't install black automatically with virtualenv
 let g:black_use_virtualenv = 0
 
+""" CUSTOM PYTHON AUTOFORMATTING
 " Enable black formatting on save
 let g:black_format_on_save = 1
 
+" Enable isort on save
+let g:isort_format_on_save = 1
 
 "################################################################################
 " KEYBINDINGS
 "################################################################################
+""" NORMAL MODE
 " Keybind Ctrl-l to call nohlsearch as well as redraw screen
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 
@@ -163,20 +171,24 @@ tnoremap <Esc> <C-\><C-n>
 tnoremap <C-v><Esc> <Esc>
 
 " Generate Ctags easily
-nnoremap <Leader>c :GenerateCTags<CR>
+nnoremap <Leader>t :GenerateCTags<CR>
 
 " Toggle folds with Spacebar
 nnoremap <Space> za
 
+" Close current window
+nnoremap <Leader>c :close<CR>
+ 
 " Fuzzy-Finder
-nnoremap <Leader>ff :Files
-nnoremap <Leader>fg :GFiles
-nnoremap <Leader>fb :Buffers
-nnoremap <Leader>ft :Tags
-nnoremap <Leader>fm :Marks
-nnoremap <Leader>fc :Commands
-nnoremap <Leader>fh :History:
-nnoremap <Leader>fs :History/
+nnoremap <Leader>ff :Files<CR>
+nnoremap <Leader>fj :Files %:p:h<CR>
+nnoremap <Leader>fg :GFiles<CR>
+nnoremap <Leader>fb :Buffers<CR>
+nnoremap <Leader>ft :Tags<CR>
+nnoremap <Leader>fm :Marks<CR>
+nnoremap <Leader>fc :Commands<CR>
+nnoremap <Leader>fh :History:<CR>
+nnoremap <Leader>fs :History/<CR>
 
 "################################################################################
 " COMMANDS

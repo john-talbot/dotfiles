@@ -55,7 +55,7 @@ function! ISortIfEnabled()
     endif
 
     " Skip formatting if either variable is false
-    if !b:isort_format_on_save || !g:black_format_on_save
+    if !b:isort_format_on_save || !g:isort_format_on_save
         return
     endif
 
