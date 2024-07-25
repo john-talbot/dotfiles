@@ -27,7 +27,7 @@ else
 fi
 
 # Call the set-git-config.bash script
-$AUTOSCRIPT_DIR/autoconfig_git.bash
+# $AUTOSCRIPT_DIR/autoconfig_git.bash
 
 # ALL DONE!
 echo -e "\n\nBootstrapping complete!" | tee -a $LOGFILE
