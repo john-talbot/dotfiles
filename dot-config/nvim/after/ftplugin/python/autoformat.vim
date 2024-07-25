@@ -106,7 +106,7 @@ function! BlackIfEnabled()
 
     if CheckBlack() == 1
         " Execute black command to format
-        execute 'Black'
+        silent execute 'Black'
     else
         " Show warning that black isn't installed on first run
         if g:black_warning_shown == 0
