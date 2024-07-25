@@ -25,7 +25,7 @@ dot-zshrc-per-machine
 dot-zshenv-per-machine
 
 # Installation logs
-scripts/install.log
+**/*.log
 
 # Tags
 tags
