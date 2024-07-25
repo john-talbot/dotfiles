@@ -13,6 +13,9 @@ call minpac#add('junegunn/fzf', {'dir': "$HOME/.local/bin"})
 call minpac#add('junegunn/fzf.vim')
 call minpac#add('nvim-treesitter/nvim-treesitter', {'do': 'TSUpdate'})
 
+" Python
+call minpac#add('tmhedberg/SimpylFold')
+
 " Language server support
 " call minpac#add('neovim/nvim-lspconfig')
 " call minpac#add('williamboman/mason.nvim')
