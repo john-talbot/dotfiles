@@ -39,18 +39,21 @@ require'nvim-treesitter.configs'.setup {
             ["class.method"] = "Function",
         },
     },
+    incremental_selection = {
+        enable = true,
+        keymaps = {
+            init_selection = "gnn",    -- Initialize selection
+            node_incremental = "grn",  -- Increment to the upper named parent
+            scope_incremental = "grc", -- Increment to the upper scope (as defined in locals.scm)
+            node_decremental = "grm",  -- Decrement to the previous node
+        },
+    },
 
     indent = {
-        enable = true
+        enable = false,
     },
 
     fold = {
         enable = true,
-        disable = {},  -- List of languages you want to disable folding for
     },
 }
-
--- Enable folding using treesitter
-vim.o.foldmethod = 'expr'
-vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
-

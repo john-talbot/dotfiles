@@ -32,11 +32,7 @@ endfunction
 
 " Function to generate ctags for the current project
 function! s:CTagsGenerate()
-    if s:CTagsNotFileBuffer()
-        let base_path = s:CTagsCurrentPath()
-    else
-        let base_path = s:CTagsFileBufferPath() 
-    endif
+    let base_path = s:CTagsCurrentPath()
 
     if s:CTagsIsGitRepo(base_path)
         let ctag_path = s:CTagsGitRoot(base_path)
