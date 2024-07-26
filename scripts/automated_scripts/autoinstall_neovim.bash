@@ -11,23 +11,25 @@ TEMP_DIR="$HOME/neovim_temp"
 mkdir -p $TEMP_DIR && cd $TEMP_DIR
 
 # Run main script based on OS detected
-if grep -q Raspberry /proc/cpuinfo; then
-    # Neovim doesn't have nightly build for linux-arm64 at this point so build it from source
-    rm -rf /opt/neovim >> $LOGFILE
-    sudo apt-get install -y -q ninja-build gettext cmake unzip curl build-essential >> $LOGFILE
-    git clone --depth 1 -b nightly https://github.com/neovim/neovim.git >> $LOGFILE 2>&1
-    cd neovim
-    make -j$(nproc) CMAKE_BUILD_TYPE=Release >> $LOGFILE
-    sudo make CMAKE_INSTALL_PREFIX=/opt/neovim install >> $LOGFILE
 
-elif [[ "${OS}" == "Linux" ]]; then
-    # For now we need the prerelease version (Neovim 0.11.0), we'll change this
-    # back to `latest` once this version is stabilized
-    # curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz >> $LOGFILE
-    rm -rf /opt/neovim >> $LOGFILE
-    curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz >> $LOGFILE 2>&1
-    tar -C /opt -xf nvim-linux64.tar.gz >> $LOGFILE
-    mv /opt/nvim-linux64 /opt/neovim
+if [[ "${OS}" == "Linux" ]]; then
+    if grep -q Raspberry /proc/cpuinfo; then
+        # Neovim doesn't have nightly build for linux-arm64 at this point so build it from source
+        rm -rf /opt/neovim >> $LOGFILE
+        sudo apt-get install -y -q ninja-build gettext cmake unzip curl build-essential >> $LOGFILE
+        git clone --depth 1 -b nightly https://github.com/neovim/neovim.git >> $LOGFILE 2>&1
+        cd neovim
+        make -j$(nproc) CMAKE_BUILD_TYPE=Release >> $LOGFILE
+        sudo make CMAKE_INSTALL_PREFIX=/opt/neovim install >> $LOGFILE
+    else
+        # For now we need the prerelease version (Neovim 0.11.0), we'll change this
+        # back to `latest` once this version is stabilized
+        # curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz >> $LOGFILE
+        rm -rf /opt/neovim >> $LOGFILE
+        curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz >> $LOGFILE 2>&1
+        tar -C /opt -xf nvim-linux64.tar.gz >> $LOGFILE
+        mv /opt/nvim-linux64 /opt/neovim
+    fi
 
 elif [[ "${OS}" == "Darwin" ]]; then
     sudo rm -rf /opt/neovim >> $LOGFILE
