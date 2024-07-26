@@ -58,7 +58,7 @@ else
     echo "Git user.email is already set to '$email_set'" | tee -a $LOGFILE
 fi
 
-git config --global init.templatedir '~/.git_template'
+git config --global init.templatedir '~/.git-template'
 git config --global pull.rebase false
 
 echo "Done!" | tee -a $LOGFILE
