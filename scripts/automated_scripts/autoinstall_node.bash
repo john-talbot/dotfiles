@@ -12,7 +12,8 @@ touch "$HOME/.zshrc-per-machine"
 curl -sSo- "$URL" | PROFILE="$HOME/.zshrc-per-machine" bash >> $LOGFILE 2>&1
 
 NVM_DIR="$HOME/.nvm"
-. "$NVM_DIR/nvm.sh"
+source "$NVM_DIR/nvm.sh"
+
 nvm install node >> $LOGFILE 2>&1
 
 echo "Done!" | tee -a $LOGFILE
