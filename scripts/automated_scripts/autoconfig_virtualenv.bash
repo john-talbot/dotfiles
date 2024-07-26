@@ -16,4 +16,10 @@ cat $AUTOSCRIPT_DIR/python_packages.txt | xargs python3 -m pip install --upgrade
 # Deactivate virtualenv
 deactivate
 
+# Automatically load base_venv on shell startup
+touch $HOME/.zshrc-per-machine
+echo "### Python Virtualenv" >> "$HOME/.zshrc-per-machine"
+echo 'source $HOME/base_venv/bin/activate' >> "$HOME/.zshrc-per-machine"
+echo "" >> "$HOME/.zshrc-per-machine"
+
 echo "Done!" | tee -a $LOGFILE
