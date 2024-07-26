@@ -11,6 +11,7 @@ dot-fonts/.uuid
 dot-vim/pack/minpac
 dot-vim/.netrwhist
 Session.vim
+.nvimlog
 
 # Neovim plugins and temp files
 dot-config/nvim/pack/minpac
