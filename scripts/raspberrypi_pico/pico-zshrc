@@ -16,7 +16,7 @@ function pico_minicom() {
 # Custom completion function for pico_flash
 _pico_flash_completion() {
     local selected_file
-    selected_file=$(find . -name '*.elf' 2> /dev/null | fzf --select-1 --exit-0)
+    selected_file=$(rg --files --no-ignore -g '*.elf' -g '!*sdk*' 2> /dev/null | fzf --select-1 --exit-0)
     if [[ -n $selected_file ]]; then
         compadd "$selected_file"
     fi
