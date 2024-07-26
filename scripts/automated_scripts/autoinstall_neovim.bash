@@ -19,8 +19,12 @@ if [[ "${OS}" == "Linux" ]]; then
         sudo apt-get install -y -q ninja-build gettext cmake unzip curl build-essential >> $LOGFILE
         git clone --depth 1 -b nightly https://github.com/neovim/neovim.git >> $LOGFILE 2>&1
         cd neovim
-        make -j$(nproc) CMAKE_BUILD_TYPE=Release >> $LOGFILE
-        sudo make CMAKE_INSTALL_PREFIX=/opt/neovim install >> $LOGFILE
+
+        make_args='CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=/opt/neovim'
+        make $make_args >> $LOGFILE
+        sudo make $make_args install >> $LOGFILE
+
+        sudo rm -rf "$HOME/.local/share/nvim" "$HOME/.local/state/nvim" >> $LOGFILE 2>&1 # These seem to cause problems initially on raspi
     else
         # For now we need the prerelease version (Neovim 0.11.0), we'll change this
         # back to `latest` once this version is stabilized

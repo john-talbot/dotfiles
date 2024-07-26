@@ -3,16 +3,17 @@
 # Terminate script immediately on any error
 set -e
 
-# Set CREATE_VENV to true by default -- disable in docker builds
-: ${CREATE_VENV:=1}
-
 export OS="$(uname)"
-
 export SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 export DOTFILE_DIR="$(dirname $SCRIPT_DIR)"
 export AUTOSCRIPT_DIR="$SCRIPT_DIR/automated_scripts"
 
-export LOGFILE="$SCRIPT_DIR/install.log"
+# Set CREATE_VENV to true by default -- disable in docker builds
+: ${CREATE_VENV:=1}
+
+# Set LOGFILE to default value
+: ${LOGFILE:="$SCRIPT_DIR/install.log"}
+export LOGFILE
 
 # Empty logfile
 cat /dev/null >| $LOGFILE
