@@ -159,6 +159,11 @@ let g:black_format_on_save = 1
 " Enable isort on save
 let g:isort_format_on_save = 1
 
+""" Fuzzy Finder
+" Pop up fzf-vim in a bottom split window
+let g:fzf_layout = { 'down': '~40%' }
+
+
 "################################################################################
 " KEYBINDINGS
 "################################################################################
@@ -189,6 +194,7 @@ nnoremap <Leader>fm :Marks<CR>
 nnoremap <Leader>fc :Commands<CR>
 nnoremap <Leader>fh :History:<CR>
 nnoremap <Leader>fs :History/<CR>
+
 
 "################################################################################
 " COMMANDS
