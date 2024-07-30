@@ -10,7 +10,7 @@ URL="https://raw.githubusercontent.com/nvm-sh/nvm/$tag_name/install.sh"
 
 curl -sSo- "$URL" | PROFILE=/dev/null bash >> $LOGFILE 2>&1
 
-NVM_DIR="$HOME/.nvm"
+export NVM_DIR="$HOME/.nvm"
 source "$NVM_DIR/nvm.sh"
 
 nvm install node >> $LOGFILE 2>&1
