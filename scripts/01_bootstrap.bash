@@ -34,8 +34,7 @@ fi
 $AUTOSCRIPT_DIR/autoinstall_ohmyzsh.bash
 
 # Install node
-$AUTOSCRIPT_DIR/autoinstall_node.bash
-source "$NVM_DIR/nvm.sh"
+source "$AUTOSCRIPT_DIR/autoinstall_node.bash"
 
 # Only create a virtualenv if 
 if [ "$CREATE_VENV" -ne 0 ]; then
