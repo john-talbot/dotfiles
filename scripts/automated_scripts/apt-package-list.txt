@@ -18,6 +18,7 @@ qalc
 ranger
 ripgrep
 ssh
+sudo
 tmux
 tree
 unclutter
