@@ -97,6 +97,15 @@ if command -v nvim >/dev/null 2>&1; then
     nvim_available=1
 fi
 
+# Disallow nested nvim with nvr
+if [ -n "$NVIM" ]; then
+    if [ -x "$(command -v nvr)" ]; then
+        alias nvim=nvr
+    else
+        alias nvim='echo "Nesting NVIM Disallowed!"'
+    fi
+fi
+
 
 ########################################################################################
 # ENVIRONMENT Variables

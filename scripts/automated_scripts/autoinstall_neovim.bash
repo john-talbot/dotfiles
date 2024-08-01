@@ -23,6 +23,7 @@ if [[ "${OS}" == "Linux" ]]; then
         make_args='CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=/opt/neovim'
         make $make_args >> $LOGFILE
         sudo make $make_args install >> $LOGFILE
+        sudo python3 -m pip install neovim neovim-remote
 
         sudo rm -rf "$HOME/.local/share/nvim" "$HOME/.local/state/nvim" >> $LOGFILE 2>&1 # These seem to cause problems initially on raspi
     else
@@ -33,6 +34,7 @@ if [[ "${OS}" == "Linux" ]]; then
         curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz >> $LOGFILE 2>&1
         tar -C /opt -xf nvim-linux64.tar.gz >> $LOGFILE
         mv /opt/nvim-linux64 /opt/neovim
+        python3 -m pip install neovim neovim-remote
     fi
 
 elif [[ "${OS}" == "Darwin" ]]; then
