@@ -45,7 +45,7 @@ fi
 
 # Stow dotfiles
 echo -n "Deploying dotfiles... " | tee -a $LOGFILE
-cd $DOTFILE_DIR && stow -R --target=$HOME --dotfiles .
+cd $DOTFILE_DIR && $HOME/.local/bin/stow -R --target=$HOME --dotfiles .
 echo "Done!" | tee -a $LOGFILE
 
 # Install all vim packages with minpac
