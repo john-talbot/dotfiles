@@ -205,6 +205,11 @@ augroup JTQuickFixGroup
     autocmd QuickFixCmdPost [^l]* nested cwindow
 augroup END
 
+" Set visual to use current nvim session
+if has('nvim') && executable('nvr')
+    let $VISUAL="nvr -cc tabedit --remote-wait +'set bufhidden=wipe'"
+endif
+
 
 "################################################################################
 " LUA INIT
