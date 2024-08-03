@@ -1,15 +1,3 @@
-" Function to call ctags in the given path
-function! s:CTagsCall(path)
-    execute 'cd ' . a:path
-    silent! execute '!ctags -R'
-    execute 'cd -'
-endfunction
-
-" Function to check if the buffer is empty or unnamed
-function! s:CTagsNotFileBuffer()
-    return (line('$') == 1 && getline(1) == '') || expand('%') == ''
-endfunction
-
 " Function to get the path of the current file buffer
 function! s:CTagsFileBufferPath()
     return expand('%:p:h')
@@ -30,8 +18,26 @@ function! s:CTagsGitRoot(path)
     return system('git -C ' . a:path . ' rev-parse --sq --show-toplevel')
 endfunction
 
-" Function to generate ctags for the current project
-function! s:CTagsGenerate()
+" Function to call ctags in the given path
+function! s:CTagsCall(args, paths)
+    silent! execute '!ctags ' . join(args, ' ') . join(paths, ' ')
+endfunction
+
+" Function to parse arguments to ctags
+function! s:CTagsArguments()
+    if exists('g:ctags_arguments')
+        return g:ctags_arguments
+    else
+        return ['-R']
+    endif
+endfunction
+
+" Function to parse paths to ctags
+function! s:CTagsPaths()
+    if exists('g:ctags_paths')
+        return g:ctags_paths
+    endif
+
     if s:CTagsNotFileBuffer()
         let base_path = s:CTagsCurrentPath()
     else
@@ -39,14 +45,26 @@ function! s:CTagsGenerate()
     endif
 
     if s:CTagsIsGitRepo(base_path)
-        let ctag_path = s:CTagsGitRoot(base_path)
+        let ctag_paths = [s:CTagsGitRoot(base_path)]
     else
-        let ctag_path = base_path
+        let ctag_paths = [base_path]
     endif
 
-    echo 'Generating CTags at ' . ctag_path
-    echom 'Generating CTags at ' . ctag_path
-    call s:CTagsCall(ctag_path)
+    return ctag_paths
+endfunction
+
+" Function to check if the buffer is empty or unnamed
+function! s:CTagsNotFileBuffer()
+    return (line('$') == 1 && getline(1) == '') || expand('%') == ''
+endfunction
+
+" Function to generate ctags for the current project
+function! s:CTagsGenerate()
+    let ctag_args = s:CTagsArguments()
+    let ctag_paths = s:CTagsPaths()
+    echo 'Generating CTags'
+    echom 'Generating CTags'
+    call s:CTagsCall(ctag_args, ctag_path)
 endfunction
 
 " Expose the generate function to be called externally
