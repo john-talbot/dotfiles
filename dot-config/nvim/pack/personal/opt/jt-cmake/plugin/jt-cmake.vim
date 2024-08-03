@@ -1,6 +1,10 @@
+"Load cmake
 packadd vim-cmake
 
-"CMake mappings
+" Options
+let g:cmake_jump_on_error=0
+
+"CMake keymappings
 nnoremap <Leader>cg <Plug>(CMakeGenerate)
 nnoremap <Leader>cb <Plug>(CMakeBuild)
 nnoremap <Leader>ci <Plug>(CMakeInstall)
