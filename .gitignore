@@ -14,12 +14,15 @@ Session.vim
 .nvimlog
 
 # Don't track config files
-dot-config
+dot-config/1Password
+dot-config/gh
+dot-config/gh-copilot
+dot-config/github-copilot
+dot-config/op
 
-# Except those specified below
-!dot-config/nvim
-!dot-config/ranger
-!dot-config/tmux-powerline
+# Neovim plugins and temp files
+dot-config/nvim/pack/minpac
+dot-config/nvim/.netrwhist
 
 # Machine specific config
 dot-zshrc-per-machine
