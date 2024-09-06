@@ -13,13 +13,13 @@ dot-vim/.netrwhist
 Session.vim
 .nvimlog
 
-# Neovim plugins and temp files
-dot-config/nvim/pack/minpac
-dot-config/nvim/.netrwhist
+# Don't track config files
+dot-config
 
-# Sensitive config files
-dot-config/1Password/*
-dot-config/op/*
+# Except those specified below
+!dot-config/nvim
+!dot-config/ranger
+!dot-config/tmux-powerline
 
 # Machine specific config
 dot-zshrc-per-machine
