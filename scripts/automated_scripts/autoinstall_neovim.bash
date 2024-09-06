@@ -11,7 +11,6 @@ TEMP_DIR="$HOME/neovim_temp"
 mkdir -p $TEMP_DIR && cd $TEMP_DIR
 
 # Run main script based on OS detected
-
 if [[ "${OS}" == "Linux" ]]; then
     if grep -q Raspberry /proc/cpuinfo; then
         # Neovim doesn't have nightly build for linux-arm64 at this point so build it from source
@@ -23,7 +22,10 @@ if [[ "${OS}" == "Linux" ]]; then
         make_args='CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=/opt/neovim'
         make $make_args >> $LOGFILE
         sudo make $make_args install >> $LOGFILE
-        sudo python3 -m pip install neovim neovim-remote
+
+        if [ "$CREATE_VENV" -ne 0 ]; then
+            sudo python3 -m pip install --user neovim neovim-remote
+        else
 
         sudo rm -rf "$HOME/.local/share/nvim" "$HOME/.local/state/nvim" >> $LOGFILE 2>&1 # These seem to cause problems initially on raspi
     else
