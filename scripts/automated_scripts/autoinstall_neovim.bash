@@ -25,7 +25,7 @@ if [[ "${OS}" == "Linux" ]]; then
 
         if [ "$CREATE_VENV" -ne 0 ]; then
             sudo python3 -m pip install --user neovim neovim-remote
-        else
+        fi
 
         sudo rm -rf "$HOME/.local/share/nvim" "$HOME/.local/state/nvim" >> $LOGFILE 2>&1 # These seem to cause problems initially on raspi
     else
