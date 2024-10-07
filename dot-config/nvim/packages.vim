@@ -26,3 +26,6 @@ call minpac#add('cdelledonne/vim-cmake', {'type': 'opt'})
 " Colorschemes
 call minpac#add('vim-airline/vim-airline')
 call minpac#add('tomasiser/vim-code-dark')
+
+" Markdown
+call minpac#add('iamcco/markdown-preview.nvim', {'do': 'packloadall! | call mkdp#util#install()'})
