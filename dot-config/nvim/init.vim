@@ -186,7 +186,8 @@ nnoremap <Leader>c :close<CR>
  
 " Fuzzy-Finder
 nnoremap <Leader>ff :Files<CR>
-nnoremap <Leader>fj :Files %:p:h<CR>
+nnoremap <Leader>fd :Files %:p:h<CR>
+nnoremap <Leader>fa :AllFiles<CR>
 nnoremap <Leader>fg :GFiles<CR>
 nnoremap <Leader>fb :Buffers<CR>
 nnoremap <Leader>ft :Tags<CR>
@@ -209,6 +210,10 @@ augroup END
 if has('nvim') && executable('nvr')
     let $VISUAL="nvr -cc tabedit --remote-wait +'set bufhidden=wipe'"
 endif
+
+" Fuzzy Finder custom command to search files including gitignored files
+command! -bang -nargs=* AllFiles
+  \ call fzf#vim#files('', fzf#vim#with_preview({'source': 'rg --files -u -g "!**/install/**/*" -g "!**/log/**/*" -g "!**/build/**/*" -g "!**/*.pyc" '}), <bang>1)
 
 
 "################################################################################
