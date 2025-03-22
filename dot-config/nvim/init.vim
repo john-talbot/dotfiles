@@ -212,8 +212,20 @@ if has('nvim') && executable('nvr')
 endif
 
 " Fuzzy Finder custom command to search files including gitignored files
+function! s:GetRgSource()
+    let exclude_patterns = [
+        \ "!**/install/**/*",
+        \ "!**/log/**/*",
+        \ "!**/build*/**/*",
+        \ "!**/external/**/*",
+        \ "!**/doc/**/*",
+        \ "!**/*.pyc"
+        \ ]
+    return 'rg --files -u ' . join(map(exclude_patterns, '"-g " . v:val'), " ")
+endfunction
+
 command! -bang -nargs=* AllFiles
-  \ call fzf#vim#files('', fzf#vim#with_preview({'source': 'rg --files -u -g "!**/install/**/*" -g "!**/log/**/*" -g "!**/build/**/*" -g "!**/*.pyc" '}), <bang>1)
+    \ call fzf#vim#files('', fzf#vim#with_preview({'source': s:GetRgSource()}), <bang>1)
 
 
 "################################################################################
