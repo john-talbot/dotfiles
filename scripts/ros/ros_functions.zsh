@@ -14,7 +14,7 @@ function rossrc() {
 }
 
 function cb() {
-    colcon build --symlink-install
+    python -m colcon build --symlink-install
 }
 
 function ccl() {
