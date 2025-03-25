@@ -61,7 +61,7 @@ plugins=(
     docker
     docker-compose
     gh
-    git 
+    gitfast
     git-lfs
     macos
     poetry
@@ -146,6 +146,7 @@ alias gc="git commit -m"
 alias ga="git add"
 alias gst="git status"
 alias gch="git checkout"
+alias gsw="git switch"
 alias gu="git remote update --prune origin"
 alias gr="git remote"
 alias gb="git branch"
