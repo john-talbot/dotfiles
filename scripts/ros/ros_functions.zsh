@@ -1,3 +1,7 @@
+# ROS Environment Setup for local development
+# export ROS_LOCALHOST_ONLY=1
+# export ROS_DOMAIN_ID=54
+
 function rossrc() {
     source /opt/ros/humble/setup.zsh
 
