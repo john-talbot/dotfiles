@@ -68,8 +68,8 @@ function! ClangIfEnabled()
     endif
 
     " Define the default style with 4-space indentation
-    let l:default_style = '{BasedOnStyle: LLVM, IndentWidth: 4}'
-
+    let l:default_style = '{BasedOnStyle: LLVM}'
+    
     " Check if a .clang-format file exists
     if filereadable('.clang-format')
         " Use the configuration from the .clang-format file
