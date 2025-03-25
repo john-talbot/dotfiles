@@ -196,6 +196,9 @@ nnoremap <Leader>fc :Commands<CR>
 nnoremap <Leader>fh :History:<CR>
 nnoremap <Leader>fs :History/<CR>
 
+" Pre-commit to quickfix
+nnoremap <Leader>qf :PrecommitQf<CR>
+
 
 "################################################################################
 " COMMANDS
