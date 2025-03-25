@@ -61,7 +61,7 @@ function! ISortIfEnabled()
 
     if CheckISort() == 1
         " Execute isort command to format
-        silent! % !python -m isort -
+        silent! % !python -m isort --profile black -
     else
         " Show warning that isort isn't installed on first run
         if g:isort_warning_shown == 0
