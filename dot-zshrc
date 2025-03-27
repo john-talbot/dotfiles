@@ -122,10 +122,38 @@ fi
 
 export TERM=xterm-256color
 
+# History
+export HISTSIZE=50000
+export SAVEHIST=50000
+
 
 ### RANGER
 # Do not source default ranger config to make sure user config is used
 export RANGER_LOAD_DEFAULT_RC=false
+
+
+### ENVIRONMENT RESET
+# Save the clean environment variables
+export CLEAN_AMENT_PREFIX_PATH="${AMENT_PREFIX_PATH:-}"
+export CLEAN_COLCON_PREFIX_PATH="${COLCON_PREFIX_PATH:-}"
+export CLEAN_ROS_PACKAGE_PATH="${ROS_PACKAGE_PATH:-}"
+export CLEAN_LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}"
+export CLEAN_PYTHONPATH="${PYTHONPATH:-}"
+export CLEAN_PATH="${PATH:-}"
+
+# Function to reset environment variables to the clean state
+clearp() {
+    export AMENT_PREFIX_PATH="$CLEAN_AMENT_PREFIX_PATH"
+    export COLCON_PREFIX_PATH="$CLEAN_COLCON_PREFIX_PATH"
+    export ROS_PACKAGE_PATH="$CLEAN_ROS_PACKAGE_PATH"
+    export LD_LIBRARY_PATH="$CLEAN_LD_LIBRARY_PATH"
+    export PYTHONPATH="$CLEAN_PYTHONPATH"
+    export PATH="$CLEAN_PATH"
+
+    echo "The following environment variables have been reset:
+    AMENT_PREFIX_PATH, COLCON_PREFIX_PATH, ROS_PACKAGE_PATH, LD_LIBRARY_PATH,
+    PYTHONPATH & PATH."
+}
 
 
 ################################################################################
@@ -165,6 +193,7 @@ alias tmuxa="tmux attach -d -t"
 ### PYTHON
 alias python="python3"
 alias pip="python3 -m pip"
+alias activate="source .venv/bin/activate"
 
 ### Always open nvim if available
 if [[ $nvim_available -eq 1 ]]; then
