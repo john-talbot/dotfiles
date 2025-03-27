@@ -1,0 +1,100 @@
+# =============================================================================
+#
+# DESCRIPTION:
+#
+#   Set the bash according to:
+#    * the active virtualenv
+#    * the branch of the current git repository
+#
+# USAGE:
+#
+#   1. Save this file as ~/.bash_aliases
+#   2. Add the following line to the end of your ~/.bashrc if not already there:
+#        if [ -f ~/.bash_aliases ]; then
+#            . ~/.bash_aliases
+#        fi
+#
+# LINEAGE:
+#
+#   Based on work by woods
+#
+#   https://gist.github.com/31967
+# =============================================================================
+
+# The various escape codes that we can use to color our prompt.
+        RED="\[\033[0;31m\]"
+     YELLOW="\[\033[1;33m\]"
+      GREEN='\[\033[0;32m\]'
+       BLUE="\[\033[1;34m\]"
+     PURPLE="\[\033[1;35m\]"
+  LIGHT_RED="\[\033[1;31m\]"
+LIGHT_GREEN="\[\033[1;32m\]"
+      WHITE="\[\033[1;37m\]"
+ LIGHT_GRAY="\[\033[1;37m\]"
+ END_COLOR='\[\e[0m\]'
+
+
+# Determine the branch information for this git repository.
+function parse_git_branch() {
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+# Set the bash prompt variable.
+if [[ -n $SSH_CONNECTION ]] ; then 
+    export PS1='\[\033[01;35m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[0;32m\]`parse_git_branch`\[\e[0m\]
+$ '
+else
+ export PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[0;32m\]`parse_git_branch`\[\e[0m\]
+$ '
+
+fi
+
+# ============================================================================
+# ROS related
+export ROS_LOCALHOST_ONLY=1
+export ROS_DOMAIN_ID=54
+
+alias ros='source /opt/ros/humble/setup.bash'
+alias rmros='rm -rf build/ install/ log/'
+alias killros='sudo killall -9 ros2'
+alias b='colcon build'
+alias bs='colcon build --symlink-install'
+
+# ============================================================================
+# logging related
+alias setup_logging='cd ~/logging_ws/; activate; source install/setup.bash; python src/platform_logging/src/platform_logging/rpc/logging_service.py humble'
+
+# Environment reset (undo workspace source-ing)
+# Save the clean environment variables
+export CLEAN_AMENT_PREFIX_PATH="${AMENT_PREFIX_PATH:-}"
+export CLEAN_COLCON_PREFIX_PATH="${COLCON_PREFIX_PATH:-}"
+export CLEAN_ROS_PACKAGE_PATH="${ROS_PACKAGE_PATH:-}"
+export CLEAN_LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}"
+export CLEAN_PYTHONPATH="${PYTHONPATH:-}"
+export CLEAN_PATH="${PATH:-}"
+
+# Function to reset environment variables to the clean state
+clearp() {
+    export AMENT_PREFIX_PATH="$CLEAN_AMENT_PREFIX_PATH"
+    export COLCON_PREFIX_PATH="$CLEAN_COLCON_PREFIX_PATH"
+    export ROS_PACKAGE_PATH="$CLEAN_ROS_PACKAGE_PATH"
+    export LD_LIBRARY_PATH="$CLEAN_LD_LIBRARY_PATH"
+    export PYTHONPATH="$CLEAN_PYTHONPATH"
+    export PATH="$CLEAN_PATH"
+
+    echo "The following environment variables have been reset: AMENT_PREFIX_PATH, COLCON_PREFIX_PATH, ROS_PACKAGE_PATH, LD_LIBRARY_PATH, PYTHONPATH & PATH."
+}
+
+# =============================================================================
+# UDP stuff
+alias start_udp='ros; source ~/udp/install/setup.bash; ros2 launch udp_handler unified_udp_launch.py'
+alias clean_udp='pkill -f udp; fastdds shm clean'
+
+# =============================================================================
+# MISCELLANEOUS alias and exports to enable git operations. 
+
+alias activate='source .venv/bin/activate'
+
+alias govpn='globalprotect connect -p portal.gp.ext.tri.global'
+alias vpnstat='globalprotect show --status'
+
