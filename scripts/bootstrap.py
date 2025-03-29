@@ -27,15 +27,15 @@ async def main(timezone: str) -> None:
 
     if os_type == OS.LINUX:
         logger.info("Detected Linux. Proceeding with Linux-specific setup.")
-        linux_bootstrap.bootstrap(os_type, timezone, APT_PACKAGE_PATH, logger)
+        await linux_bootstrap.bootstrap(os_type, timezone, APT_PACKAGE_PATH, logger)
     elif os_type == OS.RASPIOS:
         logger.info("Detected Raspberry Pi OS. Proceeding with Linux (raspi) setup.")
-        linux_bootstrap.bootstrap(os_type, timezone, APT_PACKAGE_PATH, logger)
+        await linux_bootstrap.bootstrap(os_type, timezone, APT_PACKAGE_PATH, logger)
     elif platform.system() == "Darwin":
         logger.info("Detected macOS. Proceeding with macOS-specific setup.")
     else:
-        logger.warning("This script is not supported on this operating system.")
-        return
+        logger.error("This script is not supported on this operating system.")
+        sys.exit(1)
 
 
 def setup_logging() -> logging.Logger:
