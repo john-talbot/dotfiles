@@ -6,6 +6,8 @@ from pathlib import Path
 
 import aiofiles
 import aiohttp
+from python_bootstrap.defines import OS
+
 from python_bootstrap import (
     cmd_with_logs,
     install_fzf,
@@ -14,7 +16,6 @@ from python_bootstrap import (
     install_treesitter,
     install_uctags,
 )
-from python_bootstrap.defines import OS
 
 TMP_DIR = Path(__file__).parent.resolve().joinpath("tmp")
 
@@ -26,7 +27,7 @@ LOCALE = "en_US.UTF-8"
 LANGUAGE = "en_US:en"
 
 
-def bootstrap_linux(
+def bootstrap(
     os_type: OS, timezone: str, apt_file_path: Path, logger: logging.Logger
 ) -> None:
     """
