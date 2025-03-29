@@ -1,40 +1,33 @@
 #!/usr/bin/env python3
 
 import argparse
-import logging
-import os
 import platform
 import shutil
-import subprocess
 import sys
 from pathlib import Path
 
-from rich.logging import RichHandler
+MY_DIR = Path(__file__).parent.resolve()
 
-BOOTSTRAP_PATH = Path(__file__).parent.resolve().joinpath("python_bootstrap")
+BOOTSTRAP_PATH = MY_DIR.joinpath("python_bootstrap")
 sys.path.insert(0, str(BOOTSTRAP_PATH))
 from python_bootstrap.utilities import OS  # noqa E402
 
 from python_bootstrap import linux_bootstrap  # noqa E402
+from python_bootstrap import utilities  # noqa E402
 
-TMP_DIR = Path(__file__).parent.resolve().joinpath("tmp")
-CONF_PATH = Path(__file__).parent.resolve().joinpath("conf")
-PROC_PATH = Path("/proc/cpuinfo")
+TMP_DIR = MY_DIR.joinpath("tmp")
+LOG_PATH = MY_DIR.joinpath("bootstrap.log")
 
+CONF_PATH = MY_DIR.joinpath("conf")
 APT_PACKAGE_PATH = CONF_PATH.joinpath("apt_packages.txt")
+
+PROC_PATH = Path("/proc/cpuinfo")
 
 
 def main(timezone: str) -> None:
-    logger = setup_logging()
-
-    use_sudo = True
-    if os.geteuid() == 0:
-        logger.info("Detected root user.")
-        use_sudo = False
-    else:
-        subprocess.run(["sudo", "-v"], text=True, check=True)
-
-    os_type = get_os_type()
+    logger = utilities.setup_logging("bootstrap_logger", LOG_PATH)
+    use_sudo = utilities.check_sudo(logger)
+    os_type = utilities.get_os_type()
 
     TMP_DIR.mkdir(exist_ok=True)
 
@@ -58,44 +51,6 @@ def main(timezone: str) -> None:
 
     shutil.rmtree(TMP_DIR)
     sys.exit(out_code)
-
-
-def setup_logging() -> logging.Logger:
-    logger = logging.getLogger("bootstrap_logger")
-    logger.setLevel(logging.DEBUG)
-
-    console_handler = RichHandler(level=logging.INFO, rich_tracebacks=True)
-
-    file_handler = logging.FileHandler("bootstrap.log", mode="w")
-    file_handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
-    file_handler.setFormatter(formatter)
-
-    logger.addHandler(console_handler)
-    logger.addHandler(file_handler)
-
-    return logger
-
-
-def get_os_type() -> OS:
-    if platform.system() == "Linux" and is_raspberry_pi():
-        return OS.RASPIOS
-    elif platform.system() == "Linux":
-        return OS.LINUX
-    elif platform.system() == "Darwin":
-        return OS.MACOS
-    else:
-        return OS.UNSUPPORTED
-
-
-def is_raspberry_pi():
-    try:
-        with open("/proc/cpuinfo") as f:
-            return "Raspberry" in f.read()
-    except FileNotFoundError:
-        return False
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 import logging
+import shutil
 import sys
 from pathlib import Path
 
@@ -14,6 +15,27 @@ _CMAKE_BUILD_ARGS = [
     "CMAKE_INSTALL_PREFIX=/opt/neovim",
 ]
 
+_MY_DIR = Path(__file__).parent.resolve()
+_TMP_DIR = _MY_DIR.joinpath("tmp")
+_LOG_PATH = _MY_DIR.joinpath("bootstrap.log")
+
+
+def main() -> None:
+    logger = utilities.setup_logging("neovim_logger", _LOG_PATH)
+    os_type = utilities.get_os_type()
+
+    if os_type == OS.UNSUPPORTED:
+        logger.error("This script is not supported on this operating system.")
+        sys.exit(1)
+
+    use_sudo = utilities.get_use_sudo(logger)
+    _TMP_DIR.mkdir(exist_ok=True)
+
+    install(os_type, _TMP_DIR, use_sudo, logger)
+
+    shutil.rmtree(_TMP_DIR)
+    sys.exit(0)
+
 
 def install(os_type: OS, tmp_dir: Path, use_sudo: bool, logger: logging.Logger) -> None:
     logger.info("Installing neovim.")
@@ -23,15 +45,10 @@ def install(os_type: OS, tmp_dir: Path, use_sudo: bool, logger: logging.Logger) 
     dwn_dir = tmp_dir.joinpath("neovim")
 
     if os_type == OS.RASPIOS:
-        logging.debug("Installing neovim from source.")
         install_neovim_from_source(dwn_dir, use_sudo, logger)
-
     elif os_type == OS.LINUX:
-        logging.debug(f"Installing neovim from {dwn_dir}.")
         install_neovim_linux(dwn_dir, use_sudo, logger)
-
     elif os_type == OS.MACOS:
-        logging.debug(f"Installing neovim from {dwn_dir}.")
         install_neovim_macos(dwn_dir, use_sudo, logger)
 
     py_path = sys.executable
@@ -94,3 +111,7 @@ def install_neovim_from_build(
     utilities.run_cmd(["xattr", "-c", dwn_dir], False, logger)
     utilities.run_cmd(["tar", "-C", "/opt", "-xf", dwn_dir], use_sudo, logger)
     utilities.run_cmd(["mv", f"/opt/{dwn_dir.stem}", "/opt/neovim"], use_sudo, logger)
+
+
+if __name__ == "__main__":
+    main()
