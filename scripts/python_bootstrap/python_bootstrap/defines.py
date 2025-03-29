@@ -5,3 +5,4 @@ class OS(Enum):
     LINUX = auto()
     MACOS = auto()
     RASPIOS = auto()
+    UNSUPPORTED = auto()
