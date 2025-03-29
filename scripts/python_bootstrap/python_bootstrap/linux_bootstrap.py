@@ -249,7 +249,7 @@ def update_locale_file(
         logger.debug("No locale file found. Skipping.")
         return
 
-    sed_command = ["sed", "-i", f'"s/^#.*{locale}/{locale}/"', str(file_path)]
+    sed_command = ["sed", "-i", f"s/^#.*{locale}/{locale}/", str(file_path)]
     cmd_with_logs.run_cmd(sed_command, use_sudo, logger)
 
     logger.debug("Finished uncommenting locale")
