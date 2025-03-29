@@ -70,7 +70,7 @@ def install_neovim_from_source(
 
     out_path = path_to_zip.parent.joinpath("neovim_install")
     cmd_with_logs.run_cmd(
-        ["unzip", "-u", "-qq", path_to_zip, "-d", out_path], use_sudo, logger
+        ["unzip", "-u", "-q", "-j", path_to_zip, "-d", out_path], use_sudo, logger
     )
     cmd_with_logs.run_cmd(["make"] + _CMAKE_BUILD_ARGS, False, logger, cwd=out_path)
     cmd_with_logs.run_cmd(
