@@ -6,7 +6,14 @@ from pathlib import Path
 
 import aiofiles
 import aiohttp
-from python_bootstrap import cmd_with_logs, install_neovim, install_stow, install_uctags
+from python_bootstrap import (
+    cmd_with_logs,
+    install_fzf,
+    install_neovim,
+    install_stow,
+    install_treesitter,
+    install_uctags,
+)
 from python_bootstrap.defines import OS
 
 TMP_DIR = Path(__file__).parent.resolve().joinpath("tmp")
@@ -48,26 +55,24 @@ def bootstrap_linux(
 
     # Download all install files at once
     download_urls = {
-        "neovim": install_neovim.get_neovim_download_url(os_type, logger),
-        "stow": install_stow.get_stow_download_url(),
-        "uctags": install_uctags.get_uctags_download_url(),
+        "neovim": install_neovim.get_download_url(os_type, logger),
+        "stow": install_stow.get_download_url(),
+        "uctags": install_uctags.get_download_url(),
+        "treesitter": install_treesitter.get_download_url(logger),
+        "fzf": install_fzf.get_download_url(logger),
     }
 
     TMP_DIR.mkdir(exist_ok=True)
     install_files = await download_all_files(download_urls)
 
-    # neovim
-    install_neovim.install_neovim(install_files["neovim"], None, use_sudo, logger)
-    # stow
-    install_stow.install_stow(install_files["stow"], logger)
-    # uctags
-    install_uctags.install_uctags(install_files["uctags"], logger)
+    # Install packages
+    install_neovim.install(install_files["neovim"], None, use_sudo, logger)
+    install_stow.install(install_files["stow"], logger)
+    install_uctags.install(install_files["uctags"], logger)
+    install_treesitter.install(install_files["treesitter"], logger)
+    install_fzf.install(install_files["fzf"], logger)
 
-    # treesitter
-
-    # fzf
-
-    # Now install packages
+    # Cleanup downloads
     shutil.rmtree(TMP_DIR)
     rebuild_font_cache(logger)
 

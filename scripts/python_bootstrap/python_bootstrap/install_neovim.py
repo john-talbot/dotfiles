@@ -4,13 +4,13 @@ from pathlib import Path
 from python_bootstrap import cmd_with_logs
 from python_bootstrap.defines import OS
 
-CMAKE_BUILD_ARGS = [
+_CMAKE_BUILD_ARGS = [
     "CMAKE_BUILD_TYPE=Release",
     "CMAKE_INSTALL_PREFIX=/opt/neovim",
 ]
 
 
-DOWNLOAD_URLS = {
+_DOWNLOAD_URLS = {
     OS.LINUX: "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz",  # noqa E501
     OS.MACOS: "https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz",  # noqa E501
     OS.RASPIOS: "https://github.com/neovim/neovim/archive/refs/heads/master.zip",
@@ -18,11 +18,11 @@ DOWNLOAD_URLS = {
 
 
 def get_neovim_download_url(os_type: OS) -> tuple[str, str]:
-    url = DOWNLOAD_URLS.get(os_type, None)
+    url = _DOWNLOAD_URLS.get(os_type, None)
     return ("neovim", url)
 
 
-def install_neovim(
+def install(
     file_path: Path, venv_py_path: Path, use_sudo: bool, logger: logging.Logger
 ) -> None:
     logger.info("Installing neovim.")
@@ -70,13 +70,13 @@ def install_neovim_from_source(
 
     cmd_with_logs.run_cmd(["unzip", path_to_zip], use_sudo, logger)
     cmd_with_logs.run_cmd(
-        ["make"] + CMAKE_BUILD_ARGS,
+        ["make"] + _CMAKE_BUILD_ARGS,
         False,
         logger,
         cwd=path_to_zip.parent.joinpath(f"{path_to_zip.stem}"),
     )
     cmd_with_logs.run_cmd(
-        ["make"] + CMAKE_BUILD_ARGS + ["install"],
+        ["make"] + _CMAKE_BUILD_ARGS + ["install"],
         use_sudo,
         logger,
         cwd=path_to_zip.parent.joinpath(f"{path_to_zip.stem}"),
