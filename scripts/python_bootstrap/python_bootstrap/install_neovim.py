@@ -1,8 +1,9 @@
 import logging
 from pathlib import Path
 
-from python_bootstrap import cmd_with_logs
 from python_bootstrap.defines import OS
+
+from python_bootstrap import cmd_with_logs
 
 _CMAKE_BUILD_ARGS = [
     "CMAKE_BUILD_TYPE=Release",
@@ -17,7 +18,7 @@ _DOWNLOAD_URLS = {
 }
 
 
-def get_neovim_download_url(os_type: OS) -> tuple[str, str]:
+def get_download_url(os_type: OS) -> tuple[str, str]:
     url = _DOWNLOAD_URLS.get(os_type, None)
     return ("neovim", url)
 

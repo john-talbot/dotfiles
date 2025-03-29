@@ -6,14 +6,14 @@ from python_bootstrap import cmd_with_logs
 UCTAGS_INSTALL_DIR = Path.home().joinpath(".local")
 
 
-def get_uctags_download_url() -> tuple[str, str]:
+def get_download_url() -> tuple[str, str]:
     return (
         "uctags",
         "https://github.com/universal-ctags/ctags/archive/refs/heads/master.zip",
     )
 
 
-def install_uctags(file_path: Path, logger: logging.Logger) -> None:
+def install(file_path: Path, logger: logging.Logger) -> None:
     logger.info("Installing uctags.")
 
     out_path = file_path.parent.joinpath("uctags_install")
