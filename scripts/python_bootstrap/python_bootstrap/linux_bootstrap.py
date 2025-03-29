@@ -28,7 +28,11 @@ LANGUAGE = "en_US:en"
 
 
 async def bootstrap(
-    os_type: OS, timezone: str, apt_file_path: Path, logger: logging.Logger
+    os_type: OS,
+    timezone: str,
+    apt_file_path: Path,
+    use_sudo: bool,
+    logger: logging.Logger,
 ) -> None:
     """
     Bootstrap the Linux environment.
@@ -41,12 +45,7 @@ async def bootstrap(
         The logger to use for logging output.
 
     """
-    use_sudo = True
     os.environ["DEBIAN_FRONTEND"] = "noninteractive"
-
-    if os.geteuid() == 0:
-        logger.info("Detected root user.")
-        use_sudo = False
 
     set_timezone(timezone, use_sudo, logger)
     update_apt_packages(use_sudo, logger)

@@ -3,7 +3,9 @@
 import argparse
 import asyncio
 import logging
+import os
 import platform
+import subprocess
 import sys
 from pathlib import Path
 
@@ -23,14 +25,26 @@ APT_PACKAGE_PATH = CONF_PATH.joinpath("apt_packages.txt")
 
 async def main(timezone: str) -> None:
     logger = setup_logging()
+
+    use_sudo = True
+    if os.geteuid() == 0:
+        logger.info("Detected root user.")
+        use_sudo = False
+    else:
+        subprocess.run(["sudo", "-v"], text=True, check=True)
+
     os_type = get_os_type()
 
     if os_type == OS.LINUX:
         logger.info("Detected Linux. Proceeding with Linux-specific setup.")
-        await linux_bootstrap.bootstrap(os_type, timezone, APT_PACKAGE_PATH, logger)
+        await linux_bootstrap.bootstrap(
+            os_type, timezone, APT_PACKAGE_PATH, use_sudo, logger
+        )
     elif os_type == OS.RASPIOS:
         logger.info("Detected Raspberry Pi OS. Proceeding with Linux (raspi) setup.")
-        await linux_bootstrap.bootstrap(os_type, timezone, APT_PACKAGE_PATH, logger)
+        await linux_bootstrap.bootstrap(
+            os_type, timezone, APT_PACKAGE_PATH, use_sudo, logger
+        )
     elif platform.system() == "Darwin":
         logger.info("Detected macOS. Proceeding with macOS-specific setup.")
     else:
