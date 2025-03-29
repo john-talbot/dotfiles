@@ -39,12 +39,7 @@ def run_cmd(
         The logger to use for logging output.
 
     """
-    scrubbed_cmd = []
-    for item in cmd:
-        if isinstance(item, Path):
-            item = str(item).rstrip("/")
-        scrubbed_cmd.append(item)
-
+    cmd = [str(item) for item in cmd]
     logger.debug(f"Running command: {' '.join(cmd)}")
 
     if cwd is None:
