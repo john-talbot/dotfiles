@@ -1,3 +1,6 @@
+import logging
+from pathlib import Path
+
 from python_bootstrap import cmd_with_logs
 
 UCTAGS_INSTALL_DIR = Path.home().joinpath(".local")

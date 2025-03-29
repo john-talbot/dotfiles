@@ -1,6 +1,5 @@
 import logging
 import platform
-import sys
 
 from rich.logging import RichHandler
 

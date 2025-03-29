@@ -3,7 +3,6 @@ import shutil
 from pathlib import Path
 
 import pytest
-
 from python_bootstrap import linux_bootstrap
 
 TMP_PATH = Path(__file__).parent.joinpath("tmp")

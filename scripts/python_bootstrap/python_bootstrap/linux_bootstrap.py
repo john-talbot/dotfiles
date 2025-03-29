@@ -1,13 +1,13 @@
 import asyncio
 import logging
 import os
+import shutil
 from pathlib import Path
 
 import aiofiles
 import aiohttp
+from python_bootstrap import cmd_with_logs, install_neovim, install_stow, install_uctags
 from python_bootstrap.defines import OS
-
-from python_bootstrap import cmd_with_logs
 
 TMP_DIR = Path(__file__).parent.resolve().joinpath("tmp")
 
@@ -19,7 +19,9 @@ LOCALE = "en_US.UTF-8"
 LANGUAGE = "en_US:en"
 
 
-def bootstrap_linux(os_type: OS, apt_file_path: Path, logger: logging.Logger) -> None:
+def bootstrap_linux(
+    os_type: OS, timezone: str, apt_file_path: Path, logger: logging.Logger
+) -> None:
     """
     Bootstrap the Linux environment.
 
@@ -46,27 +48,27 @@ def bootstrap_linux(os_type: OS, apt_file_path: Path, logger: logging.Logger) ->
 
     # Download all install files at once
     download_urls = {
-        "neovim": get_neovim_download_url(os_type, logger),
-        "stow": get_stow_download_url(),
-        "uctags": get_uctags_download_url(),
+        "neovim": install_neovim.get_neovim_download_url(os_type, logger),
+        "stow": install_stow.get_stow_download_url(),
+        "uctags": install_uctags.get_uctags_download_url(),
     }
 
     TMP_DIR.mkdir(exist_ok=True)
-    download_install_files = await download_all(download_urls)
+    install_files = await download_all_files(download_urls)
 
     # neovim
-    install_neovim(install_files["neovim"], None, use_sudo, logger)
+    install_neovim.install_neovim(install_files["neovim"], None, use_sudo, logger)
     # stow
-    install_stow(install_files["stow"], logger)
+    install_stow.install_stow(install_files["stow"], logger)
     # uctags
-    install_uctags(install_files["uctags"], logger)
+    install_uctags.install_uctags(install_files["uctags"], logger)
 
     # treesitter
 
     # fzf
 
     # Now install packages
-    shutill.rmtree(TMP_DIR)
+    shutil.rmtree(TMP_DIR)
     rebuild_font_cache(logger)
 
 
@@ -250,7 +252,7 @@ def update_locale_file(
     sed_command = ["sed", "-i", "''", f"s/^#.*{locale}/{locale}/", str(file_path)]
     cmd_with_logs.run_linux_cmd(sed_command, use_sudo, logger)
 
-    logger.debug(f"Finished uncommenting locale")
+    logger.debug("Finished uncommenting locale")
 
 
 async def download_file(session, name, url, logger: logging.Logger):

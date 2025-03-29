@@ -1,6 +1,8 @@
-from python_bootstrap.defines import OS
+import logging
+from pathlib import Path
 
 from python_bootstrap import cmd_with_logs
+from python_bootstrap.defines import OS
 
 CMAKE_BUILD_ARGS = [
     "CMAKE_BUILD_TYPE=Release",
@@ -9,8 +11,8 @@ CMAKE_BUILD_ARGS = [
 
 
 DOWNLOAD_URLS = {
-    OS.LINUX: "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz",
-    OS.MACOS: "https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz",
+    OS.LINUX: "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz",  # noqa E501
+    OS.MACOS: "https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz",  # noqa E501
     OS.RASPIOS: "https://github.com/neovim/neovim/archive/refs/heads/master.zip",
 }
 
@@ -36,19 +38,20 @@ def install_neovim(
         install_neovim_from_build(file_path, use_sudo, logger)
     else:
         logger.error(
-            f"Unrecognized file type {file.suffix}. Skipping neovim installation."
+            f"Unrecognized file type {file_path.suffix}. Skipping neovim installation."
         )
         return
 
     if venv_py_path:
         logger.debug(
-            f"Installing python neovim and neovim-remote in virtual environment {venv_by_path}."
+            f"Installing python neovim packages in virtual environment {venv_py_path}."
         )
         need_root = venv_py_path.startswith("/usr")
 
         if need_root:
             logger.debug(
-                "Installing python pack in a system environment. This will be run with sudo."
+                "Installing packages in a system environment. "
+                "This will be run with sudo."
             )
 
         cmd_with_logs.run_cmd(
