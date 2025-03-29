@@ -27,7 +27,7 @@ LOCALE = "en_US.UTF-8"
 LANGUAGE = "en_US:en"
 
 
-def bootstrap(
+async def bootstrap(
     os_type: OS, timezone: str, apt_file_path: Path, logger: logging.Logger
 ) -> None:
     """

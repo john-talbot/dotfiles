@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 
 import argparse
+import asyncio
 import logging
 import platform
+import sys
 from pathlib import Path
 
-from python_bootstrap.os_type import OS
 from rich.logging import RichHandler
 
-from python_bootstrap import linux_bootstrap
+BOOTSTRAP_PATH = Path(__file__).parent.resolve().joinpath("python_bootstrap")
+sys.path.insert(0, str(BOOTSTRAP_PATH))
+from python_bootstrap.defines import OS  # noqa E402
+
+from python_bootstrap import linux_bootstrap  # noqa E402
 
 CONF_PATH = Path(__file__).parent.resolve().joinpath("conf")
 PROC_PATH = Path("/proc/cpuinfo")
@@ -16,7 +21,7 @@ PROC_PATH = Path("/proc/cpuinfo")
 APT_PACKAGE_PATH = CONF_PATH.joinpath("apt_packages.txt")
 
 
-def main(timezone: str) -> None:
+async def main(timezone: str) -> None:
     logger = setup_logging()
     os_type = get_os_type()
 
@@ -82,4 +87,4 @@ if __name__ == "__main__":
         help="The timezone to set for the environment.",
     )
     args = parser.parse_args()
-    main(args.timezone)
+    asyncio.run(main(args.timezone))
