@@ -8,7 +8,7 @@ _CMD_STRINGS = ["--bin", "--no-key-bindings", "--no-completion", "--no-update-rc
 
 
 def get_download_url() -> tuple[str, str]:
-    return ("tree-sitter", _BASE_URL)
+    return ("fzf", _BASE_URL)
 
 
 def install(file_path: Path, logger: logging.Logger) -> None:

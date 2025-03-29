@@ -55,11 +55,11 @@ async def bootstrap(
 
     # Download all install files at once
     download_urls = {
-        "neovim": install_neovim.get_download_url(os_type, logger),
+        "neovim": install_neovim.get_download_url(os_type),
         "stow": install_stow.get_download_url(),
         "uctags": install_uctags.get_download_url(),
         "treesitter": install_treesitter.get_download_url(logger),
-        "fzf": install_fzf.get_download_url(logger),
+        "fzf": install_fzf.get_download_url(),
     }
 
     TMP_DIR.mkdir(exist_ok=True)
