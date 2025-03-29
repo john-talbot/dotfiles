@@ -1,6 +1,7 @@
 import logging
 import subprocess
 import sys
+from pathlib import Path
 
 
 def run_cmd(cmd: list[str], use_sudo: bool, logger: logging.Logger) -> None:
@@ -17,7 +18,9 @@ def run_cmd(cmd: list[str], use_sudo: bool, logger: logging.Logger) -> None:
         The logger to use for logging output.
 
     """
+    cmd = [str(item) if isinstance(item, Path) else item for item in cmd]
     logger.debug(f"Running command: {' '.join(cmd)}")
+
     if use_sudo:
         cmd = ["sudo"] + cmd
 
