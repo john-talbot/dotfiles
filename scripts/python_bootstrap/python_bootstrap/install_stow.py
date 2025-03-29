@@ -6,8 +6,8 @@ from python_bootstrap import cmd_with_logs
 _STOW_INSTALL_DIR = Path.home().joinpath(".local")
 
 
-def get_download_url() -> tuple[str, str]:
-    return ("stow", "https://ftp.gnu.org/gnu/stow/stow-latest.tar.gz")
+def get_download_url() -> str:
+    return "https://ftp.gnu.org/gnu/stow/stow-latest.tar.gz"
 
 
 def install(file_path: Path, logger: logging.Logger) -> None:

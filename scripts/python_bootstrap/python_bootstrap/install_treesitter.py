@@ -12,7 +12,7 @@ _BASE_URL = (
 _ARCH_MAP = {"x86_64": "linux-x64", "aarch64": "linux-arm64", "armv7l": "linux-arm"}
 
 
-def get_download_url(logger: logging.Logger) -> tuple[str, str]:
+def get_download_url(logger: logging.Logger) -> str:
     try:
         download_type = _ARCH_MAP[platform.machine()]
     except KeyError:
@@ -21,7 +21,7 @@ def get_download_url(logger: logging.Logger) -> tuple[str, str]:
         )
         return
 
-    return ("tree-sitter", f"{_BASE_URL}{download_type}.gz")
+    return f"{_BASE_URL}{download_type}.gz"
 
 
 def install(file_path: Path, logger: logging.Logger) -> None:

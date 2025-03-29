@@ -7,8 +7,8 @@ _BASE_URL = "https://github.com/junegunn/fzf/archive/refs/heads/master.zip"
 _CMD_STRINGS = ["--bin", "--no-key-bindings", "--no-completion", "--no-update-rc"]
 
 
-def get_download_url() -> tuple[str, str]:
-    return ("fzf", _BASE_URL)
+def get_download_url() -> str:
+    return _BASE_URL
 
 
 def install(file_path: Path, logger: logging.Logger) -> None:

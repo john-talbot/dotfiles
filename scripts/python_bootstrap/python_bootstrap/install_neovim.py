@@ -18,8 +18,8 @@ _DOWNLOAD_URLS = {
 }
 
 
-def get_download_url(os_type: OS) -> tuple[str, str]:
-    return ("neovim", _DOWNLOAD_URLS[os_type])
+def get_download_url(os_type: OS) -> str:
+    return _DOWNLOAD_URLS[os_type]
 
 
 def install(
