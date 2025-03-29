@@ -5,6 +5,7 @@ cmake
 curl
 fontconfig
 gcc
+gettext
 git
 jq
 locales
@@ -22,9 +23,9 @@ sudo
 tmux
 tree
 unclutter
+unzip
 vim
 virtualenv
 x11-apps
-xattr
 xclip
 zsh
