@@ -63,7 +63,7 @@ async def bootstrap(
     }
 
     TMP_DIR.mkdir(exist_ok=True)
-    install_files = await download_all_files(download_urls)
+    install_files = await download_all_files(download_urls, logger)
 
     # Install packages
     install_neovim.install(install_files["neovim"], None, use_sudo, logger)
