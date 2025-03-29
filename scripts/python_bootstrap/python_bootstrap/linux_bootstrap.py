@@ -88,12 +88,8 @@ def set_timezone(timezone: str, use_sudo: bool, logger: logging.Logger) -> None:
         The logger to use for logging output.
 
     """
-    cmd_with_logs.run_linux_cmd(
-        ["timedatectl", "set-timezone", timezone], use_sudo, logger
-    )
-    cmd_with_logs.run_linux_cmd(
-        ["echo", timezone, ">", TIMEZONE_PATH], use_sudo, logger
-    )
+    cmd_with_logs.run_cmd(["timedatectl", "set-timezone", timezone], use_sudo, logger)
+    cmd_with_logs.run_cmd(["echo", timezone, ">", TIMEZONE_PATH], use_sudo, logger)
 
     logger.info(f"Timezone set to {timezone}.")
 
@@ -111,8 +107,8 @@ def update_apt_packages(use_sudo: bool, logger: logging.Logger) -> None:
 
     """
     logger.info("Updating apt packages.")
-    cmd_with_logs.run_linux_cmd(["apt-get", "update"], use_sudo, logger)
-    cmd_with_logs.run_linux_cmd(["apt-get", "upgrade", "-y"], use_sudo, logger)
+    cmd_with_logs.run_cmd(["apt-get", "update"], use_sudo, logger)
+    cmd_with_logs.run_cmd(["apt-get", "upgrade", "-y"], use_sudo, logger)
     logger.info("Finished updating apt packages.")
 
 
@@ -136,9 +132,7 @@ def install_apt_packages(
     logger.debug(f"Full apt package file path: {apt_file_path}")
 
     packages = read_apt_packages_from_file(apt_file_path)
-    cmd_with_logs.run_linux_cmd(
-        ["apt-get", "install", "-y"] + packages, use_sudo, logger
-    )
+    cmd_with_logs.run_cmd(["apt-get", "install", "-y"] + packages, use_sudo, logger)
 
     logger.info("Finished installing apt packages.")
 
@@ -162,8 +156,8 @@ def set_locale(locale: str, lang: str, use_sudo: bool, logger: logging.Logger) -
     logger.info(f"Setting locale to {locale} and language to {lang}.")
     update_locale_file(LOCALE_GEN_PATH, locale, use_sudo, logger)
 
-    cmd_with_logs.run_linux_cmd(["locale-gen", locale], use_sudo, logger)
-    cmd_with_logs.run_linux_cmd(
+    cmd_with_logs.run_cmd(["locale-gen", locale], use_sudo, logger)
+    cmd_with_logs.run_cmd(
         ["update-locale", f"LANG={locale}", f"LC_ALL={locale}", f"LANGUAGE={lang}"],
         use_sudo,
         logger,
@@ -185,7 +179,7 @@ def rebuild_font_cache(logger: logging.Logger) -> None:
 
     """
     logger.info("Rebuilding font cache.")
-    cmd_with_logs.run_linux_cmd(["fc-cache", "-f", "-v"], False, logger)
+    cmd_with_logs.run_cmd(["fc-cache", "-f", "-v"], False, logger)
     logger.info("Finished rebuilding font cache.")
 
 
@@ -202,7 +196,7 @@ def change_default_shell(shell: str, logger: logging.Logger) -> None:
 
     """
     logger.info(f"Changing default shell to {shell}.")
-    cmd_with_logs.run_linux_cmd(["chsh", "-s", shell], False, logger)
+    cmd_with_logs.run_cmd(["chsh", "-s", shell], False, logger)
     logger.info("Finished changing default shell.")
 
 
@@ -256,7 +250,7 @@ def update_locale_file(
         return
 
     sed_command = ["sed", "-i", "''", f"s/^#.*{locale}/{locale}/", str(file_path)]
-    cmd_with_logs.run_linux_cmd(sed_command, use_sudo, logger)
+    cmd_with_logs.run_cmd(sed_command, use_sudo, logger)
 
     logger.debug("Finished uncommenting locale")
 
