@@ -70,7 +70,7 @@ def install_neovim_from_source(
 
     out_path = path_to_zip.parent.joinpath("neovim_install")
     cmd_with_logs.run_cmd(
-        ["unzip", "-u", "-q", "-j", path_to_zip, "-d", out_path], use_sudo, logger
+        ["unzip", "-u", "-q", "-j", path_to_zip, "-d", out_path], False, logger
     )
     cmd_with_logs.run_cmd(["make"] + _CMAKE_BUILD_ARGS, False, logger, cwd=out_path)
     cmd_with_logs.run_cmd(
@@ -78,7 +78,7 @@ def install_neovim_from_source(
     )
     cmd_with_logs.run_cmd(
         ["rm", "-rf", ".local/share/nvim", ".local/state/nvim"],
-        use_sudo,
+        False,
         logger,
         cwd=Path.home(),
     )
@@ -89,7 +89,7 @@ def install_neovim_from_build(
 ) -> None:
     logger.debug(f"Installing neovim from {path_to_tar}.")
 
-    cmd_with_logs.run_cmd(["xattr", "-c", path_to_tar], use_sudo, logger)
+    cmd_with_logs.run_cmd(["xattr", "-c", path_to_tar], False, logger)
     cmd_with_logs.run_cmd(["tar", "-C", "/opt", "-xf", path_to_tar], use_sudo, logger)
     cmd_with_logs.run_cmd(
         ["mv", f"/opt/{path_to_tar.stem}", "/opt/neovim"], use_sudo, logger
