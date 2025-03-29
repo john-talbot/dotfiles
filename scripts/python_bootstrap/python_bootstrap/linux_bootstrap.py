@@ -89,7 +89,7 @@ def set_timezone(timezone: str, use_sudo: bool, logger: logging.Logger) -> None:
 
     """
     cmd_with_logs.run_cmd(["timedatectl", "set-timezone", timezone], use_sudo, logger)
-    cmd_with_logs.run_cmd(["echo", timezone, ">", TIMEZONE_PATH], use_sudo, logger)
+    cmd_with_logs.run_cmd(["echo", timezone, ">", str(TIMEZONE_PATH)], use_sudo, logger)
 
     logger.info(f"Timezone set to {timezone}.")
 
@@ -128,10 +128,10 @@ def install_apt_packages(
         The logger to use for logging output.
 
     """
-    logger.info(f"Installing apt packages from file {apt_file_path.stem}.")
+    logger.info(f"Installing apt packages from file {apt_file_path.name}.")
     logger.debug(f"Full apt package file path: {apt_file_path}")
 
-    packages = read_apt_packages_from_file(apt_file_path)
+    packages = read_apt_packages_from_file(apt_file_path, logger)
     cmd_with_logs.run_cmd(["apt-get", "install", "-y"] + packages, use_sudo, logger)
 
     logger.info("Finished installing apt packages.")
@@ -249,7 +249,7 @@ def update_locale_file(
         logger.debug("No locale file found. Skipping.")
         return
 
-    sed_command = ["sed", "-i", "''", f"s/^#.*{locale}/{locale}/", str(file_path)]
+    sed_command = ["sed", "-i", f'"s/^#.*{locale}/{locale}/"', str(file_path)]
     cmd_with_logs.run_cmd(sed_command, use_sudo, logger)
 
     logger.debug("Finished uncommenting locale")
