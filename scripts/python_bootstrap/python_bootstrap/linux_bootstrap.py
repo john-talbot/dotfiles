@@ -1,31 +1,10 @@
-import asyncio
 import logging
 import os
-import shutil
 from pathlib import Path
 
-import aiofiles
-import aiohttp
-from python_bootstrap.defines import OS
-from rich.progress import (
-    BarColumn,
-    DownloadColumn,
-    Progress,
-    TextColumn,
-    TimeRemainingColumn,
-    TransferSpeedColumn,
-)
+from python_bootstrap.utilities import OS
 
-from python_bootstrap import (
-    cmd_with_logs,
-    install_fzf,
-    install_neovim,
-    install_stow,
-    install_treesitter,
-    install_uctags,
-)
-
-TMP_DIR = Path(__file__).parent.resolve().joinpath("tmp")
+from python_bootstrap import install_neovim, utilities
 
 ZSH_PATH = "/usr/bin/zsh"
 LOCALE_GEN_PATH = Path("/etc/locale.gen")
@@ -35,8 +14,9 @@ LOCALE = "en_US.UTF-8"
 LANGUAGE = "en_US:en"
 
 
-async def bootstrap(
+def bootstrap(
     os_type: OS,
+    tmp_dir: Path,
     timezone: str,
     apt_file_path: Path,
     use_sudo: bool,
@@ -61,27 +41,14 @@ async def bootstrap(
     set_locale(LOCALE, LANGUAGE, use_sudo, logger)
     change_default_shell(ZSH_PATH, use_sudo, logger)
 
-    # Download all install files at once
-    download_urls = {
-        "neovim": install_neovim.get_download_url(os_type),
-        "stow": install_stow.get_download_url(),
-        "uctags": install_uctags.get_download_url(),
-        "treesitter": install_treesitter.get_download_url(logger),
-        "fzf": install_fzf.get_download_url(),
-    }
-
-    TMP_DIR.mkdir(exist_ok=True)
-    install_files = await download_all_files(download_urls, logger)
-
     # Install packages
-    install_neovim.install(install_files["neovim"], None, use_sudo, logger)
-    install_stow.install(install_files["stow"], logger)
-    install_uctags.install(install_files["uctags"], logger)
-    install_treesitter.install(install_files["treesitter"], logger)
-    install_fzf.install(install_files["fzf"], logger)
+    install_neovim.install(os_type, tmp_dir, use_sudo, logger)
+    # install_stow.install(install_files["stow"], logger)
+    # install_uctags.install(install_files["uctags"], logger)
+    # install_treesitter.install(install_files["treesitter"], logger)
+    # install_fzf.install(install_files["fzf"], logger)
 
     # Cleanup downloads
-    shutil.rmtree(TMP_DIR)
     rebuild_font_cache(logger)
 
 
@@ -95,8 +62,8 @@ def set_timezone(timezone: str, use_sudo: bool, logger: logging.Logger) -> None:
         The logger to use for logging output.
 
     """
-    cmd_with_logs.run_cmd(["timedatectl", "set-timezone", timezone], use_sudo, logger)
-    cmd_with_logs.run_cmd(["echo", timezone, ">", str(TIMEZONE_PATH)], use_sudo, logger)
+    utilities.run_cmd(["timedatectl", "set-timezone", timezone], use_sudo, logger)
+    utilities.run_cmd(["echo", timezone, ">", str(TIMEZONE_PATH)], use_sudo, logger)
 
     logger.info(f"Timezone set to {timezone}.")
 
@@ -114,8 +81,8 @@ def update_apt_packages(use_sudo: bool, logger: logging.Logger) -> None:
 
     """
     logger.info("Updating apt packages.")
-    cmd_with_logs.run_cmd(["apt-get", "update"], use_sudo, logger)
-    cmd_with_logs.run_cmd(["apt-get", "upgrade", "-y"], use_sudo, logger)
+    utilities.run_cmd(["apt-get", "update"], use_sudo, logger)
+    utilities.run_cmd(["apt-get", "upgrade", "-y"], use_sudo, logger)
     logger.info("Finished updating apt packages.")
 
 
@@ -139,7 +106,7 @@ def install_apt_packages(
     logger.debug(f"Full apt package file path: {apt_file_path}")
 
     packages = read_apt_packages_from_file(apt_file_path, logger)
-    cmd_with_logs.run_cmd(["apt-get", "install", "-y"] + packages, use_sudo, logger)
+    utilities.run_cmd(["apt-get", "install", "-y"] + packages, use_sudo, logger)
 
     logger.info("Finished installing apt packages.")
 
@@ -163,8 +130,8 @@ def set_locale(locale: str, lang: str, use_sudo: bool, logger: logging.Logger) -
     logger.info(f"Setting locale to {locale} and language to {lang}.")
     update_locale_file(LOCALE_GEN_PATH, locale, use_sudo, logger)
 
-    cmd_with_logs.run_cmd(["locale-gen", locale], use_sudo, logger)
-    cmd_with_logs.run_cmd(
+    utilities.run_cmd(["locale-gen", locale], use_sudo, logger)
+    utilities.run_cmd(
         ["update-locale", f"LANG={locale}", f"LC_ALL={locale}", f"LANGUAGE={lang}"],
         use_sudo,
         logger,
@@ -186,7 +153,7 @@ def rebuild_font_cache(logger: logging.Logger) -> None:
 
     """
     logger.info("Rebuilding font cache.")
-    cmd_with_logs.run_cmd(["fc-cache", "-f", "-v"], False, logger)
+    utilities.run_cmd(["fc-cache", "-f", "-v"], False, logger)
     logger.info("Finished rebuilding font cache.")
 
 
@@ -205,7 +172,7 @@ def change_default_shell(shell: str, use_sudo: bool, logger: logging.Logger) -> 
 
     """
     logger.info(f"Changing default shell to {shell}.")
-    cmd_with_logs.run_cmd(["chsh", "-s", shell, "johntalbot"], use_sudo, logger)
+    utilities.run_cmd(["chsh", "-s", shell, "johntalbot"], use_sudo, logger)
     logger.info("Finished changing default shell.")
 
 
@@ -259,47 +226,6 @@ def update_locale_file(
         return
 
     sed_command = ["sed", "-i", f"s/^#.*{locale}/{locale}/", str(file_path)]
-    cmd_with_logs.run_cmd(sed_command, use_sudo, logger)
+    utilities.run_cmd(sed_command, use_sudo, logger)
 
     logger.debug("Finished uncommenting locale")
-
-
-async def download_file(session, name, url, progress: Progress, logger: logging.Logger):
-    """Download a file from a URL with a progress bar."""
-    download_path = TMP_DIR.joinpath(name).with_suffix(Path(url).suffix)
-    logger.debug(f"Downloading {name} from {url} to {download_path}")
-    async with session.get(url) as response:
-        total = int(response.headers.get("Content-Length", 0))
-        task_id = progress.add_task(f"[cyan]Downloading {name}", total=total)
-        async with aiofiles.open(download_path, "wb") as f:
-            async for chunk in response.content.iter_chunked(1024):
-                await f.write(chunk)
-                progress.update(task_id, advance=len(chunk))
-        # Remove the completed task so its progress bar disappears.
-        progress.remove_task(task_id)
-    logger.debug(f"Finished downloading {name}.")
-    return name, download_path
-
-
-async def download_all_files(named_urls: dict[str, str], logger: logging.Logger):
-    """Download all files from a list of URLs with progress bars."""
-    logger.info("Downloading all manually installed files.")
-
-    async with aiohttp.ClientSession() as session:
-        # Set up a Rich progress bar with transient=True so that finished bars vanish.
-        with Progress(
-            TextColumn("{task.description}"),
-            BarColumn(),
-            DownloadColumn(),
-            TransferSpeedColumn(),
-            TimeRemainingColumn(),
-            transient=True,
-        ) as progress:
-            tasks = [
-                asyncio.create_task(download_file(session, name, url, progress, logger))
-                for name, url in named_urls.items()
-            ]
-            results = await asyncio.gather(*tasks)
-
-    logger.info("Finished downloading files.")
-    return dict(results)

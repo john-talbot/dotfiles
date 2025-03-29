@@ -1,82 +1,69 @@
 import logging
+import sys
 from pathlib import Path
 
-from python_bootstrap.defines import OS
+from python_bootstrap.utilities import OS
 
-from python_bootstrap import cmd_with_logs
+from python_bootstrap import utilities
 
+_LINUX_URL = "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz"  # noqa E501
+_MACOS_URL = "https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz"  # noqa E501
+_GIT_URL = "https://github.com/neovim/neovim/archive/refs/heads/master.zip"
 _CMAKE_BUILD_ARGS = [
     "CMAKE_BUILD_TYPE=Release",
     "CMAKE_INSTALL_PREFIX=/opt/neovim",
 ]
 
 
-_DOWNLOAD_URLS = {
-    OS.LINUX: "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz",  # noqa E501
-    OS.MACOS: "https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz",  # noqa E501
-    OS.RASPIOS: "https://github.com/neovim/neovim/archive/refs/heads/master.zip",
-}
-
-
-def get_download_url(os_type: OS) -> str:
-    return _DOWNLOAD_URLS[os_type]
-
-
-def install(
-    file_path: Path, venv_py_path: Path, use_sudo: bool, logger: logging.Logger
-) -> None:
+def install(os_type: OS, tmp_dir: Path, use_sudo: bool, logger: logging.Logger) -> None:
     logger.info("Installing neovim.")
 
     # Remove any existing neovim installation
-    cmd_with_logs.run_cmd(["rm", "-rf", "/opt/neovim"], use_sudo, logger)
+    utilities.run_cmd(["rm", "-rf", "/opt/neovim"], use_sudo, logger)
+    dwn_dir = tmp_dir.joinpath("neovim")
 
-    if file_path.suffix == ".zip":
+    if os_type == OS.RASPIOS:
         logging.debug("Installing neovim from source.")
-        install_neovim_from_source(file_path, use_sudo, logger)
-    elif file_path.suffix == ".tar.gz":
-        logging.debug(f"Installing neovim from {file_path}.")
-        install_neovim_from_build(file_path, use_sudo, logger)
-    else:
-        logger.error(
-            f"Unrecognized file type {file_path.suffix}. Skipping neovim installation."
-        )
-        return
+        install_neovim_from_source(dwn_dir, use_sudo, logger)
 
-    if venv_py_path:
-        logger.debug(
-            f"Installing python neovim packages in virtual environment {venv_py_path}."
-        )
-        need_root = venv_py_path.startswith("/usr")
+    elif os_type == OS.LINUX:
+        logging.debug(f"Installing neovim from {dwn_dir}.")
+        install_neovim_linux(dwn_dir, use_sudo, logger)
 
-        if need_root:
-            logger.debug(
-                "Installing packages in a system environment. "
-                "This will be run with sudo."
-            )
+    elif os_type == OS.MACOS:
+        logging.debug(f"Installing neovim from {dwn_dir}.")
+        install_neovim_macos(dwn_dir, use_sudo, logger)
 
-        cmd_with_logs.run_cmd(
-            [str(venv_py_path), "-m", "pip", "install", "neovim", "neovim-remote"],
-            need_root,
-            logger,
-        )
+    py_path = sys.executable
+
+    logger.debug(f"Installing python neovim packages in environment {py_path}.")
+    need_root = py_path.startswith("/usr")
+
+    if need_root:
+        logger.debug("Installing packages in a system environment using sudo.")
+
+    utilities.run_cmd(
+        [str(py_path), "-m", "pip", "install", "neovim", "neovim-remote"],
+        need_root,
+        logger,
+    )
 
     logger.info("Finished installing neovim.")
 
 
 def install_neovim_from_source(
-    path_to_zip: Path, use_sudo: bool, logger: logging.Logger
+    dwn_dir: Path, use_sudo: bool, logger: logging.Logger
 ) -> None:
     logger.debug("Installing neovim from source.")
 
-    out_path = path_to_zip.parent.joinpath("neovim_install")
-    cmd_with_logs.run_cmd(
-        ["unzip", "-u", "-q", "-j", path_to_zip, "-d", out_path], False, logger
+    extra_args = ["--depth", "1", "-b", "nightly"]
+    utilities.git_clone_with_progress(_GIT_URL, dwn_dir, extra_args, name="neovim")
+
+    utilities.run_cmd(["make"] + _CMAKE_BUILD_ARGS, False, logger, cwd=dwn_dir)
+    utilities.run_cmd(
+        ["make"] + _CMAKE_BUILD_ARGS + ["install"], use_sudo, logger, cwd=dwn_dir
     )
-    cmd_with_logs.run_cmd(["make"] + _CMAKE_BUILD_ARGS, False, logger, cwd=out_path)
-    cmd_with_logs.run_cmd(
-        ["make"] + _CMAKE_BUILD_ARGS + ["install"], use_sudo, logger, cwd=out_path
-    )
-    cmd_with_logs.run_cmd(
+    utilities.run_cmd(
         ["rm", "-rf", ".local/share/nvim", ".local/state/nvim"],
         False,
         logger,
@@ -84,13 +71,21 @@ def install_neovim_from_source(
     )
 
 
-def install_neovim_from_build(
-    path_to_tar: Path, use_sudo: bool, logger: logging.Logger
-) -> None:
-    logger.debug(f"Installing neovim from {path_to_tar}.")
+def install_neovim_linux(dwn_dir: Path, use_sudo: bool, logger: logging.Logger) -> None:
+    logger.debug("Installing neovim for linux.")
+    utilities.download_archive(_LINUX_URL, dwn_dir, name="neovim")
+    install_neovim_from_build(dwn_dir, use_sudo, logger)
 
-    cmd_with_logs.run_cmd(["xattr", "-c", path_to_tar], False, logger)
-    cmd_with_logs.run_cmd(["tar", "-C", "/opt", "-xf", path_to_tar], use_sudo, logger)
-    cmd_with_logs.run_cmd(
-        ["mv", f"/opt/{path_to_tar.stem}", "/opt/neovim"], use_sudo, logger
-    )
+
+def install_neovim_macos(dwn_dir: Path, use_sudo: bool, logger: logging.Logger):
+    logger.debug("Installing neovim for macos.")
+    utilities.download_archive(_MACOS_URL, dwn_dir, name="neovim")
+    install_neovim_from_build(dwn_dir, use_sudo, logger)
+
+
+def install_neovim_from_build(
+    dwn_dir: Path, use_sudo: bool, logger: logging.Logger
+) -> None:
+    utilities.run_cmd(["xattr", "-c", dwn_dir], False, logger)
+    utilities.run_cmd(["tar", "-C", "/opt", "-xf", dwn_dir], use_sudo, logger)
+    utilities.run_cmd(["mv", f"/opt/{dwn_dir.stem}", "/opt/neovim"], use_sudo, logger)
