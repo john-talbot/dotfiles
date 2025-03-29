@@ -91,7 +91,7 @@ def git_clone_with_progress(
         process = subprocess.Popen(
             ["git", "clone"] + extra_args + ["--progress", repo_url, target_dir],
             stderr=subprocess.PIPE,
-            stdout=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
             text=True,
             bufsize=1,
         )
@@ -107,7 +107,8 @@ def git_clone_with_progress(
 
         if process.returncode != 0:
             logger.error(f"Git clone {name} failed with exit code {process.returncode}")
-            logger.error(process.output)
+            logger.error(f"STDOUT: {process.stdout}")
+            logger.error(f"STDERR: {process.stderr}")
             raise subprocess.CalledProcessError(process.returncode, process.args)
 
 
