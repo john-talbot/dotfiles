@@ -37,19 +37,20 @@ def main() -> None:
     sys.exit(0)
 
 
-def install(os_type: OS, tmp_dir: Path, use_sudo: bool, logger: logging.Logger) -> None:
+def install(
+    os_type: OS, temp_dir: Path, use_sudo: bool, logger: logging.Logger
+) -> None:
     logger.info("Installing neovim.")
 
     # Remove any existing neovim installation
     utilities.run_cmd(["rm", "-rf", "/opt/neovim"], use_sudo, logger)
-    dwn_dir = tmp_dir.joinpath("neovim")
 
     if os_type == OS.RASPIOS:
-        install_neovim_from_source(dwn_dir, use_sudo, logger)
+        install_neovim_from_source(temp_dir, use_sudo, logger)
     elif os_type == OS.LINUX:
-        install_neovim_linux(dwn_dir, use_sudo, logger)
+        install_neovim_linux(temp_dir, use_sudo, logger)
     elif os_type == OS.MACOS:
-        install_neovim_macos(dwn_dir, use_sudo, logger)
+        install_neovim_macos(temp_dir, use_sudo, logger)
 
     py_path = sys.executable
 
@@ -69,20 +70,26 @@ def install(os_type: OS, tmp_dir: Path, use_sudo: bool, logger: logging.Logger) 
 
 
 def install_neovim_from_source(
-    dwn_dir: Path, use_sudo: bool, logger: logging.Logger
+    temp_dir: Path, use_sudo: bool, logger: logging.Logger
 ) -> None:
     logger.debug("Installing neovim from source.")
 
-    extra_args = ["--depth", "1", "-b", "nightly"]
+    down_path = temp_dir.joinpath("fzf")
+
     logger.debug("Cloning neovim repository.")
-    dwn_dir.mkdir(exist_ok=True)
+    extra_args = ["--depth", "1", "-b", "nightly"]
     utilities.run_cmd(
-        ["git", "clone"] + extra_args + [_GIT_URL, dwn_dir], False, logger, cwd=dwn_dir
+        ["git", "clone"] + extra_args + [_GIT_URL, down_path.name],
+        False,
+        logger,
+        cwd=temp_dir,
     )
+
     logger.debug("Building neovim.")
-    utilities.run_cmd(["make"] + _CMAKE_BUILD_ARGS, False, logger, cwd=dwn_dir)
+
+    utilities.run_cmd(["make"] + _CMAKE_BUILD_ARGS, False, logger, cwd=down_path)
     utilities.run_cmd(
-        ["make"] + _CMAKE_BUILD_ARGS + ["install"], use_sudo, logger, cwd=dwn_dir
+        ["make"] + _CMAKE_BUILD_ARGS + ["install"], use_sudo, logger, cwd=down_path
     )
     utilities.run_cmd(
         ["rm", "-rf", ".local/share/nvim", ".local/state/nvim"],
@@ -90,27 +97,32 @@ def install_neovim_from_source(
         logger,
         cwd=Path.home(),
     )
+
     logger.debug("Finished building neovim.")
 
 
-def install_neovim_linux(dwn_dir: Path, use_sudo: bool, logger: logging.Logger) -> None:
+def install_neovim_linux(
+    temp_dir: Path, use_sudo: bool, logger: logging.Logger
+) -> None:
     logger.debug("Installing neovim for linux.")
-    utilities.download_archive(_LINUX_URL, dwn_dir, logger, name="neovim")
-    install_neovim_from_build(dwn_dir, use_sudo, logger)
+    down_path = temp_dir.joinpath("neovim.tar.gz")
+    utilities.download_archive(_LINUX_URL, down_path, logger, name="neovim")
+    install_neovim_from_build(down_path, use_sudo, logger)
 
 
-def install_neovim_macos(dwn_dir: Path, use_sudo: bool, logger: logging.Logger):
+def install_neovim_macos(temp_dir: Path, use_sudo: bool, logger: logging.Logger):
     logger.debug("Installing neovim for macos.")
-    utilities.download_archive(_MACOS_URL, dwn_dir, logger, name="neovim")
-    install_neovim_from_build(dwn_dir, use_sudo, logger)
+    down_path = temp_dir.joinpath("neovim.tar.gz")
+    utilities.download_archive(_MACOS_URL, down_path, logger, name="neovim")
+    install_neovim_from_build(down_path, use_sudo, logger)
 
 
 def install_neovim_from_build(
-    dwn_dir: Path, use_sudo: bool, logger: logging.Logger
+    down_path: Path, use_sudo: bool, logger: logging.Logger
 ) -> None:
-    utilities.run_cmd(["xattr", "-c", dwn_dir], False, logger)
-    utilities.run_cmd(["tar", "-C", "/opt", "-xf", dwn_dir], use_sudo, logger)
-    utilities.run_cmd(["mv", f"/opt/{dwn_dir.stem}", "/opt/neovim"], use_sudo, logger)
+    utilities.run_cmd(["xattr", "-c", down_path], False, logger)
+    utilities.run_cmd(["tar", "-C", "/opt", "-xf", down_path], use_sudo, logger)
+    utilities.run_cmd(["mv", f"/opt/{down_path.stem}", "/opt/neovim"], use_sudo, logger)
 
 
 if __name__ == "__main__":
