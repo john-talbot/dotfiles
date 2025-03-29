@@ -8,7 +8,7 @@ from python_bootstrap import utilities
 
 _LINUX_URL = "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz"  # noqa E501
 _MACOS_URL = "https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz"  # noqa E501
-_GIT_URL = "https://github.com/neovim/neovim/archive/refs/heads/master.zip"
+_GIT_URL = "https://github.com/neovim/neovim.git"
 _CMAKE_BUILD_ARGS = [
     "CMAKE_BUILD_TYPE=Release",
     "CMAKE_INSTALL_PREFIX=/opt/neovim",
@@ -58,6 +58,7 @@ def install_neovim_from_source(
 
     extra_args = ["--depth", "1", "-b", "nightly"]
     logger.debug("Cloning neovim repository.")
+    dwn_dir.mkdir(exist_ok=True)
     utilities.run_cmd(
         ["git", "clone"] + extra_args + [_GIT_URL, dwn_dir], False, logger, cwd=dwn_dir
     )
