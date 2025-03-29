@@ -14,7 +14,10 @@ def get_download_url() -> str:
 def install(file_path: Path, logger: logging.Logger) -> None:
     logger.info("Installing fzf.")
 
-    cmd_with_logs.run_cmd(["unzip", file_path], False, logger)
+    out_path = file_path.parent.joinpath("fzf_install")
+    cmd_with_logs.run_cmd(
+        ["unzip", "-u", "-qq", file_path, "-d", out_path], False, logger
+    )
     cmd_with_logs.run_cmd(["./install"] + _CMD_STRINGS, False, logger)
 
     logger.info("Finished installing fzf.")

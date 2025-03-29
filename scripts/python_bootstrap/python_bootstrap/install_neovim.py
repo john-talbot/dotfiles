@@ -68,18 +68,13 @@ def install_neovim_from_source(
 ) -> None:
     logger.debug("Installing neovim from source.")
 
-    cmd_with_logs.run_cmd(["unzip", path_to_zip], use_sudo, logger)
+    out_path = path_to_zip.parent.joinpath("neovim_install")
     cmd_with_logs.run_cmd(
-        ["make"] + _CMAKE_BUILD_ARGS,
-        False,
-        logger,
-        cwd=path_to_zip.parent.joinpath(f"{path_to_zip.stem}"),
+        ["unzip", "-u", "-qq", path_to_zip, "-d", out_path], use_sudo, logger
     )
+    cmd_with_logs.run_cmd(["make"] + _CMAKE_BUILD_ARGS, False, logger, cwd=out_path)
     cmd_with_logs.run_cmd(
-        ["make"] + _CMAKE_BUILD_ARGS + ["install"],
-        use_sudo,
-        logger,
-        cwd=path_to_zip.parent.joinpath(f"{path_to_zip.stem}"),
+        ["make"] + _CMAKE_BUILD_ARGS + ["install"], use_sudo, logger, cwd=out_path
     )
     cmd_with_logs.run_cmd(
         ["rm", "-rf", ".local/share/nvim", ".local/state/nvim"],
