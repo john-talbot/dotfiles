@@ -7,6 +7,14 @@ from pathlib import Path
 import aiofiles
 import aiohttp
 from python_bootstrap.defines import OS
+from rich.progress import (
+    BarColumn,
+    DownloadColumn,
+    Progress,
+    TextColumn,
+    TimeRemainingColumn,
+    TransferSpeedColumn,
+)
 
 from python_bootstrap import (
     cmd_with_logs,
@@ -256,29 +264,42 @@ def update_locale_file(
     logger.debug("Finished uncommenting locale")
 
 
-async def download_file(session, name, url, logger: logging.Logger):
-    """Download a file from a URL."""
+async def download_file(session, name, url, progress: Progress, logger: logging.Logger):
+    """Download a file from a URL with a progress bar."""
     download_path = TMP_DIR.joinpath(name)
     logger.debug(f"Downloading {name} from {url} to {download_path}")
     async with session.get(url) as response:
+        total = int(response.headers.get("Content-Length", 0))
+        task_id = progress.add_task(f"[cyan]Downloading {name}", total=total)
         async with aiofiles.open(download_path, "wb") as f:
-            data = await response.read()
-            await f.write(data)
-
+            async for chunk in response.content.iter_chunked(1024):
+                await f.write(chunk)
+                progress.update(task_id, advance=len(chunk))
+        # Remove the completed task so its progress bar disappears.
+        progress.remove_task(task_id)
     logger.debug(f"Finished downloading {name}.")
     return name, download_path
 
 
 async def download_all_files(named_urls: dict[str, str], logger: logging.Logger):
-    """Download all files from a list of URLs."""
+    """Download all files from a list of URLs with progress bars."""
     logger.info("Downloading all manually installed files.")
 
     async with aiohttp.ClientSession() as session:
-        tasks = [
-            asyncio.create_task(download_file(session, name, url, logger))
-            for name, url in named_urls.items()
-        ]
-        results = await asyncio.gather(*tasks)
+        # Set up a Rich progress bar with transient=True so that finished bars vanish.
+        with Progress(
+            TextColumn("{task.description}"),
+            BarColumn(),
+            DownloadColumn(),
+            TransferSpeedColumn(),
+            TimeRemainingColumn(),
+            transient=True,
+        ) as progress:
+            tasks = [
+                asyncio.create_task(download_file(session, name, url, progress, logger))
+                for name, url in named_urls.items()
+            ]
+            results = await asyncio.gather(*tasks)
 
     logger.info("Finished downloading files.")
     return dict(results)
