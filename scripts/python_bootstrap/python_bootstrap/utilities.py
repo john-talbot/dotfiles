@@ -69,7 +69,11 @@ def run_cmd(
 
 
 def git_clone_with_progress(
-    repo_url: str, target_dir: str, extra_args: list[str] = None, name: str = None
+    repo_url: str,
+    target_dir: str,
+    logger: logging.Logger,
+    extra_args: list[str] = None,
+    name: str = None,
 ) -> None:
     if name is None:
         name = "repository"
@@ -102,10 +106,14 @@ def git_clone_with_progress(
         progress.update(task_id, completed=100)
 
         if process.returncode != 0:
+            logger.error(f"Git clone {name} failed with exit code {process.returncode}")
+            logger.error(process.output)
             raise subprocess.CalledProcessError(process.returncode, process.args)
 
 
-def download_archive(url: str, target_path: str, name: str = None) -> None:
+def download_archive(
+    url: str, target_path: str, logger: logging.Logger, name: str = None
+) -> None:
     """
     Download an archive file from the given URL to the target_path,
     displaying a progress bar during the download.
@@ -114,6 +122,7 @@ def download_archive(url: str, target_path: str, name: str = None) -> None:
     if name is None:
         name = "archive"
 
+    logger.debug(f"Downloading {name} from {url} to {target_path}")
     with requests.get(url, stream=True) as response:
         response.raise_for_status()
         total = int(response.headers.get("Content-Length", 0))
@@ -131,3 +140,4 @@ def download_archive(url: str, target_path: str, name: str = None) -> None:
                 if chunk:
                     file.write(chunk)
                     progress.update(task, advance=len(chunk))
+    logger.debug(f"Downloaded {name} to {target_path}")

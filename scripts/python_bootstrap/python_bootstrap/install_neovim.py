@@ -57,7 +57,9 @@ def install_neovim_from_source(
     logger.debug("Installing neovim from source.")
 
     extra_args = ["--depth", "1", "-b", "nightly"]
-    utilities.git_clone_with_progress(_GIT_URL, dwn_dir, extra_args, name="neovim")
+    utilities.git_clone_with_progress(
+        _GIT_URL, dwn_dir, logger, extra_args, name="neovim"
+    )
 
     utilities.run_cmd(["make"] + _CMAKE_BUILD_ARGS, False, logger, cwd=dwn_dir)
     utilities.run_cmd(
@@ -73,13 +75,13 @@ def install_neovim_from_source(
 
 def install_neovim_linux(dwn_dir: Path, use_sudo: bool, logger: logging.Logger) -> None:
     logger.debug("Installing neovim for linux.")
-    utilities.download_archive(_LINUX_URL, dwn_dir, name="neovim")
+    utilities.download_archive(_LINUX_URL, dwn_dir, logger, name="neovim")
     install_neovim_from_build(dwn_dir, use_sudo, logger)
 
 
 def install_neovim_macos(dwn_dir: Path, use_sudo: bool, logger: logging.Logger):
     logger.debug("Installing neovim for macos.")
-    utilities.download_archive(_MACOS_URL, dwn_dir, name="neovim")
+    utilities.download_archive(_MACOS_URL, dwn_dir, logger, name="neovim")
     install_neovim_from_build(dwn_dir, use_sudo, logger)
 
 
