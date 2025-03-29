@@ -57,10 +57,11 @@ def install_neovim_from_source(
     logger.debug("Installing neovim from source.")
 
     extra_args = ["--depth", "1", "-b", "nightly"]
-    utilities.git_clone_with_progress(
-        _GIT_URL, dwn_dir, logger, extra_args, name="neovim"
+    logger.debug("Cloning neovim repository.")
+    utilities.run_cmd(
+        ["git", "clone"] + extra_args + [_GIT_URL, dwn_dir], False, logger, cwd=dwn_dir
     )
-
+    logger.debug("Building neovim.")
     utilities.run_cmd(["make"] + _CMAKE_BUILD_ARGS, False, logger, cwd=dwn_dir)
     utilities.run_cmd(
         ["make"] + _CMAKE_BUILD_ARGS + ["install"], use_sudo, logger, cwd=dwn_dir
@@ -71,6 +72,7 @@ def install_neovim_from_source(
         logger,
         cwd=Path.home(),
     )
+    logger.debug("Finished building neovim.")
 
 
 def install_neovim_linux(dwn_dir: Path, use_sudo: bool, logger: logging.Logger) -> None:

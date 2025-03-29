@@ -9,7 +9,6 @@ from rich.progress import (
     BarColumn,
     DownloadColumn,
     Progress,
-    SpinnerColumn,
     TextColumn,
     TimeRemainingColumn,
     TransferSpeedColumn,
@@ -66,50 +65,6 @@ def run_cmd(
     if result.stdout:
         logger.debug(result.stdout)
     logger.debug(f"Command {' '.join(cmd)} completed successfully.")
-
-
-def git_clone_with_progress(
-    repo_url: str,
-    target_dir: str,
-    logger: logging.Logger,
-    extra_args: list[str] = None,
-    name: str = None,
-) -> None:
-    if name is None:
-        name = "repository"
-    with Progress(
-        SpinnerColumn(),
-        TextColumn("[cyan]{task.description}"),
-        BarColumn(),
-        transient=True,
-    ) as progress:
-        task_id = progress.add_task(f"Cloning {name}", total=None)
-
-        if extra_args is None:
-            extra_args = []
-
-        process = subprocess.Popen(
-            ["git", "clone"] + extra_args + ["--progress", repo_url, target_dir],
-            stderr=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            text=True,
-            bufsize=1,
-        )
-
-        if process.stderr:
-            for line in process.stderr:
-                line = line.strip()
-                if line:
-                    progress.update(task_id, description=f"[cyan]Cloning: {line}")
-
-        process.wait()
-        progress.update(task_id, completed=100)
-
-        if process.returncode != 0:
-            logger.error(f"Git clone {name} failed with exit code {process.returncode}")
-            logger.error(f"STDOUT: {process.stdout}")
-            logger.error(f"STDERR: {process.stderr}")
-            raise subprocess.CalledProcessError(process.returncode, process.args)
 
 
 def download_archive(
