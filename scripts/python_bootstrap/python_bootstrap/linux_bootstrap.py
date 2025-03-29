@@ -51,7 +51,7 @@ async def bootstrap(
     update_apt_packages(use_sudo, logger)
     install_apt_packages(apt_file_path, use_sudo, logger)
     set_locale(LOCALE, LANGUAGE, use_sudo, logger)
-    change_default_shell(ZSH_PATH, logger)
+    change_default_shell(ZSH_PATH, use_sudo, logger)
 
     # Download all install files at once
     download_urls = {
@@ -182,7 +182,7 @@ def rebuild_font_cache(logger: logging.Logger) -> None:
     logger.info("Finished rebuilding font cache.")
 
 
-def change_default_shell(shell: str, logger: logging.Logger) -> None:
+def change_default_shell(shell: str, use_sudo: bool, logger: logging.Logger) -> None:
     """
     Change the default shell for the current user.
 
@@ -190,12 +190,14 @@ def change_default_shell(shell: str, logger: logging.Logger) -> None:
     ----------
     shell : str
         The shell to set as default.
+    use_sudo : bool
+        Should the command be run with sudo?
     logger : logging.Logger
         The logger to use for logging output.
 
     """
     logger.info(f"Changing default shell to {shell}.")
-    cmd_with_logs.run_cmd(["chsh", "-s", shell], False, logger)
+    cmd_with_logs.run_cmd(["chsh", "-s", shell, "johntalbot"], use_sudo, logger)
     logger.info("Finished changing default shell.")
 
 
