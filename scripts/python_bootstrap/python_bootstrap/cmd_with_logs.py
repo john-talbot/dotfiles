@@ -4,7 +4,9 @@ import sys
 from pathlib import Path
 
 
-def run_cmd(cmd: list[str], use_sudo: bool, logger: logging.Logger) -> None:
+def run_cmd(
+    cmd: list[str], use_sudo: bool, logger: logging.Logger, cwd: Path = None
+) -> None:
     """
     Run a shell command and log its output.
 
@@ -21,12 +23,20 @@ def run_cmd(cmd: list[str], use_sudo: bool, logger: logging.Logger) -> None:
     cmd = [str(item) if isinstance(item, Path) else item for item in cmd]
     logger.debug(f"Running command: {' '.join(cmd)}")
 
+    if cwd is None:
+        cwd = Path.cwd()
+
     if use_sudo:
         cmd = ["sudo"] + cmd
 
     try:
         result = subprocess.run(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True, text=True
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            check=True,
+            text=True,
+            cwd=cwd,
         )
 
     except subprocess.CalledProcessError as e:
