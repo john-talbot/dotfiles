@@ -266,7 +266,7 @@ def update_locale_file(
 
 async def download_file(session, name, url, progress: Progress, logger: logging.Logger):
     """Download a file from a URL with a progress bar."""
-    download_path = TMP_DIR.joinpath(name)
+    download_path = TMP_DIR.joinpath(name).with_suffix(Path(url).suffix)
     logger.debug(f"Downloading {name} from {url} to {download_path}")
     async with session.get(url) as response:
         total = int(response.headers.get("Content-Length", 0))
