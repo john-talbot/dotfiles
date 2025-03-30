@@ -5,13 +5,7 @@ import platform
 import sys
 from pathlib import Path
 
-from python_bootstrap import (
-    install_node,
-    install_omz,
-    install_py,
-    linux_bootstrap,
-    utilities,
-)
+from python_bootstrap import install_node, install_omz, linux_bootstrap, utilities
 from python_bootstrap.utilities import OS
 
 GIT_ROOT = utilities.get_git_root()
@@ -61,7 +55,6 @@ def main() -> None:
 
     install_omz.install(temp_dir, logger)
     install_node.install(temp_dir, logger)
-    install_py.install(logger)
 
     logger.info("Deploying dotfiles.")
     stow_cmd = Path.home().joinpath(".local/bin/stow")
