@@ -45,6 +45,7 @@ def main() -> None:
 def install(logger: logging.Logger) -> None:
     logger.info("Installing fzf.")
 
+    utilities.run_cmd(["rm", "-rf", str(_INSTALL_DIR)], False, logger)
     utilities.run_cmd(
         ["git", "clone", "--depth", "1", _GIT_URL, str(_INSTALL_DIR.name)],
         False,
