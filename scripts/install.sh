@@ -9,7 +9,7 @@ VENV_DIR="$TEMP_DIR/venv"
 
 # Clone dotfiles repo with submodules
 cd "$HOME"
-git clone --recurse-submodules -b python_script "$GIT_URL" "$HOME/.dotfiles" 
+git clone --recurse-submodules "$GIT_URL" "$HOME/.dotfiles" 
 
 # Bootstrap
 cd "$HOME/.dotfiles/scripts"
