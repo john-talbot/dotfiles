@@ -58,7 +58,7 @@ def main() -> None:
 
     logger.info("Deploying dotfiles.")
     stow_cmd = Path.home().joinpath(".local/bin/stow")
-    utilities.run_command(
+    utilities.run_cmd(
         [str(stow_cmd), "-R", f"--target={str(Path.home())}", "--dotfiles", "."],
         False,
         logger,
@@ -67,13 +67,13 @@ def main() -> None:
 
     logger.info("Installing vim plugins.")
     vim_pkg_path = Path.home().joinpath(".vim/install_packages.vim")
-    utilities.run_command(
+    utilities.run_cmd(
         ["vim", "-E", "-s", "-u", "NONE", "-N", "-c", f"source {vim_pkg_path}"],
         False,
         logger,
     )
     nvim_pkg_path = Path.home().joinpath(".config/nvim/install_packages.vim")
-    utilities.run_command(
+    utilities.run_cmd(
         ["/opt/neovim/bin/nvim", "--headless", "-c", f"source {nvim_pkg_path}"],
         False,
         logger,
