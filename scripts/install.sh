@@ -18,6 +18,6 @@ python3 -m venv "$VENV_DIR"
 . "$VENV_DIR/bin/activate"
 
 pip install -e python_bootstrap
-bootstrap --temp "$TEMP_DIR" --logs "$LOG_DIR"
+bootstrap --temp "$TEMP_DIR" --log "$LOG_DIR"
 
 rm -rf "$TEMP_DIR"
