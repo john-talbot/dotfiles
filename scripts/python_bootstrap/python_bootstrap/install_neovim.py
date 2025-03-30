@@ -54,7 +54,7 @@ def install(
 
     py_path = sys.executable
 
-    logger.debug(f"Installing python neovim packages in environment {py_path}.")
+    logger.info(f"Installing python neovim packages in environment {py_path}.")
     need_root = py_path.startswith("/usr")
 
     if need_root:
@@ -76,7 +76,7 @@ def install_neovim_from_source(
 
     down_path = temp_dir.joinpath("fzf")
 
-    logger.debug("Cloning neovim repository.")
+    logger.info("Cloning neovim repository.")
     extra_args = ["--depth", "1", "-b", "nightly"]
     utilities.run_cmd(
         ["git", "clone"] + extra_args + [_GIT_URL, down_path.name],
@@ -85,7 +85,7 @@ def install_neovim_from_source(
         cwd=temp_dir,
     )
 
-    logger.debug("Building neovim.")
+    logger.info("Building neovim.")
 
     utilities.run_cmd(["make"] + _CMAKE_BUILD_ARGS, False, logger, cwd=down_path)
     utilities.run_cmd(
@@ -98,7 +98,7 @@ def install_neovim_from_source(
         cwd=Path.home(),
     )
 
-    logger.debug("Finished building neovim.")
+    logger.info("Finished building neovim.")
 
 
 def install_neovim_linux(
