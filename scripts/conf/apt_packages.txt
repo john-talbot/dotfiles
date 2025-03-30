@@ -3,6 +3,7 @@ automake
 build-essential
 cmake
 curl
+doxygen
 fontconfig
 gcc
 gettext
