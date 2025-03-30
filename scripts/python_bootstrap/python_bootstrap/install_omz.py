@@ -1,11 +1,8 @@
 import argparse
 import logging
-import os
-import shutil
 import sys
 from pathlib import Path
 
-import requests
 
 from python_bootstrap import utilities
 from python_bootstrap.utilities import OS
@@ -50,17 +47,17 @@ def install(tmp_dir: Path, logger: logging.Logger) -> None:
 
     logger.info("Installing oh-my-zsh.")
 
-    logger.debug(f"Downloading oh-my installer script")
+    logger.debug("Downloading oh-my installer script")
     dwn_path = tmp_dir.joinpath("install.sh")
     utilities.download_archive(_URL, dwn_path, logger, "oh-my-zsh")
     utilities.run_cmd(["chmod", "a+x", str(dwn_path)], False, logger)
 
-    logger.debug(f"Running oh-my installer script")
+    logger.debug("Running oh-my installer script")
     utilities.run_cmd(
         ["sh", str(dwn_path.name), "--unattended"], False, logger, cwd=tmp_dir
     )
 
-    logger.debug(f"Removing existing zshrc")
+    logger.debug("Removing existing zshrc")
     zshrc_path = Path.home().joinpath(".zshrc")
     if zshrc_path.exists():
         zshrc_path.unlink()

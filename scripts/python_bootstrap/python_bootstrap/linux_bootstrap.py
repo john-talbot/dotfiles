@@ -5,8 +5,6 @@ from pathlib import Path
 from python_bootstrap import (
     install_fzf,
     install_neovim,
-    install_node,
-    install_omz,
     install_stow,
     install_treesitter,
     install_uctags,
@@ -52,11 +50,9 @@ def bootstrap(
     change_default_shell(ZSH_PATH, use_sudo, logger)
 
     # Install packages
-    install_neovim.install(os_type, temp_dir, use_sudo, logger)
     install_stow.install(os_type, temp_dir, logger)
-    install_omz.install(temp_dir, logger)
     install_fzf.install(logger)
-    install_node.install(temp_dir, logger)
+    install_neovim.install(os_type, temp_dir, use_sudo, logger)
     install_treesitter.install(os_type, temp_dir, logger)
     install_uctags.install(os_type, temp_dir, logger)
 

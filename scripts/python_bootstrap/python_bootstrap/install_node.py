@@ -1,7 +1,6 @@
 import argparse
 import logging
 import os
-import shutil
 import sys
 from pathlib import Path
 
@@ -57,19 +56,19 @@ def install(tmp_dir: Path, logger: logging.Logger) -> None:
     dwn_path = tmp_dir.joinpath("install.sh")
     utilities.download_archive(url, dwn_path, logger, "nvm")
 
-    logger.debug(f"Running nvm installer script")
+    logger.debug("Running nvm installer script")
     utilities.run_cmd(["bash", str(dwn_path)], False, logger)
 
     nvm_dir = Path.home().joinpath(".nvm")
     env = os.environ.copy()
     env["NVM_DIR"] = str(nvm_dir)
 
-    bash_commands = f"""
+    bash_commands = """
     [ -s "$NVM_DIR/nvm.sh" ] && \\. "$NVM_DIR/nvm.sh";
     nvm install node
     """
 
-    logger.debug(f"Installing node using nvm")
+    logger.debug("Installing node using nvm")
     utilities.run_cmd(["bash", "-c", bash_commands], False, logger, env=env)
 
     logger.info("Finished installing node.")
