@@ -19,14 +19,18 @@ from rich.progress import (
 
 
 class OS(Enum):
-    LINUX = auto()
-    MACOS = auto()
-    RASPIOS = auto()
+    LINUX_x64 = auto()
+    LINUX_arm64 = auto()
+    MACOS_arm64 = auto()
     UNSUPPORTED = auto()
 
 
 def run_cmd(
-    cmd: list[str], use_sudo: bool, logger: logging.Logger, cwd: Path = None
+    cmd: list[str],
+    use_sudo: bool,
+    logger: logging.Logger,
+    cwd: Path = None,
+    env: dict = None,
 ) -> None:
     """
     Run a shell command and log its output.
@@ -47,6 +51,9 @@ def run_cmd(
     if cwd is None:
         cwd = Path.cwd()
 
+    if env is None:
+        env = os.environ.copy()
+
     if use_sudo:
         cmd = ["sudo"] + cmd
 
@@ -58,6 +65,7 @@ def run_cmd(
             check=True,
             text=True,
             cwd=cwd,
+            env=env,
         )
 
     except subprocess.CalledProcessError as e:
@@ -103,22 +111,14 @@ def download_archive(
 
 
 def get_os_type() -> OS:
-    if platform.system() == "Linux" and is_raspberry_pi():
-        return OS.RASPIOS
-    elif platform.system() == "Linux":
-        return OS.LINUX
-    elif platform.system() == "Darwin":
-        return OS.MACOS
+    if platform.system() == "Linux" and platform.machine() == "x86_64":
+        return OS.LINUX_x64
+    elif platform.system() == "Linux" and platform.machine() == "aarch64":
+        return OS.LINUX_arm64
+    elif platform.system() == "Darwin" and platform.machine() == "arm64":
+        return OS.MACOS_arm64
     else:
         return OS.UNSUPPORTED
-
-
-def is_raspberry_pi():
-    try:
-        with open("/proc/cpuinfo") as f:
-            return "Raspberry" in f.read()
-    except FileNotFoundError:
-        return False
 
 
 def get_use_sudo(logger: logging.Logger) -> bool:
@@ -149,3 +149,26 @@ def setup_logging(name: str, log_path: Path) -> logging.Logger:
     logger.info(f"Logging to file {log_path}")
 
     return logger
+
+
+def get_git_root() -> Path:
+    """Return the root directory of the current Git repo as a Path object."""
+    try:
+        git_root = subprocess.check_output(
+            ["git", "rev-parse", "--show-toplevel"], text=True
+        ).strip()
+        return Path(git_root)
+    except subprocess.CalledProcessError:
+        raise RuntimeError("Not inside a Git repository.")
+
+
+def get_github_tarball_url(url: str) -> str:
+    response = requests.get(url)
+    response.raise_for_status()
+    data = response.json()
+
+    for asset in data["assets"]:
+        if asset["name"].endswith(".tar.gz"):
+            return asset["browser_download_url"]
+
+    raise RuntimeError("No tar.gz asset found.")

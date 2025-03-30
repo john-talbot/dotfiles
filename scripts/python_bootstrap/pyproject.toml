@@ -1,0 +1,18 @@
+[project]
+name = "python-bootstrap"
+version = "0.1.0"
+description = "My bootstrap utility to configure a new system"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["requests", "rich"]
+
+[project.scripts]
+bootstrap = "python_bootstrap.bootstrap:main"
+install_fzf = "python_bootstrap.install_fzf:main"
+install_oh_my_zsh = "python_bootstrap.install_omz:main"
+install_neovim = "python_bootstrap.install_neovim:main"
+install_node = "python_bootstrap.install_node:main"
+install_stow = "python_bootstrap.install_stow:main"
+install_treesitter = "python_bootstrap.install_treesitter:main"
+install_uctags = "python_bootstrap.install_uctags:main"

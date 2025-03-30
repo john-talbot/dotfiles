@@ -2,9 +2,20 @@ import logging
 import os
 from pathlib import Path
 
+from python_bootstrap import (
+    install_fzf,
+    install_neovim,
+    install_node,
+    install_omz,
+    install_stow,
+    install_treesitter,
+    install_uctags,
+    utilities,
+)
 from python_bootstrap.utilities import OS
 
-from python_bootstrap import install_neovim, utilities
+GIT_ROOT = utilities.get_git_root()
+APT_FILE_PATH = GIT_ROOT.joinpath("scripts/conf/apt_packages.txt")
 
 ZSH_PATH = "/usr/bin/zsh"
 LOCALE_GEN_PATH = Path("/etc/locale.gen")
@@ -16,9 +27,8 @@ LANGUAGE = "en_US:en"
 
 def bootstrap(
     os_type: OS,
-    tmp_dir: Path,
+    temp_dir: Path,
     timezone: str,
-    apt_file_path: Path,
     use_sudo: bool,
     logger: logging.Logger,
 ) -> None:
@@ -37,16 +47,18 @@ def bootstrap(
 
     set_timezone(timezone, use_sudo, logger)
     update_apt_packages(use_sudo, logger)
-    install_apt_packages(apt_file_path, use_sudo, logger)
+    install_apt_packages(use_sudo, logger)
     set_locale(LOCALE, LANGUAGE, use_sudo, logger)
     change_default_shell(ZSH_PATH, use_sudo, logger)
 
     # Install packages
-    install_neovim.install(os_type, tmp_dir, use_sudo, logger)
-    # install_stow.install(install_files["stow"], logger)
-    # install_uctags.install(install_files["uctags"], logger)
-    # install_treesitter.install(install_files["treesitter"], logger)
-    # install_fzf.install(install_files["fzf"], logger)
+    install_neovim.install(os_type, temp_dir, use_sudo, logger)
+    install_stow.install(os_type, temp_dir, logger)
+    install_omz.install(temp_dir, logger)
+    install_fzf.install(logger)
+    install_node.install(temp_dir, logger)
+    install_treesitter.install(os_type, temp_dir, logger)
+    install_uctags.install(os_type, temp_dir, logger)
 
     # Cleanup downloads
     rebuild_font_cache(logger)
@@ -86,26 +98,22 @@ def update_apt_packages(use_sudo: bool, logger: logging.Logger) -> None:
     logger.info("Finished updating apt packages.")
 
 
-def install_apt_packages(
-    apt_file_path: Path, use_sudo: bool, logger: logging.Logger
-) -> None:
+def install_apt_packages(use_sudo: bool, logger: logging.Logger) -> None:
     """
     Install a list of apt packages.
 
     Parameters
     ----------
-    apt_file_path : Path
-        The path to the file containing the list of packages.
     use_sudo : bool
         Should the command be run with sudo?
     logger : logging.Logger
         The logger to use for logging output.
 
     """
-    logger.info(f"Installing apt packages from file {apt_file_path.name}.")
-    logger.debug(f"Full apt package file path: {apt_file_path}")
+    logger.info(f"Installing apt packages from file {APT_FILE_PATH.name}.")
+    logger.debug(f"Full apt package file path: {APT_FILE_PATH}")
 
-    packages = read_apt_packages_from_file(apt_file_path, logger)
+    packages = read_apt_packages_from_file(APT_FILE_PATH, logger)
     utilities.run_cmd(["apt-get", "install", "-y"] + packages, use_sudo, logger)
 
     logger.info("Finished installing apt packages.")
