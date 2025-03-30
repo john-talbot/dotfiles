@@ -57,9 +57,8 @@ def install(os_type: OS, temp_dir: Path, use_sudo: bool, logger: logging.Logger)
         logger.error("Unsupported OS type.")
         return
 
-    logger.info("Installing neovim python packages.")
-    _install_python_packages(use_sudo, logger)
     logger.info("Finished installing neovim.")
+    logger.info("I recommend installing `neovim` and `neovim-remote` via pip.")
 
 
 def _install_macos(logger: logging.Logger) -> None:
@@ -83,15 +82,6 @@ def _install_linux(
     utilities.run_cmd(["mkdir", "-p", str(_INSTALL_DIR)], use_sudo, logger)
     utilities.run_cmd(
         ["tar", "-C", str(_INSTALL_DIR), "--strip-components=1", "-xf", down_path],
-        use_sudo,
-        logger,
-    )
-
-
-def _install_python_packages(use_sudo: bool, logger: logging.Logger) -> None:
-    logger.debug("Installing python neovim packages in system environment.")
-    utilities.run_cmd(
-        ["/usr/bin/python3", "-m", "pip", "install", "neovim", "neovim-remote"],
         use_sudo,
         logger,
     )
