@@ -1,9 +1,0 @@
-[console_scripts]
-bootstrap = python_bootstrap.bootstrap:main
-install_fzf = python_bootstrap.install_fzf:main
-install_neovim = python_bootstrap.install_neovim:main
-install_node = python_bootstrap.install_node:main
-install_oh_my_zsh = python_bootstrap.install_omz:main
-install_stow = python_bootstrap.install_stow:main
-install_treesitter = python_bootstrap.install_treesitter:main
-install_uctags = python_bootstrap.install_uctags:main

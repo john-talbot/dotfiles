@@ -1,9 +1,0 @@
-Metadata-Version: 2.4
-Name: python-bootstrap
-Version: 0.1.0
-Summary: My bootstrap utility to configure a new system
-Author-email: Your Name <you@example.com>
-Requires-Python: >=3.10
-Description-Content-Type: text/markdown
-Requires-Dist: requests
-Requires-Dist: rich

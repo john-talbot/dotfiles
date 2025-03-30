@@ -8,7 +8,7 @@ from pathlib import Path
 from python_bootstrap import (
     install_node,
     install_omz,
-    install_python_essentials,
+    install_py,
     linux_bootstrap,
     utilities,
 )
@@ -17,9 +17,36 @@ from python_bootstrap.utilities import OS
 GIT_ROOT = utilities.get_git_root()
 PROC_PATH = Path("/proc/cpuinfo")
 
+_LOG_NAME = "bootstrap.log"
 
-def main(timezone: str, temp_dir: Path, log_dir: Path) -> None:
-    logger = utilities.setup_logging("bootstrap_logger", log_dir)
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Bootstrapping script to setup a fresh environment."
+    )
+    parser.add_argument(
+        "--timezone",
+        type=str,
+        default="America/New_York",
+        help="The timezone to set for the environment.",
+    )
+    parser.add_argument(
+        "--temp",
+        type=Path,
+        help="The temporary directory to use for the script.",
+    )
+    parser.add_argument(
+        "--log",
+        type=Path,
+        help="The directory to store the log files.",
+    )
+    args = parser.parse_args()
+
+    timezone = args.timezone
+    temp_dir = args.temp
+    log_dir = args.log
+
+    logger = utilities.setup_logging("bootstrap_logger", log_dir.joinpath(_LOG_NAME))
     use_sudo = utilities.get_use_sudo(logger)
     os_type = utilities.get_os_type()
 
@@ -34,7 +61,7 @@ def main(timezone: str, temp_dir: Path, log_dir: Path) -> None:
 
     install_omz.install(temp_dir, logger)
     install_node.install(temp_dir, logger)
-    install_python_essentials.install(logger)
+    install_py.install(logger)
 
     logger.info("Deploying dotfiles.")
     stow_cmd = Path.home().joinpath(".local/bin/stow")
@@ -61,27 +88,3 @@ def main(timezone: str, temp_dir: Path, log_dir: Path) -> None:
 
     logger.info("Bootstrapping complete.")
     logger.info("Please restart your shell to apply changes.")
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Bootstrapping script to setup a fresh environment."
-    )
-    parser.add_argument(
-        "--timezone",
-        type=str,
-        default="America/New_York",
-        help="The timezone to set for the environment.",
-    )
-    parser.add_argument(
-        "--temp",
-        type=Path,
-        help="The temporary directory to use for the script.",
-    )
-    parser.add_argument(
-        "--log",
-        type=Path,
-        help="The directory to store the log files.",
-    )
-    args = parser.parse_args()
-    main(args.timezone, args.temp, args.log)
