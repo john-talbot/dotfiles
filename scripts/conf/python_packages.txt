@@ -1,14 +1,14 @@
+aiohttp
+aiofiles
 black
 flake8
 isort
-matplotlib
 neovim
 neovim-remote
-numpy
 pep8-naming
 pip
 pytest
+requests
 rich
-scipy
 setuptools
 typing_extensions

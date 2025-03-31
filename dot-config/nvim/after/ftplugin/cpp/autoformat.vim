@@ -1,17 +1,3 @@
-
-" Only do this when not done yet for this buffer
-if exists("b:python_ftplugin")
-  finish
-endif
-let b:python_ftplugin = 1
-
-
-" Set default compiler to flake8 if not already set
-if !exists('current_compiler')
-    compiler flake8
-endif
-
-
 " Set default color column to 88
 if !exists('colorcolumn')
     set colorcolumn=88
