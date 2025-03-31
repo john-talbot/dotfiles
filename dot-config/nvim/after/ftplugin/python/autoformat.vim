@@ -88,8 +88,6 @@ function! RuffFormatIfEnabled()
         echom "❌ Ruff check failed:"
         echom ruff_check_output
         echohl None
-    else
-        echom "✅ Ruff check completed for " . expand('%:t')
     endif
 
     " Run formatter
@@ -99,11 +97,9 @@ function! RuffFormatIfEnabled()
         echom "❌ Ruff format failed:"
         echom ruff_format_output
         echohl None
-    else
-        echom "✅ Ruff formatter completed for " . expand('%:t')
     endif
 
-    " Reload file only if it was modified
+    " Reload file
    silent! edit!
 endfunction
 
