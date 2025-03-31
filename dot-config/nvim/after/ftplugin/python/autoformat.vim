@@ -1,22 +1,3 @@
-" Only do this when not done yet for this buffer
-if exists("b:python_ftplugin")
-  finish
-endif
-let b:python_ftplugin = 1
-
-
-" Set default compiler to ruff if not already set
-if !exists('current_compiler')
-    compiler ruff
-endif
-
-
-" Set default color column to 88
-if !exists('colorcolumn')
-    set colorcolumn=88
-endif
-
-
 " Run formatter on save
 autocmd BufWritePre <buffer> call FormatPythonOnSave()
 
@@ -40,18 +21,6 @@ function! FormatPythonOnSave()
 endfunction
 
 
-" Global variable to track if warning has been shown
-if !exists('g:ruff_warning_shown')
-    let g:ruff_warning_shown = 0
-endif
-
-
-" Global variable to enable ruff formatting 
-if !exists('g:ruff_format_on_save')
-    let g:ruff_format_on_save = 1  " Default to true if not already set
-endif
-
-
 function! CheckRuff()
   " Check if 'ruff' command is available in the system
   return system('command -v ruff >/dev/null 2>&1 && echo 1 || echo 0')
@@ -69,12 +38,7 @@ function! RuffFormatIfEnabled()
         return
     endif
 
-    " Run formatter if enabled
-    call RuffFormat()
-endfunction
-
-
-function! RuffFormat()
+    " Check if ruff is installed
     if CheckRuff() != 1
         if g:ruff_warning_shown == 0
             echohl WarningMsg
@@ -109,5 +73,32 @@ function! RuffFormat()
    silent! edit!
 endfunction
 
-" Create a command to easily run the formatter
-command! RuffFormat call RuffFormat()
+
+" Global variable to track if warning has been shown
+if !exists('g:ruff_warning_shown')
+    let g:ruff_warning_shown = 0
+endif
+
+
+" Global variable to enable ruff formatting 
+if !exists('g:ruff_format_on_save')
+    let g:ruff_format_on_save = 1  " Default to true if not already set
+endif
+
+" Only do this when not done yet for this buffer
+if exists("b:python_ftplugin")
+  finish
+endif
+let b:python_ftplugin = 1
+
+" Set default compiler to ruff if not already set
+if !exists('current_compiler')
+    compiler ruff
+endif
+
+" Set default color column to 88
+if !exists('colorcolumn')
+    set colorcolumn=88
+endif
+
+
