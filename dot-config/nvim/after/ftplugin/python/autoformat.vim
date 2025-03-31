@@ -69,6 +69,12 @@ function! RuffFormatIfEnabled()
         return
     endif
 
+    " Run formatter if enabled
+    call RuffFormat()
+endfunction
+
+
+function! RuffFormat()
     if CheckRuff() != 1
         if g:ruff_warning_shown == 0
             echohl WarningMsg
@@ -103,3 +109,5 @@ function! RuffFormatIfEnabled()
    silent! edit!
 endfunction
 
+" Create a command to easily run the formatter
+command! RuffFormat call RuffFormat()
