@@ -3,6 +3,7 @@
 
 # Python
 **/__pycache__
+**/*.egg-info/**
 
 # Fonts files
 dot-fonts/.uuid
