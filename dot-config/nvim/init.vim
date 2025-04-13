@@ -148,16 +148,9 @@ set foldexpr=nvim_treesitter#foldexpr()
 "################################################################################
 " CONFIGURATION VARIABLES
 "################################################################################
-""" BLACK
-" Don't install black automatically with virtualenv
-let g:black_use_virtualenv = 0
-
-""" CUSTOM PYTHON AUTOFORMATTING
-" Enable black formatting on save
-let g:black_format_on_save = 1
-
-" Enable isort on save
-let g:isort_format_on_save = 1
+""" RUFF Formatting
+" Enable ruff formatting on save
+let g:ruff_format_on_save = 1
 
 """ Fuzzy Finder
 " Pop up fzf-vim in a bottom split window
@@ -196,7 +189,7 @@ nnoremap <Leader>fc :Commands<CR>
 nnoremap <Leader>fh :History:<CR>
 nnoremap <Leader>fs :History/<CR>
 
-" Pre-commit to quickfix
+" Pre-commit to quickfix - function in lua/init.lua
 nnoremap <Leader>qf :PrecommitQf<CR>
 
 
