@@ -16,7 +16,7 @@ call minpac#add('nvim-treesitter/nvim-treesitter', {'do': 'TSUpdate'})
 call minpac#add('github/copilot.vim')
 
 " Language server support
-" call minpac#add('neovim/nvim-lspconfig')
+call minpac#add('neovim/nvim-lspconfig')
 " call minpac#add('williamboman/mason.nvim')
 " call minpac#add('williamboman/mason-lspconfig.nvim')
 

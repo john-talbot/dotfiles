@@ -135,3 +135,7 @@ vim.api.nvim_create_user_command("PrecommitQf", function()
     vim.notify("Pre-commit found issues, but none matched expected format", vim.log.levels.WARN)
   end
 end, {})
+
+
+-- Enable OSC52 clipboard support to copy over SSH
+vim.g.clipboard = 'osc52'
