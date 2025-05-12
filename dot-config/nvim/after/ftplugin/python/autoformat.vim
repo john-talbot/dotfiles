@@ -52,9 +52,44 @@ function! FormatPythonOnSave()
 endfunction
 
 
-function! CheckRuff()
-  " Check if 'ruff' command is available in the system
-  return system('command -v ruff >/dev/null 2>&1 && echo 1 || echo 0')
+function! RuffIsInstalled()
+    " Check if 'ruff' command is available in the system
+    let out = system('command -v ruff >/dev/null 2>&1 && echo 1 || echo 0')
+
+    if trim(out) ==# '1'
+        return 1 " ruff is installed
+    endif
+
+    if g:ruff_warning_shown == 0
+        echohl WarningMsg
+        echom "Warning: ruff is not installed... Not formatting"
+        echohl None
+        let g:ruff_warning_shown = 1
+    endif
+
+    return 0
+endfunction
+
+function! RuffCanFormat()
+    " Check if there are any errors in the buffer
+    let content = join(getline(1, '$'), "\n")
+    let output = system('ruff check --select I --fix --stdin-filename ' . shellescape(expand('%')) . ' -q -', content)
+    if v:shell_error
+        echohl ErrorMsg
+        echom "Error: ruff check failed, not formatting. Exit code: " . v:shell_error
+        echohl None
+        return 0
+    endif
+
+    let output = system('ruff format --stdin-filename ' . shellescape(expand('%')) . ' -q -', content)
+    if v:shell_error
+        echohl ErrorMsg
+        echom "Error: ruff format failed, not formatting. Exit code: " . v:shell_error
+        echohl None
+        return 0
+    endif
+
+    return 1
 endfunction
 
 
@@ -81,17 +116,9 @@ endfunction
 
 
 function! RuffFormat()
-    if CheckRuff() == 1
+    if RuffIsInstalled() && RuffCanFormat()
         " Execute ruff format to format the file
         silent! %!ruff check --select I --fix --stdin-filename % -q -
         silent! %!ruff format --stdin-filename % -q -
-    else
-        " Show warning that ruff isn't installed on first run
-        if g:ruff_warning_shown == 0
-            echohl WarningMsg
-            echom "Warning: ruff is not installed... Not formatting"
-            echohl None
-            let g:ruff_warning_shown = 1
-        endif
     endif
 endfunction

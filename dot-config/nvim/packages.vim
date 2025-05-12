@@ -12,7 +12,6 @@ call minpac#add('tpope/vim-obsession')
 call minpac#add('junegunn/fzf', {'dir': "$HOME/.local/bin"})
 call minpac#add('junegunn/fzf.vim')
 call minpac#add('nvim-treesitter/nvim-treesitter', {'do': 'TSUpdate'})
-
 call minpac#add('github/copilot.vim')
 
 " Language server support
@@ -22,6 +21,9 @@ call minpac#add('github/copilot.vim')
 
 " CMake Build Environment
 call minpac#add('cdelledonne/vim-cmake', {'type': 'opt'})
+
+" Julia support
+call minpac#add('JuliaEditorSupport/julia-vim')
 
 " Colorschemes
 call minpac#add('vim-airline/vim-airline')
