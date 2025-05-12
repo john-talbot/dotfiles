@@ -114,6 +114,12 @@ filetype plugin indent on
 " Enable syntax highlighting
 " syntax on
 
+" Set column width to 88 characters
+set colorcolumn=88
+
+" Wrap text at 88 characters
+set textwidth=88
+
 " Show line numbers
 set number
 
