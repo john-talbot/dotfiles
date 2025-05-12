@@ -94,14 +94,17 @@ def download_archive(
         response.raise_for_status()
         total = int(response.headers.get("Content-Length", 0))
 
-        with open(target_path, "wb") as file, Progress(
-            TextColumn("[bold blue]{task.description}"),
-            BarColumn(),
-            DownloadColumn(),
-            TransferSpeedColumn(),
-            TimeRemainingColumn(),
-            transient=True,  # removes the progress bar once finished
-        ) as progress:
+        with (
+            open(target_path, "wb") as file,
+            Progress(
+                TextColumn("[bold blue]{task.description}"),
+                BarColumn(),
+                DownloadColumn(),
+                TransferSpeedColumn(),
+                TimeRemainingColumn(),
+                transient=True,  # removes the progress bar once finished
+            ) as progress,
+        ):
             task = progress.add_task(f"Downloading {name}", total=total)
             for chunk in response.iter_content(chunk_size=1024):
                 if chunk:
@@ -126,7 +129,8 @@ def get_use_sudo(logger: logging.Logger) -> bool:
         logger.info("Detected root user.")
         return False
 
-    subprocess.run(["sudo", "-v"], text=True, check=True)
+    username = os.getlogin()
+    subprocess.run(["sudo", "-u", username, "-v"], text=True, check=True)
     return True
 
 
