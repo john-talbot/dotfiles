@@ -175,8 +175,9 @@ def change_default_shell(shell: str, use_sudo: bool, logger: logging.Logger) -> 
         The logger to use for logging output.
 
     """
+    username = os.getlogin()
     logger.info(f"Changing default shell to {shell}.")
-    utilities.run_cmd(["chsh", "-s", shell, "johntalbot"], use_sudo, logger)
+    utilities.run_cmd(["chsh", "-s", shell, username], use_sudo, logger)
     logger.info("Finished changing default shell.")
 
 
