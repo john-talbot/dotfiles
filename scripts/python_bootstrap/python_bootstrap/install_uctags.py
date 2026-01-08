@@ -101,3 +101,7 @@ def _install_macos(logger: logging.Logger) -> None:
         utilities.run_cmd(["brew", "install", "universal-ctags"], False, logger)
     except FileNotFoundError:
         logger.error("Homebrew is not installed.")
+
+
+if __name__ == "__main__":
+    main()

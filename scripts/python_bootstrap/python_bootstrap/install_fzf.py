@@ -55,3 +55,7 @@ def install(logger: logging.Logger) -> None:
     utilities.run_cmd(["./install"] + _CMD_STRINGS, False, logger, cwd=_INSTALL_DIR)
 
     logger.info("Finished installing fzf.")
+
+
+if __name__ == "__main__":
+    main()

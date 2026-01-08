@@ -95,3 +95,7 @@ def _install_linux(temp_dir: Path, logger: logging.Logger) -> None:
     )
     utilities.run_cmd(["make", f"-j{os.cpu_count()}"], False, logger, cwd=out_path)
     utilities.run_cmd(["make", "install"], False, logger, cwd=out_path)
+
+
+if __name__ == "__main__":
+    main()

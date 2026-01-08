@@ -84,3 +84,7 @@ def _install_linux(
         use_sudo,
         logger,
     )
+
+
+if __name__ == "__main__":
+    main()
