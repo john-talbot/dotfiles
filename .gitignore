@@ -11,6 +11,9 @@ dot-fonts/.uuid
 # Vim plugins and temp files
 dot-vim/pack/minpac
 dot-vim/.netrwhist
+dot-vim/swap
+dot-vim/undo
+dot-vim/backup
 Session.vim
 .nvimlog
 
@@ -24,10 +27,16 @@ dot-config/op
 # Neovim plugins and temp files
 dot-config/nvim/pack/minpac
 dot-config/nvim/.netrwhist
+dot-config/nvim/swap
+dot-config/nvim/undo
+dot-config/nvim/backup
 
 # Machine specific config
 dot-zshrc-per-machine
 dot-zshenv-per-machine
+
+# NPM packages
+node_modules/
 
 # Installation logs
 **/*.log

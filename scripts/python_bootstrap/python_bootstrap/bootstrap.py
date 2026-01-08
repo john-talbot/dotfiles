@@ -10,6 +10,7 @@ from python_bootstrap.utilities import OS
 
 GIT_ROOT = utilities.get_git_root()
 PROC_PATH = Path("/proc/cpuinfo")
+DEFAULT_TIME_ZONE = "America/Los_Angeles"
 
 _LOG_NAME = "bootstrap.log"
 
@@ -21,7 +22,7 @@ def main() -> None:
     parser.add_argument(
         "--timezone",
         type=str,
-        default="America/New_York",
+        default=DEFAULT_TIME_ZONE,
         help="The timezone to set for the environment.",
     )
     parser.add_argument(
@@ -65,13 +66,7 @@ def main() -> None:
         cwd=GIT_ROOT,
     )
 
-    logger.info("Installing vim plugins.")
-    vim_pkg_path = Path.home().joinpath(".vim/install_packages.vim")
-    utilities.run_cmd(
-        ["vim", "-E", "-s", "-u", "NONE", "-N", "-c", f"source {vim_pkg_path}"],
-        False,
-        logger,
-    )
+    logger.info("Installing neovim plugins.")
     nvim_pkg_path = Path.home().joinpath(".config/nvim/install_packages.vim")
     utilities.run_cmd(
         ["/opt/neovim/bin/nvim", "--headless", "-c", f"source {nvim_pkg_path}"],

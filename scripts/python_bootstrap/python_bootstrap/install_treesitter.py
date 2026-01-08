@@ -1,24 +1,15 @@
 import argparse
-import gzip
 import logging
-import platform
-import shutil
 import sys
 from pathlib import Path
 
 from python_bootstrap import utilities
 from python_bootstrap.utilities import OS
 
-_BASE_URL = (
-    "https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-"
-)
-
-_ARCH_MAP = {"x86_64": "linux-x64", "aarch64": "linux-arm64", "armv7l": "linux-arm"}
-
-_INSTALL_PATH = Path.home().joinpath(".local/bin/tree-sitter")
-
 _TMP_NAME = "node"
 _LOG_NAME = "install_node.log"
+
+_VERSION = "0.25.10"
 
 
 def main() -> None:
@@ -62,22 +53,14 @@ def install(os_type: OS, temp_dir: Path, logger: logging.Logger) -> None:
     logger.info("Finished installing treesitter.")
 
 
-def _install_linux(temp_dir: Path, logger: logging.Logger) -> None:
-    logger.debug("Downloading treesitter.")
-    down_path = temp_dir.joinpath("treesitter.gz")
-
-    url = f"{_BASE_URL}{_ARCH_MAP[platform.machine()]}.gz"
-
-    utilities.download_archive(url, down_path, logger)
-
-    logger.debug("Extracting treesitter.")
-    with gzip.open(down_path, "rb") as f_in:
-        with open(down_path.with_suffix(""), "wb") as f_out:
-            shutil.copyfileobj(f_in, f_out)
-
-    logger.debug("Moving treesitter to install location.")
-    shutil.move(down_path.with_suffix(""), _INSTALL_PATH)
-    utilities.run_cmd(["chmod", "a+x", str(_INSTALL_PATH)], False, logger)
+def _install_linux(logger: logging.Logger) -> None:
+    logger.debug("Installing treesitter via npm.")
+    try:
+        utilities.run_cmd(
+            ["npm", "install", "-g", f"tree-sitter-cli@{_VERSION}"], False, logger
+        )
+    except FileNotFoundError:
+        logger.error("npm is not installed.")
 
 
 def _install_macos(logger: logging.Logger) -> None:

@@ -7,8 +7,8 @@ from python_bootstrap import utilities
 from python_bootstrap.utilities import OS
 
 _URLS = {
-    OS.LINUX_x64: "https://github.com/neovim/neovim/releases/download/v0.11.0/nvim-linux-x86_64.tar.gz",  # noqa: E501
-    OS.LINUX_arm64: "https://github.com/neovim/neovim/releases/download/v0.11.0/nvim-linux-arm64.tar.gz",  # noqa: E501
+    OS.LINUX_x64: "https://github.com/neovim/neovim/releases/download/latest/nvim-linux-x86_64.tar.gz",  # noqa: E501
+    OS.LINUX_arm64: "https://github.com/neovim/neovim/releases/download/latest/nvim-linux-arm64.tar.gz",  # noqa: E501
 }
 
 _SCRIPT_DIR = utilities.get_git_root().joinpath("scripts")
@@ -73,7 +73,6 @@ def _install_macos(logger: logging.Logger) -> None:
 def _install_linux(
     os_type: OS, temp_dir: Path, use_sudo: bool, logger: logging.Logger
 ) -> None:
-
     # Remove any existing neovim installation
     utilities.run_cmd(["rm", "-rf", "/opt/neovim"], use_sudo, logger)
 
