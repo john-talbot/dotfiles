@@ -10,7 +10,7 @@ from python_bootstrap import utilities
 from python_bootstrap.utilities import OS
 
 _VERSION = "v0.25.10"
-_BASE_URL = f"https://github.com/tree-sitter/tree-sitter/releases/{_VERSION}/download/tree-sitter-"
+_BASE_URL = f"https://github.com/tree-sitter/tree-sitter/releases/download/{_VERSION}/tree-sitter-"
 
 _ARCH_MAP = {"x86_64": "linux-x64", "aarch64": "linux-arm64", "armv7l": "linux-arm"}
 

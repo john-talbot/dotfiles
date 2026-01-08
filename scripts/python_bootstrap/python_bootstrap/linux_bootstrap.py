@@ -6,6 +6,7 @@ from python_bootstrap import (
     install_fzf,
     install_neovim,
     install_stow,
+    install_treesitter,
     install_uctags,
     utilities,
 )
