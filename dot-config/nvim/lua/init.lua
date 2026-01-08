@@ -1,62 +1,34 @@
-require'nvim-treesitter.configs'.setup {
-    -- A list of parser names, or "all" (the listed parsers MUST always be installed)
-    ensure_installed = { 
-        "bash",
-        "bibtex",
-        "c",
-        "cmake",
-        "cpp",
-        "dockerfile",
-        "doxygen",
-        "latex",
-        "lua",
-        "make",
-        "markdown",
-        "pioasm",
-        "python",
-        "toml",
-        "vim",
-        "vimdoc",
-    },
+require('nvim-treesitter').install({
+    "bash",
+    "bibtex",
+    "c",
+    "cmake",
+    "cpp",
+    "dockerfile",
+    "doxygen",
+    "latex",
+    "lua",
+    "make",
+    "markdown",
+    "pioasm",
+    "python",
+    "toml",
+    "vim",
+    "vimdoc",
+})
 
-    -- Install parsers synchronously (only applied to `ensure_installed`)
-    sync_install = false,
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { '<filetype>' },
+  callback = function() vim.treesitter.start() end,
+})
 
-    -- Automatically install missing parsers when entering buffer
-    auto_install = true,
-
-    -- List of parsers to ignore installing (or "all")
-    ignore_install = { "javascript" },
-
-    highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = false,
-        custom_captures = {
-            -- Capture groups for specific elements
-            ["function.call"] = "Function",
-            ["method"] = "Function",
-            ["method.call"] = "Function",
-            ["class.method"] = "Function",
-        },
-    },
-    incremental_selection = {
-        enable = true,
-        keymaps = {
-            init_selection = "gnn",    -- Initialize selection
-            node_incremental = "grn",  -- Increment to the upper named parent
-            scope_incremental = "grc", -- Increment to the upper scope (as defined in locals.scm)
-            node_decremental = "grm",  -- Decrement to the previous node
-        },
-    },
-
-    indent = {
-        enable = false,
-    },
-
-    fold = {
-        enable = true,
-    },
-}
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "c","cpp","lua","python","tex","vim","vimdoc","markdown" },
+  callback = function()
+    vim.wo.foldmethod = "expr"
+    vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+  end,
+})
 
 -- Command to run pre-commit and load results into quickfix list
 vim.api.nvim_create_user_command("PrecommitQf", function()
@@ -130,7 +102,6 @@ vim.api.nvim_create_user_command("PrecommitQf", function()
       lines = abs_lines,
     })
     vim.cmd("copen")
-    vim.cmd("cc")
   else
     vim.notify("Pre-commit found issues, but none matched expected format", vim.log.levels.WARN)
   end
