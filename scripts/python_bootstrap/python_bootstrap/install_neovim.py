@@ -7,8 +7,8 @@ from python_bootstrap import utilities
 from python_bootstrap.utilities import OS
 
 _URLS = {
-    OS.LINUX_x64: "https://github.com/neovim/neovim/releases/download/latest/nvim-linux-x86_64.tar.gz",  # noqa: E501
-    OS.LINUX_arm64: "https://github.com/neovim/neovim/releases/download/latest/nvim-linux-arm64.tar.gz",  # noqa: E501
+    OS.LINUX_x64: "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz",  # noqa: E501
+    OS.LINUX_arm64: "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-arm64.tar.gz",  # noqa: E501
 }
 
 _SCRIPT_DIR = utilities.get_git_root().joinpath("scripts")

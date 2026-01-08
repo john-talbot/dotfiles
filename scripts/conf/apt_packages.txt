@@ -11,8 +11,6 @@ git
 jq
 locales
 ninja-build
-nodejs
-npm
 pkg-config
 python-is-python3
 python3

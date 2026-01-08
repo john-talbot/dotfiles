@@ -7,7 +7,7 @@ from pathlib import Path
 from python_bootstrap import utilities
 from python_bootstrap.utilities import OS
 
-_URL = "https://ftp.gnu.org/gnu/stow/stow-latest.tar.gz"
+_URL = "http://mirrors.ocf.berkeley.edu/gnu/stow/stow-latest.tar.gz"
 
 _INSTALL_DIR = Path.home().joinpath(".local")
 
@@ -39,10 +39,10 @@ def main() -> None:
         logger.error("This script is not supported on this operating system.")
         sys.exit(1)
 
-    local_stow = _INSTALL_DIR.joinpath("bin").joinpath("stow")
-    if local_stow.exists() and local_stow.is_file():
-        logger.info("Stow is already installed locally.")
-        return
+    # stow_path = shutil.which("stow")
+    # if stow_path is not None:
+    #     logger.info(f"Stow is already installed at {stow_path}. Skipping installation.")
+    #     return True
 
     install(os_type, temp_dir.joinpath(_TMP_NAME), logger)
 
@@ -71,6 +71,11 @@ def _install_macos(logger: logging.Logger) -> None:
 
 
 def _install_linux(temp_dir: Path, logger: logging.Logger) -> None:
+    # local_stow = _INSTALL_DIR.joinpath("bin").joinpath("stow")
+    # if local_stow.exists() and local_stow.is_file():
+    #     logger.info("Stow is already installed locally.")
+    #     return
+
     logger.debug("Downloading stow.")
     down_path = temp_dir.joinpath("stow.tar.gz")
     utilities.download_archive(_URL, down_path, logger)
