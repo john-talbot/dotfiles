@@ -118,7 +118,7 @@ filetype plugin indent on
 set colorcolumn=88
 
 " Wrap text at 88 characters
-set textwidth=88
+" set textwidth=88
 
 " Show line numbers
 set number

@@ -12,7 +12,7 @@ call minpac#add('tpope/vim-obsession')
 call minpac#add('junegunn/fzf', {'dir': "$HOME/.local/bin"})
 call minpac#add('junegunn/fzf.vim')
 call minpac#add('nvim-treesitter/nvim-treesitter', {'do': 'TSUpdate'})
-call minpac#add('github/copilot.vim')
+call minpac#add('github/copilot.vim', {'rev': 'v1.43.0'})
 
 " Language server support
 " call minpac#add('neovim/nvim-lspconfig')
@@ -23,11 +23,14 @@ call minpac#add('github/copilot.vim')
 call minpac#add('cdelledonne/vim-cmake', {'type': 'opt'})
 
 " Julia support
-call minpac#add('JuliaEditorSupport/julia-vim')
+" call minpac#add('JuliaEditorSupport/julia-vim')
 
 " Colorschemes
 call minpac#add('vim-airline/vim-airline')
 call minpac#add('tomasiser/vim-code-dark')
 
 " Markdown
-call minpac#add('iamcco/markdown-preview.nvim', {'do': 'packloadall! | call mkdp#util#install()'})
+call minpac#add('iamcco/markdown-preview.nvim', {'type': 'opt', 'do': 'packloadall! | call mkdp#util#install()'})
+
+" Unicode support
+call minpac#add('arthurxavierx/vim-unicoder')

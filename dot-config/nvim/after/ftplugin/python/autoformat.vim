@@ -28,7 +28,7 @@ endif
 autocmd BufWritePre <buffer> call FormatPythonOnSave()
 
 " Command to run ruff format
-command! RuffFormat call RuffFormatIfModified()
+command! RuffFormat call RuffFormat()
 
 " Quickly run ruff format
 nnoremap <Leader>r :RuffFormat<CR>
