@@ -40,11 +40,9 @@ def main() -> None:
         logger.error("This script is not supported on this operating system.")
         sys.exit(1)
 
-    uctags_path = shutil.which("ctags")
-    if uctags_path is not None:
-        logger.info(
-            f"Universal Ctags is already installed at {uctags_path}. Skipping installation."
-        )
+    local_uctags = _INSTALL_DIR.joinpath("bin").joinpath("uctags")
+    if local_uctags.exists() and local_uctags.is_file():
+        logger.info("Universal CTags is already installed locally.")
         return
 
     install(os_type, temp_dir.joinpath(_TMP_NAME), logger)

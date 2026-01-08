@@ -1,7 +1,6 @@
 import argparse
 import logging
 import os
-import shutil
 import sys
 from pathlib import Path
 
@@ -40,9 +39,9 @@ def main() -> None:
         logger.error("This script is not supported on this operating system.")
         sys.exit(1)
 
-    stow_path = shutil.which("stow")
-    if stow_path is not None:
-        logger.info(f"Stow is already installed at {stow_path}. Skipping installation.")
+    local_stow = _INSTALL_DIR.joinpath("bin").joinpath("stow")
+    if local_stow.exists() and local_stow.is_file():
+        logger.info("Stow is already installed locally.")
         return
 
     install(os_type, temp_dir.joinpath(_TMP_NAME), logger)
