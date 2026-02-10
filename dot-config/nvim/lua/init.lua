@@ -30,6 +30,11 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+vim.api.nvim_set_hl(0, "@function.call", { link = "Function" })
+vim.api.nvim_set_hl(0, "@method",        { link = "Function" })
+vim.api.nvim_set_hl(0, "@method.call",   { link = "Function" })
+vim.api.nvim_set_hl(0, "@class.method",  { link = "Function" })
+
 -- Command to run pre-commit and load results into quickfix list
 vim.api.nvim_create_user_command("PrecommitQf", function()
   -- Detect Git root
