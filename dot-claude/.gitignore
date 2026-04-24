@@ -1,0 +1,3 @@
+# Only track user-authored files — Claude runtime writes to ~./claude directly
+# settings.local.json is host-specific
+settings.local.json
