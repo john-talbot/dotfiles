@@ -95,6 +95,5 @@ alias clean_udp='pkill -f udp; fastdds shm clean'
 
 alias activate='source .venv/bin/activate'
 
-alias govpn='globalprotect connect -p VPN_PORTAL'
 alias vpnstat='globalprotect show --status'
 

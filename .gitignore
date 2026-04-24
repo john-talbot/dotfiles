@@ -35,6 +35,9 @@ dot-config/nvim/backup
 dot-zshrc-per-machine
 dot-zshenv-per-machine
 
+# Claude instructions with personal/work identifiers
+claude_instructions/claude_tpm.md
+
 # NPM packages
 node_modules/
 
