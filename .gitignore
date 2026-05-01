@@ -34,6 +34,7 @@ dot-config/nvim/backup
 # Machine specific config
 dot-zshrc-per-machine
 dot-zshenv-per-machine
+dot-claude/settings.json
 
 # Claude instructions with personal/work identifiers
 claude_instructions/claude_tpm.md
