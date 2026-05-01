@@ -6,6 +6,7 @@ require('nvim-treesitter').install({
     "cpp",
     "dockerfile",
     "doxygen",
+    "javascript",
     "latex",
     "lua",
     "make",
@@ -13,6 +14,8 @@ require('nvim-treesitter').install({
     "pioasm",
     "python",
     "toml",
+    "tsx",
+    "typescript",
     "vim",
     "vimdoc",
 })
@@ -107,6 +110,7 @@ vim.api.nvim_create_user_command("PrecommitQf", function()
       lines = abs_lines,
     })
     vim.cmd("copen")
+    vim.cmd("cc")
   else
     vim.notify("Pre-commit found issues, but none matched expected format", vim.log.levels.WARN)
   end

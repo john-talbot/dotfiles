@@ -68,9 +68,9 @@ plugins=(
     python 
     rust
     vscode
-    # fzf-tab
-    zsh-autosuggestions 
-    # fzf
+    fzf-tab
+    zsh-autosuggestions
+    fzf
     zsh-syntax-highlighting
     )
 ZSH_THEME="powerlevel10k/powerlevel10k"
