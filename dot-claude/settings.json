@@ -51,7 +51,6 @@
     "command": "bash \"/home/johntalbot/.claude/statusline-command.sh\""
   },
   "enabledPlugins": {
-    "superpowers@claude-plugins-official": true,
     "code-review@claude-plugins-official": false,
     "code-simplifier@claude-plugins-official": false,
     "github@claude-plugins-official": false,
@@ -70,5 +69,4 @@
     }
   },
   "advisorModel": "opus",
-  "model": "sonnet"
 }
