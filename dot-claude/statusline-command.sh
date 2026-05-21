@@ -36,58 +36,6 @@ ctx_used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 session_cost=$(echo "$input" | jq -r '.cost.total_cost_usd // empty')
 session_duration_ms=$(echo "$input" | jq -r '.cost.total_duration_ms // empty')
 
-five_used=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
-five_resets_at=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
-week_used=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
-week_resets_at=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
-
-now=$(date +%s)
-
-# ---------------------------------------------------------------------------
-# Helper: derive a compact label from a resets_at epoch
-#   $1 = resets_at epoch (integer, may be empty)
-#   $2 = fallback label (e.g. "5h" or "7d")
-#   $3 = window type: "hours" (5-hour window) or "days" (7-day window)
-#        "hours" format: Nm | XhYm | Xh
-#        "days"  format: Nd | <1d
-#   Sets $rate_label
-# ---------------------------------------------------------------------------
-make_rate_label() {
-  local resets_at="$1"
-  local fallback="$2"
-  local window_type="${3:-hours}"
-  if [ -z "$resets_at" ]; then
-    rate_label="$fallback"
-    return
-  fi
-  local delta=$(( resets_at - now ))
-  if [ "$delta" -le 0 ]; then
-    rate_label="$fallback"
-  elif [ "$window_type" = "days" ]; then
-    # 7-day window: display in whole days only
-    if [ "$delta" -lt 86400 ]; then
-      rate_label="<1d"
-    else
-      local d=$(( delta / 86400 ))
-      rate_label="${d}d"
-    fi
-  elif [ "$delta" -lt 3600 ]; then
-    local m=$(( delta / 60 ))
-    rate_label="${m}m"
-  elif [ "$delta" -lt 86400 ]; then
-    local h=$(( delta / 3600 ))
-    local m=$(( (delta % 3600) / 60 ))
-    if [ "$m" -eq 0 ]; then
-      rate_label="${h}h"
-    else
-      rate_label="${h}h${m}m"
-    fi
-  else
-    local h=$(( delta / 3600 ))
-    rate_label="${h}h"
-  fi
-}
-
 # ---------------------------------------------------------------------------
 # Separator
 # ---------------------------------------------------------------------------
@@ -137,59 +85,13 @@ if [ -n "$ctx_used" ]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 3. Rate-limit bars  ⚡  (filled = used; green=low, yellow=moderate, red=high)
-# ---------------------------------------------------------------------------
-rate_printed=0
-
-if [ -n "$five_used" ]; then
-  make_bar "$five_used"
-  five_bar="$bar_out"
-  five_used_int="$bar_pct_out"
-
-  make_rate_label "$five_resets_at" "5h" "hours"
-  five_label="$rate_label"
-
-  # Color: green < 60%, yellow 60-80%, red >= 80%
-  if   [ "$five_used_int" -lt 60 ]; then five_color='\033[38;5;214m'
-  elif [ "$five_used_int" -lt 80 ]; then five_color='\033[38;5;221m'
-  else                                    five_color='\033[38;5;203m'
-  fi
-
-  printf "$SEP"
-  printf "${five_color}⚡ %s %s %d%%\033[0m" "$five_label" "$five_bar" "$five_used_int"
-  rate_printed=1
-fi
-
-if [ -n "$week_used" ]; then
-  make_bar "$week_used"
-  week_bar="$bar_out"
-  week_used_int="$bar_pct_out"
-
-  make_rate_label "$week_resets_at" "7d" "days"
-  week_label="$rate_label"
-
-  # Color: green < 60%, yellow 60-80%, red >= 80%
-  if   [ "$week_used_int" -lt 60 ]; then week_color='\033[38;5;214m'
-  elif [ "$week_used_int" -lt 80 ]; then week_color='\033[38;5;221m'
-  else                                    week_color='\033[38;5;203m'
-  fi
-
-  if [ "$rate_printed" -eq 0 ]; then
-    printf "$SEP"
-  else
-    printf "  "
-  fi
-  printf "${week_color}%s %s %d%%\033[0m" "$week_label" "$week_bar" "$week_used_int"
-fi
-
-# ---------------------------------------------------------------------------
-# 4. CWD  📁
+# 3. CWD  📁
 # ---------------------------------------------------------------------------
 printf "$SEP"
 printf '\033[38;5;179m📁 %s\033[0m' "$cwd"
 
 # ---------------------------------------------------------------------------
-# 5. Git branch  🌿  (only when in a git repo)
+# 4. Git branch  🌿  (only when in a git repo)
 # ---------------------------------------------------------------------------
 if [ -n "$branch" ]; then
   printf "$SEP"
@@ -197,7 +99,7 @@ if [ -n "$branch" ]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 6. Caveman badge  🪨  (only when flag file exists)
+# 5. Caveman badge  🪨  (only when flag file exists)
 # ---------------------------------------------------------------------------
 CAVEMAN_FLAG="$HOME/.claude/.caveman-active"
 if [ -f "$CAVEMAN_FLAG" ]; then
