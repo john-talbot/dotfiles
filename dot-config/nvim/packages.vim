@@ -12,10 +12,10 @@ call minpac#add('tpope/vim-obsession')
 call minpac#add('junegunn/fzf', {'dir': "$HOME/.local/bin"})
 call minpac#add('junegunn/fzf.vim')
 call minpac#add('nvim-treesitter/nvim-treesitter', {'do': 'TSUpdate'})
-call minpac#add('github/copilot.vim', {'rev': 'v1.43.0'})
+" call minpac#add('github/copilot.vim', {'rev': 'v1.43.0'})
 
 " Language server support
-" call minpac#add('neovim/nvim-lspconfig')
+call minpac#add('neovim/nvim-lspconfig')
 " call minpac#add('williamboman/mason.nvim')
 " call minpac#add('williamboman/mason-lspconfig.nvim')
 
