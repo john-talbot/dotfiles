@@ -25,9 +25,11 @@
 [submodule "dot-tmux/plugins/tmux-powerline"]
 	path = dot-tmux/plugins/tmux-powerline
 	url = https://github.com/erikw/tmux-powerline
+	ignore = untracked
 [submodule "dot-tmux/plugins/tmux-sensible"]
 	path = dot-tmux/plugins/tmux-sensible
 	url = https://github.com/tmux-plugins/tmux-sensible
+	ignore = untracked
 [submodule "dot-tmux/plugins/tmux-yank"]
 	path = dot-tmux/plugins/tmux-yank
 	url = https://github.com/tmux-plugins/tmux-yank

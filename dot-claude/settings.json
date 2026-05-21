@@ -46,6 +46,7 @@
       "Bash(rm -rf *)"
     ]
   },
+  "model": "sonnet[1m]",
   "statusLine": {
     "type": "command",
     "command": "bash \"/home/johntalbot/.claude/statusline-command.sh\""
@@ -70,5 +71,6 @@
     }
   },
   "advisorModel": "opus",
-  "model": "sonnet"
+  "skipAutoPermissionPrompt": true,
+  "effortLevel": "medium"
 }
