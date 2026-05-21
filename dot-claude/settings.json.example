@@ -46,11 +46,13 @@
       "Bash(rm -rf *)"
     ]
   },
+  "model": "sonnet[1m]",
   "statusLine": {
     "type": "command",
     "command": "bash \"/path/to/home/.claude/statusline-command.sh\""
   },
   "enabledPlugins": {},
   "advisorModel": "opus",
-  "model": "sonnet"
+  "skipAutoPermissionPrompt": true,
+  "effortLevel": "medium"
 }
