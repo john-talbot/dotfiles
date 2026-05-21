@@ -33,6 +33,9 @@ branch=$(git --no-optional-locks -C "${cwd/#\~/$HOME}" rev-parse --abbrev-ref HE
 
 ctx_used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 
+session_cost=$(echo "$input" | jq -r '.cost.total_cost_usd // empty')
+session_duration_ms=$(echo "$input" | jq -r '.cost.total_duration_ms // empty')
+
 five_used=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
 five_resets_at=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
 week_used=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
@@ -94,6 +97,26 @@ SEP="  \033[38;5;240m│\033[0m  "
 # 1. Model  🤖
 # ---------------------------------------------------------------------------
 printf '\033[38;5;81m🤖 %s\033[0m' "$model"
+
+# ---------------------------------------------------------------------------
+# 1b. Enterprise badge + session cost  🏢 💵
+# ---------------------------------------------------------------------------
+printf "$SEP"
+printf '\033[38;5;141m🏢 ENTERPRISE\033[0m'
+
+if [ -n "$session_cost" ]; then
+  cost_label=$(printf '%.2f' "$session_cost")
+  if [ -n "$session_duration_ms" ] && [ "$session_duration_ms" -gt 0 ]; then
+    dur_s=$(( session_duration_ms / 1000 ))
+    if   [ "$dur_s" -lt 60 ];    then dur_label="${dur_s}s"
+    elif [ "$dur_s" -lt 3600 ];  then dur_label="$(( dur_s / 60 ))m"
+    else                              dur_label="$(( dur_s / 3600 ))h$(( (dur_s % 3600) / 60 ))m"
+    fi
+    printf '  \033[38;5;108m💵 $%s · %s\033[0m' "$cost_label" "$dur_label"
+  else
+    printf '  \033[38;5;108m💵 $%s\033[0m' "$cost_label"
+  fi
+fi
 
 # ---------------------------------------------------------------------------
 # 2. Context bar  📖  (filled = used; green=low, yellow=moderate, red=high)
