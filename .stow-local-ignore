@@ -16,3 +16,11 @@ scripts
 
 # Documentation
 README.md
+
+# Development artifacts
+\.pre-commit-config\.yaml
+\.ruff_cache
+^tags$
+
+# Machine-specific Claude settings
+settings\.json$
