@@ -10,7 +10,6 @@ gettext
 git
 jq
 locales
-neovim
 ninja-build
 pkg-config
 python-is-python3

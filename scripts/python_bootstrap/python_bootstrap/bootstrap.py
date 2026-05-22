@@ -69,7 +69,7 @@ def main() -> None:
     logger.info("Installing neovim plugins.")
     nvim_pkg_path = Path.home().joinpath(".config/nvim/install_packages.vim")
     utilities.run_cmd(
-        ["nvim", "--headless", "-c", f"source {nvim_pkg_path}"],
+        ["/opt/neovim/bin/nvim", "--headless", "-c", f"source {nvim_pkg_path}"],
         False,
         logger,
     )
