@@ -21,6 +21,3 @@ README.md
 \.pre-commit-config\.yaml
 \.ruff_cache
 ^tags$
-
-# Machine-specific Claude settings
-settings\.json$
