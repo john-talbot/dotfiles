@@ -56,23 +56,33 @@ zstyle ':omz:update' frequency 7
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+# Cross-platform plugins. Ordering matters for completion:
+#   - fzf must load BEFORE fzf-tab (otherwise it clobbers fzf-tab's hooks
+#     and the shell intermittently dies on tab completion)
+#   - fzf-tab must load after compinit/fzf but BEFORE any plugin that wraps
+#     completion widgets (zsh-autosuggestions, zsh-syntax-highlighting)
+#   - zsh-syntax-highlighting must stay LAST
 plugins=(
-    brew
     docker
     docker-compose
     gh
     gitfast
     git-lfs
-    macos
     poetry
-    python 
+    python
     rust
     vscode
+    fzf
     fzf-tab
     zsh-autosuggestions
-    fzf
     zsh-syntax-highlighting
     )
+
+# macOS-only plugins (macos calls open/pbcopy etc.; brew is Homebrew).
+# Prepended so the widget-wrapping plugins above stay at the end.
+if [[ "$(uname)" == "Darwin" ]]; then
+    plugins=(brew macos $plugins)
+fi
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 source $ZSH/oh-my-zsh.sh
@@ -80,7 +90,7 @@ source $ZSH/oh-my-zsh.sh
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Make ctrl-j accept autosuggestion
+# Make ctrl-s accept autosuggestion
 bindkey '^S' autosuggest-accept
 
 # Fix docker completions
