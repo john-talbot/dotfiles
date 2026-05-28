@@ -130,7 +130,13 @@ else
     export VISUAL=vim
 fi
 
-export TERM=xterm-256color
+# Only provide a sane TERM when the terminal didn't set one. NEVER override
+# inside tmux: tmux sets TERM itself (screen-/tmux-256color) and forcing
+# xterm-256color makes programs query capabilities the emulated terminal
+# lacks, which intermittently crashes the pane during fzf-tab completion.
+if [[ -z "$TMUX" && ( -z "$TERM" || "$TERM" == "dumb" ) ]]; then
+    export TERM=xterm-256color
+fi
 
 # History
 export HISTSIZE=50000
