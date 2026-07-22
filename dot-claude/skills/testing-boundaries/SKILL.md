@@ -29,7 +29,7 @@ If the test needs one of these to work, the test sits at a boundary.
 
 ## Don't Mock What You Don't Own
 
-Mock your own abstractions. Never mock a 3rd-party library's call surface directly.
+Mock your own abstractions. Never mock a 3rd-party library's call surface directly. The `lint-test-quality.py` hook flags direct `patch()`/`mock.patch()` of common libraries (`requests`, `httpx`, `boto3`, `psycopg`, `sqlalchemy`, `subprocess`) on every test write — treat that warning as this rule firing, not just a style nit.
 
 <Bad>
 ```python
@@ -150,7 +150,7 @@ Some externals are genuinely hostile: no sandbox, no stub mode, rate-limited, or
 
 | Flag | Violates |
 |---|---|
-| Mocking `requests`, `httpx`, `boto3`, or similar directly | Don't Mock What You Don't Own |
+| Mocking `requests`, `httpx`, `boto3`, or similar directly (hook-flagged) | Don't Mock What You Don't Own |
 | Integration test asserting business logic | Which Tier — integration asserts adapter behavior |
 | Adapter returns library types (`httpx.Response`, `psycopg.Row`) | Default Adapter Shape — adapter speaks domain |
 | Every test touches a real DB | Pyramid — unit tier has no real externals |

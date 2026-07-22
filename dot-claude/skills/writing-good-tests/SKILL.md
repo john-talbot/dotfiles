@@ -56,13 +56,15 @@ A test name is a sentence about **observable behavior**.
 
 ## FIRST — Operational
 
-| Property | Violation signs | Fix |
+The `lint-test-quality.py` PostToolUse hook auto-flags the pattern-matchable violations below (sleep/real-clock calls, unseeded time/random, `print()`) on every test file write — its warnings surface as additional context, so treat one as an immediate signal rather than something to hunt for by re-reading the file.
+
+| Property | Fix | Mechanically checked? |
 |---|---|---|
-| **Fast** | `time.sleep`, real clock, sockets, filesystem, subprocess, real DB | Push to integration tier (`testing-boundaries`) or replace with a fake |
-| **Independent** | Module-level mutable state, fixtures persisting across tests, shared file paths, leftover DB rows | Move state into per-test fixtures (pytest function scope, GoogleTest `SetUp`) |
-| **Repeatable** | `time.time()`, `random.random()` without seed, env vars at runtime, network assumed, timezone dependence | Inject clock and RNG as collaborators; pin env with fixtures |
-| **Self-Validating** | `print()` the test expects you to read, `assert True` with manual comment, logs a human scans | Replace print with assertion; if you can't assert it, you haven't found the observable behavior |
-| **Timely** | Tests added post-review, "I'll add tests at the end" | The failure is in the TDD cycle — see `test-driven-development` |
+| **Fast** | Push to integration tier (`testing-boundaries`) or replace with a fake | Yes — hook |
+| **Independent** | Move state into per-test fixtures (pytest function scope, GoogleTest `SetUp`) — watch for module-level mutable state, fixtures persisting across tests, shared file paths, leftover DB rows | No — needs cross-test judgment |
+| **Repeatable** | Inject clock and RNG as collaborators; pin env with fixtures | Yes — hook |
+| **Self-Validating** | Replace print with assertion; if you can't assert it, you haven't found the observable behavior | Yes — hook |
+| **Timely** | Tests added post-review means the failure is in the TDD cycle — see `test-driven-development` | No — process, not pattern |
 
 ## Behavior vs Structure — What Is "Observable"?
 
@@ -70,15 +72,7 @@ A test name is a sentence about **observable behavior**.
 >
 > **Not observable** = internal decomposition: message sequences between private collaborators, call counts on internal methods, log lines, internal types.
 
-<Good>
-```python
-def test_order_with_no_customer_is_rejected():
-    outcome = place_order(OrderRequest(items=[Item("book", 1)], customer=None))
-    assert outcome.rejected
-    assert outcome.reason == "customer required"
-```
-Survives a refactor that splits, renames, or fuses the validators.
-</Good>
+See `test-driven-development` Rule 1 for the canonical good/bad pair (`test_order_with_no_customer_is_rejected` vs. the class-coupled version). Same rule, applied here to call sequences instead of class names:
 
 <Bad>
 ```python
@@ -128,10 +122,7 @@ Run through this after writing each test. All yes, or a documented exception.
 - [ ] All 4 phases present (Cleanup may be language-implicit)
 - [ ] Single Exercise step — not interleaved calls and assertions
 - [ ] Assertions check observable outcomes, not call sequences or private state
-- [ ] Run time <100ms (Fast)
-- [ ] No shared state with other tests (Independent)
-- [ ] Passes offline, in CI, on a Tuesday (Repeatable)
-- [ ] Pass/fail is unambiguous — no human inspection needed (Self-Validating)
-- [ ] No mock of code you don't own — if tempted, see testing-boundaries
+- [ ] No shared state with other tests (Independent — not hook-checked)
+- [ ] Fast / Repeatable / Self-Validating / no direct 3rd-party mocking — hook flags violations on write; treat a warning as failing this item
 - [ ] If you deleted this test today, what would you lose? Is that answer non-trivial?
 ```
