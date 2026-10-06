@@ -67,9 +67,9 @@ def main() -> None:
     )
 
     logger.info("Installing neovim plugins.")
-    nvim_pkg_path = Path.home().joinpath(".config/nvim/install_packages.vim")
+    # init.lua installs plugins via vim.pack.add() on startup; just launch and quit.
     utilities.run_cmd(
-        ["/opt/neovim/bin/nvim", "--headless", "-c", f"source {nvim_pkg_path}"],
+        ["/opt/neovim/bin/nvim", "--headless", "+qall"],
         False,
         logger,
     )

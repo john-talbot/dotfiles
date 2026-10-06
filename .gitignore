@@ -25,7 +25,6 @@ dot-config/github-copilot
 dot-config/op
 
 # Neovim plugins and temp files
-dot-config/nvim/pack/minpac
 dot-config/nvim/.netrwhist
 dot-config/nvim/swap
 dot-config/nvim/undo
