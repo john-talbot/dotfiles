@@ -1,5 +1,5 @@
 #!/bin/bash
-# Claude Code statusline: model | context bar | rate limit bars (countdown label) | cwd | git branch | caveman badge
+# Claude Code statusline: model | context bar | rate limit bars (countdown label) | cwd | git branch
 
 input=$(cat)
 
@@ -96,21 +96,6 @@ printf '\033[38;5;179m📁 %s\033[0m' "$cwd"
 if [ -n "$branch" ]; then
   printf "$SEP"
   printf '\033[38;5;114m🌿 %s\033[0m' "$branch"
-fi
-
-# ---------------------------------------------------------------------------
-# 5. Caveman badge  🪨  (only when flag file exists)
-# ---------------------------------------------------------------------------
-CAVEMAN_FLAG="$HOME/.claude/.caveman-active"
-if [ -f "$CAVEMAN_FLAG" ]; then
-  MODE=$(cat "$CAVEMAN_FLAG" 2>/dev/null)
-  printf "$SEP"
-  if [ "$MODE" = "full" ] || [ -z "$MODE" ]; then
-    printf '\033[38;5;172m🪨 CAVEMAN\033[0m'
-  else
-    SUFFIX=$(echo "$MODE" | tr '[:lower:]' '[:upper:]')
-    printf '\033[38;5;172m🪨 CAVEMAN:%s\033[0m' "$SUFFIX"
-  fi
 fi
 
 printf '\n'
