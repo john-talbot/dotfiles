@@ -26,9 +26,6 @@ dot-config/op
 
 # Neovim plugins and temp files
 dot-config/nvim/.netrwhist
-dot-config/nvim/swap
-dot-config/nvim/undo
-dot-config/nvim/backup
 
 # Machine specific config
 dot-zshrc-per-machine

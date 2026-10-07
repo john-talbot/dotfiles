@@ -11,6 +11,7 @@ require('nvim-treesitter').install({
     "lua",
     "make",
     "markdown",
+    "markdown_inline",
     "pioasm",
     "python",
     "toml",
@@ -20,9 +21,17 @@ require('nvim-treesitter').install({
     "vimdoc",
 })
 
+-- Highlight with tree-sitter wherever a parser is installed. LaTeX is left to
+-- vimtex's syntax script, which its text objects depend on (:h vimtex-faq-treesitter).
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { '<filetype>' },
-  callback = function() vim.treesitter.start() end,
+  callback = function(ev)
+    if ev.match == 'tex' or ev.match == 'plaintex' then
+      return
+    end
+    if vim.treesitter.get_parser(ev.buf, nil, { error = false }) then
+      vim.treesitter.start(ev.buf)
+    end
+  end,
 })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -33,53 +42,36 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-vim.api.nvim_set_hl(0, "@function.call", { link = "Function" })
-vim.api.nvim_set_hl(0, "@method",        { link = "Function" })
-vim.api.nvim_set_hl(0, "@method.call",   { link = "Function" })
-vim.api.nvim_set_hl(0, "@class.method",  { link = "Function" })
+-- Run pre-commit on the whole repo in the background and load the violations
+-- into the quickfix list
+local precommit_running = false
 
--- Command to run pre-commit and load results into quickfix list
-vim.api.nvim_create_user_command("PrecommitQf", function()
-  -- Detect Git root
-  local git_root = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
-  if not git_root or git_root == "" then
-    vim.notify("Could not find Git root — are you in a Git repo?", vim.log.levels.ERROR)
-    return
-  end
+local function show_precommit_results(result, git_root)
+  -- Hooks may have rewritten files on disk
+  vim.cmd("checktime")
 
-  -- Save current working directory
-  local original_cwd = vim.fn.getcwd()
+  local output = vim.split(result.stdout or "", "\n", { trimempty = true })
+  local exit_code = result.code
 
-  -- Change to Git root for consistent path resolution
-  vim.cmd("cd " .. vim.fn.fnameescape(git_root))
-
-  -- Run pre-commit from repo root
-  local cmd = "pre-commit run -a --color=never 2>&1"
-  local output = vim.fn.systemlist(cmd)
-  local exit_code = vim.v.shell_error
-
-  -- Restore working directory
-  vim.cmd("cd " .. vim.fn.fnameescape(original_cwd))
-
-  -- ✅ Early return if nothing was detected
+  -- No issues
   if exit_code == 0 then
     vim.notify("No pre-commit issues found", vim.log.levels.INFO)
     return
   end
 
-  -- 🛑 Pre-commit was interrupted (Ctrl+C)
+  -- Interrupted (Ctrl+C)
   if exit_code == 130 then
     vim.notify("Pre-commit was interrupted", vim.log.levels.ERROR)
     return
   end
 
-  -- ❌ Unexpected error (exit code >= 3 and not Ctrl+C)
+  -- Unexpected error (exit code >= 3 and not Ctrl+C)
   if exit_code >= 3 then
     vim.notify("Pre-commit error (exit code " .. exit_code .. "):\n" .. table.concat(output, "\n"), vim.log.levels.ERROR)
     return
   end
 
-  -- ⚠️ Parse and deduplicate pre-commit violations
+  -- Parse and deduplicate pre-commit violations
   local filtered = {}
   local seen = {}
 
@@ -93,25 +85,57 @@ vim.api.nvim_create_user_command("PrecommitQf", function()
     end
   end
 
-  if #filtered > 0 then
-    -- Make paths absolute by prepending git_root
-    local abs_lines = {}
-    for _, line in ipairs(filtered) do
-      local path, rest = line:match("^(.-):(%d+:%d+:.*)")
-      if path then
-        table.insert(abs_lines, git_root .. "/" .. path .. ":" .. rest)
-      else
-        table.insert(abs_lines, line)
-      end
-    end
-
-    vim.fn.setqflist({}, ' ', {
-      title = 'Pre-commit',
-      lines = abs_lines,
-    })
-    vim.cmd("copen")
-    vim.cmd("cc")
-  else
+  if #filtered == 0 then
     vim.notify("Pre-commit found issues, but none matched expected format", vim.log.levels.WARN)
+    return
   end
+
+  -- Paths are relative to the repo root, not to Neovim's directory
+  local abs_lines = {}
+  for _, line in ipairs(filtered) do
+    local path, rest = line:match("^(.-):(%d+:%d+:.*)")
+    if path and path:sub(1, 1) ~= "/" then
+      table.insert(abs_lines, git_root .. "/" .. path .. ":" .. rest)
+    else
+      table.insert(abs_lines, line)
+    end
+  end
+
+  vim.fn.setqflist({}, ' ', {
+    title = 'Pre-commit',
+    lines = abs_lines,
+    efm = '%f:%l:%c: %m,%-G%.%#',
+  })
+  vim.cmd("copen")
+  -- Don't move the cursor out from under someone who is typing
+  if vim.fn.mode() == "n" then
+    vim.cmd("cc")
+  end
+end
+
+vim.api.nvim_create_user_command("PrecommitQf", function()
+  if precommit_running then
+    vim.notify("Pre-commit is already running", vim.log.levels.WARN)
+    return
+  end
+
+  local root = vim.system({ "git", "rev-parse", "--show-toplevel" }, { text = true }):wait()
+  if root.code ~= 0 then
+    vim.notify("Could not find Git root — are you in a Git repo?", vim.log.levels.ERROR)
+    return
+  end
+  local git_root = vim.trim(root.stdout)
+
+  precommit_running = true
+  vim.notify("Running pre-commit...", vim.log.levels.INFO)
+  vim.system(
+    { "sh", "-c", "pre-commit run -a --color=never 2>&1" },
+    { cwd = git_root, text = true },
+    function(result)
+      vim.schedule(function()
+        precommit_running = false
+        show_precommit_results(result, git_root)
+      end)
+    end
+  )
 end, {})

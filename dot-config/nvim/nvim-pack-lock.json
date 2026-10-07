@@ -1,16 +1,24 @@
 {
   "plugins": {
-    "fzf": {
-      "rev": "b1be3a8be1b833ce5b92fbbac11637643d60a046",
-      "src": "https://github.com/junegunn/fzf"
+    "conform.nvim": {
+      "rev": "016802de402556da54c36bd7359b441266b01cdd",
+      "src": "https://github.com/stevearc/conform.nvim"
     },
-    "fzf.vim": {
-      "rev": "023de3c0e158ff9c2b0992175af10be97c2f2158",
-      "src": "https://github.com/junegunn/fzf.vim"
+    "fzf-lua": {
+      "rev": "ed0e0ead1789ee349cbf025900931fb402b1e05e",
+      "src": "https://github.com/ibhagwan/fzf-lua"
+    },
+    "lualine.nvim": {
+      "rev": "221ce6b2d999187044529f49da6554a92f740a96",
+      "src": "https://github.com/nvim-lualine/lualine.nvim"
     },
     "markdown-preview.nvim": {
       "rev": "a923f5fc5ba36a3b17e289dc35dc17f66d0548ee",
       "src": "https://github.com/iamcco/markdown-preview.nvim"
+    },
+    "mini.surround": {
+      "rev": "72feeaa0f984646efde875cc775a97b6f8a8be9b",
+      "src": "https://github.com/echasnovski/mini.surround"
     },
     "nvim-lspconfig": {
       "rev": "33497f4930d40f28a465d38a763a00fc6902c658",
@@ -21,9 +29,9 @@
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
-    "vim-airline": {
-      "rev": "ae24f4aca06731d5d7224df1fc5415975331b214",
-      "src": "https://github.com/vim-airline/vim-airline"
+    "render-markdown.nvim": {
+      "rev": "245956d67572c137df375dbf256e96bdb07e0937",
+      "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "vim-cmake": {
       "rev": "896bc2189c8ade62d00a0ebedc59c65d9d9b0d65",
@@ -33,10 +41,6 @@
       "rev": "4624dc223bf574aa9a731c2383c579847303c380",
       "src": "https://github.com/tomasiser/vim-code-dark"
     },
-    "vim-commentary": {
-      "rev": "64a654ef4a20db1727938338310209b6a63f60c9",
-      "src": "https://github.com/tpope/vim-commentary"
-    },
     "vim-fugitive": {
       "rev": "3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0",
       "src": "https://github.com/tpope/vim-fugitive"
@@ -45,21 +49,13 @@
       "rev": "dad3b5a1f9b661e27cb77fc69308287349d3cf30",
       "src": "https://github.com/tpope/vim-obsession"
     },
-    "vim-sensible": {
-      "rev": "0ce2d843d6f588bb0c8c7eec6449171615dc56d9",
-      "src": "https://github.com/tpope/vim-sensible"
-    },
-    "vim-surround": {
-      "rev": "3d188ed2113431cf8dac77be61b842acb64433d9",
-      "src": "https://github.com/tpope/vim-surround"
-    },
-    "vim-unicoder": {
-      "rev": "a71fc3670f9337c56806fa9e8e97b7ea09fd5e39",
-      "src": "https://github.com/arthurxavierx/vim-unicoder"
-    },
     "vim-unimpaired": {
       "rev": "db65482581a28e4ccf355be297f1864a4e66985c",
       "src": "https://github.com/tpope/vim-unimpaired"
+    },
+    "vimtex": {
+      "rev": "bbfa1501287b65e8803d5cc1007db2c2351c4453",
+      "src": "https://github.com/lervag/vimtex"
     }
   }
 }

@@ -28,9 +28,18 @@
 vim.api.nvim_create_autocmd("PackChanged", {
   callback = function(ev)
     local name, kind = ev.data.spec.name, ev.data.kind
+    -- nvim-treesitter's queries only work with the parser revisions it pins, so
+    -- parsers must be updated whenever the plugin is (its README's `:TSUpdate`)
+    if name == "nvim-treesitter" and kind == "update" then
+      if not ev.data.active then
+        vim.cmd.packadd(name)
+      end
+      require("nvim-treesitter").update(nil, { summary = true })
+    end
+    -- markdown-preview.nvim needs its server binary; install.sh downloads the
+    -- prebuilt one for this plugin version, so node isn't needed at runtime
     if name == "markdown-preview.nvim" and (kind == "install" or kind == "update") then
-      vim.cmd.packadd(name)
-      vim.fn["mkdp#util#install"]()
+      vim.system({ "sh", "install.sh" }, { cwd = ev.data.path .. "/app" }):wait()
     end
   end,
 })
@@ -38,14 +47,12 @@ vim.api.nvim_create_autocmd("PackChanged", {
 -- Plugins loaded at startup
 vim.pack.add({
   -- General enhancements
-  "https://github.com/tpope/vim-sensible",
-  "https://github.com/tpope/vim-surround",
   "https://github.com/tpope/vim-unimpaired",
   "https://github.com/tpope/vim-fugitive",
-  "https://github.com/tpope/vim-commentary",
   "https://github.com/tpope/vim-obsession",
-  "https://github.com/junegunn/fzf",
-  "https://github.com/junegunn/fzf.vim",
+  "https://github.com/echasnovski/mini.surround",
+  "https://github.com/ibhagwan/fzf-lua",
+  "https://github.com/stevearc/conform.nvim",
   { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
   -- { src = "https://github.com/github/copilot.vim", version = "v1.43.0" },
 
@@ -57,73 +64,76 @@ vim.pack.add({
   -- Julia support
   -- "https://github.com/JuliaEditorSupport/julia-vim",
 
-  -- Colorschemes
-  "https://github.com/vim-airline/vim-airline",
+  -- Colorschemes and statusline
+  "https://github.com/nvim-lualine/lualine.nvim",
   "https://github.com/tomasiser/vim-code-dark",
 
-  -- Unicode support
-  "https://github.com/arthurxavierx/vim-unicoder",
+  -- LaTeX (compiling and viewing; the texlab LSP is enabled in after/plugin/lsp_init.lua)
+  "https://github.com/lervag/vimtex",
+
+  -- Markdown (rendered in-buffer, and live in a browser; marksman LSP is in lsp_init.lua)
+  "https://github.com/MeanderingProgrammer/render-markdown.nvim",
+  "https://github.com/iamcco/markdown-preview.nvim",
 }, { confirm = false })
 
 -- Plugins installed but not loaded at startup (equivalent to minpac's
 -- {'type': 'opt'}); loaded on demand with :packadd.
 vim.pack.add({
   "https://github.com/cdelledonne/vim-cmake", -- loaded by pack/personal/opt/jt-cmake
-  "https://github.com/iamcco/markdown-preview.nvim", -- :packadd markdown-preview.nvim
 }, { load = function() end, confirm = false })
-
--- Add matchit plugin
-vim.cmd("packadd! matchit")
 
 --------------------------------------------------------------------------------
 -- APPEARANCE
 --------------------------------------------------------------------------------
 pcall(vim.cmd.colorscheme, "codedark")
 
--- Load desired airline extensions
-vim.g.airline_extensions = { "branch", "virtualenv" }
-
--- Remove encoding section of airline
-vim.g.airline_section_y = ""
-
--- Fix font problems by removing glyphs from airline symbols
--- vim.g getters return a copy, so mutate a local table and reassign it
--- whole, rather than assigning into vim.g.airline_symbols fields directly.
-local airline_symbols = vim.g.airline_symbols or {}
-airline_symbols.colnr = " Col: "
-airline_symbols.linenr = " Line: "
-airline_symbols.maxlinenr = " "
-vim.g.airline_symbols = airline_symbols
-
--- Add vim-obsession to airline
-function AirlineInit()
-  vim.g.airline_section_z = vim.fn["airline#section#create"]({
-    "%{ObsessionStatus('$$ ', '')}",
-    "windowswap",
-    "%3p%% ",
-    "linenr",
-    ":%3v ",
-  })
-end
-vim.api.nvim_create_autocmd("User", {
-  pattern = "AirlineAfterInit",
-  callback = AirlineInit,
+-- Icons are off to avoid glyph/font problems
+require("lualine").setup({
+  options = {
+    theme = "codedark",
+    icons_enabled = false,
+    section_separators = "",
+    component_separators = "|",
+  },
+  sections = {
+    lualine_a = { "mode" },
+    lualine_b = { "branch" },
+    lualine_c = { "filename" },
+    lualine_x = {
+      function()
+        if vim.bo.filetype ~= "python" then
+          return ""
+        end
+        local venv = vim.env.VIRTUAL_ENV or vim.env.PYENV_VIRTUAL_ENV
+        if not venv then
+          return ""
+        end
+        local name = vim.fs.basename(venv)
+        if name == ".venv" or name == "venv" then
+          name = vim.fs.basename(vim.fs.dirname(venv))
+        end
+        return "(" .. name .. ")"
+      end,
+      "filetype",
+    },
+    lualine_y = {},
+    lualine_z = {
+      function() return vim.fn.ObsessionStatus("$$ ", "") end,
+      function() return ("%3d%%"):format(math.floor(vim.fn.line(".") / vim.fn.line("$") * 100)) end,
+      function() return ("Line: %d:%d"):format(vim.fn.line("."), vim.fn.virtcol(".")) end,
+    },
+  },
 })
 
 --------------------------------------------------------------------------------
 -- OPTIONS
 --------------------------------------------------------------------------------
--- Enable swap files and set directory
-vim.opt.directory:prepend(vim.fn.expand("~/.config/nvim/swap//"))
-vim.opt.swapfile = true
-
--- Enable backup files and set directory
+-- Swap and undo files use Neovim's default state directory
+-- (~/.local/state/nvim). Backups are kept too, but the default 'backupdir'
+-- starts with "." (next to the source file), so point it at the state dir.
 vim.opt.backup = true
-vim.opt.backupdir:prepend(vim.fn.expand("~/.config/nvim/backup//"))
-
--- Enable persistent undo and set directory
+vim.opt.backupdir = vim.fn.stdpath("state") .. "/backup//"
 vim.opt.undofile = true
-vim.opt.undodir = vim.fn.expand("~/.config/nvim/undo//")
 
 -- Default to using 4 spaces per tab
 vim.opt.tabstop = 4
@@ -131,18 +141,15 @@ vim.opt.shiftwidth = 4
 vim.opt.softtabstop = 4
 vim.opt.expandtab = true
 
--- Save last 2000 commands in history rather than 20
-vim.opt.history = 2000
-
 -- Save maximum length of 100,000 lines in terminal emulator
 vim.opt.scrollback = 100000
 
--- Configure wildmenu to behave like zsh
-vim.opt.wildmenu = true
-vim.opt.wildmode = "full"
-
--- Enable filetype recognition and load relevant plugin
-vim.cmd("filetype plugin indent on")
+-- Keep context around the cursor and show truncated last lines (previously
+-- provided by vim-sensible)
+vim.opt.scrolloff = 1
+vim.opt.sidescrolloff = 2
+vim.opt.display:append("truncate")
+vim.opt.listchars = { tab = "> ", trail = "-", extends = ">", precedes = "<", nbsp = "+" }
 
 -- Set column width to 88 characters
 vim.opt.colorcolumn = "88"
@@ -152,10 +159,6 @@ vim.opt.colorcolumn = "88"
 
 -- Show line numbers
 vim.opt.number = true
-
--- Set incremental search and highlight search results
-vim.opt.incsearch = true
-vim.opt.hlsearch = true
 
 -- Disable mouse
 vim.opt.mouse = ""
@@ -187,17 +190,72 @@ vim.opt.foldminlines = 5
 -- Enable ruff formatting on save
 vim.g.ruff_format_on_save = 1
 
+--- LaTeX
+-- View PDFs in zathura (forward and inverse SyncTeX search)
+vim.g.vimtex_view_method = "zathura"
+-- Match .latexmkrc: aux/log/bbl live in build/, so vimtex must look there
+vim.g.vimtex_compiler_latexmk = { out_dir = "build" }
+
+--- Markdown
+-- render-markdown's defaults use Nerd Font glyphs; swap them for plain Unicode
+-- (same glyph/font concern as lualine's icons_enabled = false)
+local plain_link_icons = {}
+for name in pairs(require("render-markdown").default.link.custom) do
+  plain_link_icons[name] = { icon = "" }
+end
+require("render-markdown").setup({
+  heading = { sign = false, icons = { "# ", "## ", "### ", "#### ", "##### ", "###### " } },
+  code = { sign = false },
+  checkbox = { unchecked = { icon = "☐ " }, checked = { icon = "☑ " } },
+  link = {
+    image = "",
+    email = "",
+    hyperlink = "",
+    footnote = { icon = "" },
+    wiki = { icon = "" },
+    custom = plain_link_icons,
+  },
+  callout = {
+    note = { rendered = "Note" },
+    tip = { rendered = "Tip" },
+    important = { rendered = "Important" },
+    warning = { rendered = "Warning" },
+    caution = { rendered = "Caution" },
+  },
+})
+-- Print the preview URL too, so it can be opened by hand over SSH
+vim.g.mkdp_echo_preview_url = 1
+
 --- Fuzzy Finder
--- Pop up fzf-vim in a bottom split window
-vim.g.fzf_layout = { down = "~40%" }
+-- Open fzf-lua in a bottom split window rather than a floating window
+require("fzf-lua").setup({
+  winopts = { split = "belowright " .. math.floor(vim.o.lines * 0.4) .. "new" },
+  files = { file_icons = false, git_icons = false },
+  git = { files = { file_icons = false, git_icons = false } },
+})
+
+--- Surround (vim-surround style mappings: ys, cs, ds, yss, visual S)
+require("mini.surround").setup({
+  mappings = {
+    add = "ys",
+    delete = "ds",
+    find = "",
+    find_left = "",
+    highlight = "",
+    replace = "cs",
+    suffix_last = "",
+    suffix_next = "",
+  },
+  search_method = "cover_or_next",
+})
+vim.keymap.del("x", "ys")
+vim.keymap.set("x", "S", [[:<C-u>lua MiniSurround.add('visual')<CR>]], { silent = true })
+vim.keymap.set("n", "yss", "ys_", { remap = true })
 
 --------------------------------------------------------------------------------
 -- KEYBINDINGS
 --------------------------------------------------------------------------------
 --- NORMAL MODE
--- Keybind Ctrl-l to call nohlsearch as well as redraw screen
-vim.keymap.set("n", "<C-l>", ":<C-u>nohlsearch<CR><C-l>", { silent = true })
-
 -- Terminal mode exit with normal Esc
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 vim.keymap.set("t", "<C-v><Esc>", "<Esc>")
@@ -212,16 +270,17 @@ vim.keymap.set("n", "<Space>", "za")
 vim.keymap.set("n", "<Leader>c", ":close<CR>")
 
 -- Fuzzy-Finder
-vim.keymap.set("n", "<Leader>ff", ":Files<CR>")
-vim.keymap.set("n", "<Leader>fd", ":Files %:p:h<CR>")
+local fzf = require("fzf-lua")
+vim.keymap.set("n", "<Leader>ff", fzf.files)
+vim.keymap.set("n", "<Leader>fd", function() fzf.files({ cwd = vim.fn.expand("%:p:h") }) end)
 vim.keymap.set("n", "<Leader>fa", ":AllFiles<CR>")
-vim.keymap.set("n", "<Leader>fg", ":GFiles<CR>")
-vim.keymap.set("n", "<Leader>fb", ":Buffers<CR>")
-vim.keymap.set("n", "<Leader>ft", ":Tags<CR>")
-vim.keymap.set("n", "<Leader>fm", ":Marks<CR>")
-vim.keymap.set("n", "<Leader>fc", ":Commands<CR>")
-vim.keymap.set("n", "<Leader>fh", ":History:<CR>")
-vim.keymap.set("n", "<Leader>fs", ":History/<CR>")
+vim.keymap.set("n", "<Leader>fg", fzf.git_files)
+vim.keymap.set("n", "<Leader>fb", fzf.buffers)
+vim.keymap.set("n", "<Leader>ft", fzf.tags)
+vim.keymap.set("n", "<Leader>fm", fzf.marks)
+vim.keymap.set("n", "<Leader>fc", fzf.commands)
+vim.keymap.set("n", "<Leader>fh", fzf.command_history)
+vim.keymap.set("n", "<Leader>fs", fzf.search_history)
 
 -- Pre-commit to quickfix - function in lua/config.lua
 vim.keymap.set("n", "<Leader>qf", ":PrecommitQf<CR>")
@@ -260,12 +319,13 @@ local function get_rg_source()
   return "rg --files -u " .. table.concat(globs, " ")
 end
 
-vim.api.nvim_create_user_command("AllFiles", function(opts)
-  vim.fn["fzf#vim#files"]("", vim.fn["fzf#vim#with_preview"]({ source = get_rg_source() }), opts.bang)
-end, { bang = true, nargs = "*" })
+vim.api.nvim_create_user_command("AllFiles", function()
+  require("fzf-lua").files({ cmd = get_rg_source(), file_icons = false, git_icons = false })
+end, {})
 
 --------------------------------------------------------------------------------
 -- LUA INIT
 --------------------------------------------------------------------------------
 -- Extra lua initialization for neovim (located at .config/nvim/lua/config.lua)
 require("config")
+require("formatting")
