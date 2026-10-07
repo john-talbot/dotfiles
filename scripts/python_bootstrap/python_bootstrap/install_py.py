@@ -6,11 +6,13 @@ from pathlib import Path
 from python_bootstrap import utilities
 from python_bootstrap.utilities import OS
 
-_PKGS = ["black", "flake8", "isort", "pytest", "ruff"]
+_PKG_FILE_NAME = "scripts/conf/python_packages.txt"
+
+_LOG_NAME = "install_py.log"
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Install node from source")
+    parser = argparse.ArgumentParser(description="Install essential python packages")
     parser.add_argument(
         "--temp",
         type=Path,
@@ -25,7 +27,7 @@ def main() -> None:
 
     log_dir = args.log
 
-    logger = utilities.setup_logging("fzf", log_dir.joinpath(_LOG_NAME))
+    logger = utilities.setup_logging("python_logger", log_dir.joinpath(_LOG_NAME))
     os_type = utilities.get_os_type()
 
     if os_type == OS.UNSUPPORTED:
@@ -37,11 +39,19 @@ def main() -> None:
     sys.exit(0)
 
 
+def read_packages(file_path: Path) -> list[str]:
+    """Read pip package names from a file, skipping blank lines and comments."""
+    with open(file_path, "r") as f:
+        lines = [line.strip() for line in f]
+    return [line for line in lines if line and not line.startswith("#")]
+
+
 def install(logger: logging.Logger) -> None:
     logger.info("Installing essential python packages.")
 
+    packages = read_packages(utilities.get_git_root().joinpath(_PKG_FILE_NAME))
     utilities.run_cmd(
-        ["/usr/bin/python3", "-m", "pip", "install"] + _PKGS, True, logger
+        ["/usr/bin/python3", "-m", "pip", "install"] + packages, True, logger
     )
 
     logger.info("Finished installing python packages.")

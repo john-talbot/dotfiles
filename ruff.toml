@@ -1,0 +1,9 @@
+line-length = 88
+
+# Upstream copy of ranger's default commands, kept for reference
+extend-exclude = ["dot-config/ranger/commands_full.py"]
+
+[lint]
+# The rules this repo has always been linted with. Ruff's built-in defaults
+# have grown a lot since the hook was first pinned.
+select = ["E4", "E7", "E9", "F"]

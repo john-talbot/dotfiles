@@ -35,6 +35,7 @@ Mock your own abstractions. Never mock a 3rd-party library's call surface direct
 ```python
 from unittest.mock import patch
 
+
 def test_fetches_forecast():
     with patch("requests.get") as m:
         m.return_value.json.return_value = {"temp": 72}
@@ -48,8 +49,10 @@ The test is coupled to `requests`'s internals. Swap to `httpx` and every test br
 class FakeWeatherHttp:
     def __init__(self, responses: dict[str, Forecast]) -> None:
         self._responses = responses
+
     def get_forecast(self, city: str) -> Forecast:
         return self._responses[city]
+
 
 def test_fetches_forecast():
     http = FakeWeatherHttp({"NYC": Forecast(temp=72)})
@@ -73,6 +76,7 @@ One prescribed pattern that handles ~90% of cases:
 # adapters/weather_http.py  -- the ONLY file that imports httpx.
 import httpx
 from domain.weather import Forecast
+
 
 class WeatherHttpClient:
     def __init__(self, base_url: str, http: httpx.Client | None = None) -> None:

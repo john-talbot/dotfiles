@@ -39,8 +39,10 @@ A simplified but working implementation. In-memory repository, fake clock that a
 class InMemoryOrderRepository:
     def __init__(self) -> None:
         self._orders: dict[OrderId, Order] = {}
+
     def save(self, order: Order) -> None:
         self._orders[order.id] = order
+
     def get(self, id: OrderId) -> Order | None:
         return self._orders.get(id)
 ```
@@ -55,8 +57,10 @@ Records calls for later verification. Use when the fact of the call is the obser
 class PublisherSpy:
     def __init__(self) -> None:
         self.published: list[Event] = []
+
     def publish(self, event: Event) -> None:
         self.published.append(event)
+
 
 def test_placing_an_order_publishes_an_order_placed_event():
     publisher = PublisherSpy()
@@ -74,6 +78,8 @@ A double with pre-programmed expectations verified at the end of the test — th
 ```python
 # Avoid unless nothing else works.
 from unittest.mock import Mock
+
+
 def test_places_order():
     publisher = Mock()
     place_order(request, publisher=publisher)

@@ -27,10 +27,13 @@ When the same behavior is exercised over a data table, name the table entry, not
 @pytest.mark.parametrize(
     "window_size, valid",
     [(60, True), (0, False), (-1, False)],
-    ids=["positive_window_is_valid", "zero_window_is_invalid", "negative_window_is_invalid"],
+    ids=[
+        "positive_window_is_valid",
+        "zero_window_is_invalid",
+        "negative_window_is_invalid",
+    ],
 )
-def test_window_size_validation(window_size, valid):
-    ...
+def test_window_size_validation(window_size, valid): ...
 ```
 
 The function name describes the general behavior. The `ids` describe the specific case.
