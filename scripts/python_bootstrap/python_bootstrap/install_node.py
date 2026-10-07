@@ -14,6 +14,15 @@ _DWN_URL = "https://raw.githubusercontent.com/nvm-sh/nvm/"
 
 _INSTALL_DIR = Path.home().joinpath(".fzf")
 
+# Language servers and tools used by the editor config
+_NPM_GLOBALS = [
+    "pyright",
+    "typescript",
+    "typescript-language-server",
+    "@biomejs/biome",
+    "prettier",
+]
+
 _TMP_NAME = "node"
 _LOG_NAME = "install_node.log"
 
@@ -63,12 +72,13 @@ def install(tmp_dir: Path, logger: logging.Logger) -> None:
     env = os.environ.copy()
     env["NVM_DIR"] = str(nvm_dir)
 
-    bash_commands = """
+    bash_commands = f"""
     [ -s "$NVM_DIR/nvm.sh" ] && \\. "$NVM_DIR/nvm.sh";
-    nvm install node
+    nvm install node;
+    npm install -g {" ".join(_NPM_GLOBALS)}
     """
 
-    logger.debug("Installing node using nvm")
+    logger.debug("Installing node and global npm packages using nvm")
     utilities.run_cmd(["bash", "-c", bash_commands], False, logger, env=env)
 
     logger.info("Finished installing node.")

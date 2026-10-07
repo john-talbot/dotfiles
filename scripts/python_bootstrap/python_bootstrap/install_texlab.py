@@ -1,28 +1,28 @@
 import argparse
-import gzip
 import logging
 import platform
-import shutil
 import sys
+import tarfile
 from pathlib import Path
 
 from python_bootstrap import utilities
 from python_bootstrap.utilities import OS
 
-# Pinned: newer prebuilt binaries need glibc 2.39, but Ubuntu 22.04 has 2.35
-_VERSION = "v0.25.10"
-_BASE_URL = f"https://github.com/tree-sitter/tree-sitter/releases/download/{_VERSION}/tree-sitter-"
+_VERSION = "v5.26.0"
+_BASE_URL = f"https://github.com/latex-lsp/texlab/releases/download/{_VERSION}/texlab-"
 
-_ARCH_MAP = {"x86_64": "linux-x64", "aarch64": "linux-arm64", "armv7l": "linux-arm"}
+_ARCH_MAP = {"x86_64": "x86_64", "aarch64": "aarch64", "armv7l": "armv7hf"}
 
-_INSTALL_PATH = Path.home().joinpath(".local/bin/tree-sitter")
+_INSTALL_PATH = Path.home().joinpath(".local/bin/texlab")
 
-_TMP_NAME = "node"
-_LOG_NAME = "install_node.log"
+_TMP_NAME = "texlab"
+_LOG_NAME = "install_texlab.log"
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Install node from source")
+    parser = argparse.ArgumentParser(
+        description="Install the texlab LaTeX language server"
+    )
     parser.add_argument(
         "--temp",
         type=Path,
@@ -38,7 +38,7 @@ def main() -> None:
     temp_dir = args.temp
     log_dir = args.log
 
-    logger = utilities.setup_logging("treesitter_logger", log_dir.joinpath(_LOG_NAME))
+    logger = utilities.setup_logging("texlab_logger", log_dir.joinpath(_LOG_NAME))
     os_type = utilities.get_os_type()
 
     if os_type == OS.UNSUPPORTED:
@@ -49,7 +49,7 @@ def main() -> None:
 
 
 def install(os_type: OS, temp_dir: Path, logger: logging.Logger) -> None:
-    logger.info("Installing treesitter.")
+    logger.info("Installing texlab.")
 
     if os_type == OS.LINUX_x64 or os_type == OS.LINUX_arm64:
         _install_linux(temp_dir, logger)
@@ -59,31 +59,35 @@ def install(os_type: OS, temp_dir: Path, logger: logging.Logger) -> None:
         logger.error("Unsupported OS type.")
         return
 
-    logger.info("Finished installing treesitter.")
+    logger.info("Finished installing texlab.")
 
 
 def _install_linux(temp_dir: Path, logger: logging.Logger) -> None:
-    logger.debug("Downloading treesitter.")
-    down_path = temp_dir.joinpath("treesitter.gz")
+    logger.debug("Downloading texlab.")
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    down_path = temp_dir.joinpath("texlab.tar.gz")
 
-    url = f"{_BASE_URL}{_ARCH_MAP[platform.machine()]}.gz"
+    url = f"{_BASE_URL}{_ARCH_MAP[platform.machine()]}-linux.tar.gz"
 
     utilities.download_archive(url, down_path, logger)
 
-    logger.debug("Extracting treesitter.")
-    with gzip.open(down_path, "rb") as f_in:
-        with open(down_path.with_suffix(""), "wb") as f_out:
-            shutil.copyfileobj(f_in, f_out)
+    logger.debug("Extracting texlab.")
+    with tarfile.open(down_path) as tar:
+        binary = tar.extractfile("texlab")
+        if binary is None:
+            raise FileNotFoundError("texlab binary not found in the release archive")
+        data = binary.read()
 
-    logger.debug("Moving treesitter to install location.")
-    shutil.move(down_path.with_suffix(""), _INSTALL_PATH)
-    utilities.run_cmd(["chmod", "a+x", str(_INSTALL_PATH)], False, logger)
+    logger.debug("Writing texlab to install location.")
+    _INSTALL_PATH.parent.mkdir(parents=True, exist_ok=True)
+    _INSTALL_PATH.write_bytes(data)
+    _INSTALL_PATH.chmod(0o755)
 
 
 def _install_macos(logger: logging.Logger) -> None:
-    logger.debug("Installing treesitter via brew.")
+    logger.debug("Installing texlab via brew.")
     try:
-        utilities.run_cmd(["brew", "install", "tree-sitter"], False, logger)
+        utilities.run_cmd(["brew", "install", "texlab"], False, logger)
     except FileNotFoundError:
         logger.error("Homebrew is not installed.")
 

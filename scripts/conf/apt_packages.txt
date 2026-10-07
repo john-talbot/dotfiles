@@ -1,6 +1,8 @@
 arp-scan
 automake
 build-essential
+clang-format
+clangd
 cmake
 curl
 doxygen
@@ -29,4 +31,6 @@ vim
 virtualenv
 x11-apps
 xclip
+xdotool
+zathura
 zsh

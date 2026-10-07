@@ -4,8 +4,10 @@ from pathlib import Path
 
 from python_bootstrap import (
     install_fzf,
+    install_marksman,
     install_neovim,
     install_stow,
+    install_texlab,
     install_treesitter,
     install_uctags,
     utilities,
@@ -54,6 +56,8 @@ def bootstrap(
     install_fzf.install(logger)
     install_neovim.install(os_type, temp_dir, use_sudo, logger)
     install_treesitter.install(os_type, temp_dir, logger)
+    install_texlab.install(os_type, temp_dir, logger)
+    install_marksman.install(os_type, temp_dir, logger)
     install_uctags.install(os_type, temp_dir, logger)
 
     # Cleanup downloads
